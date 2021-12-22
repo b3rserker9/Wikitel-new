@@ -1,0 +1,54 @@
+.columns {
+  float: left;
+  width: 380px;
+  padding: 5px 10px;
+}
+
+/* Remove extra left and right margins, due to padding */
+.rows {width: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;}
+
+/* Clear floats after the columns */
+.rows:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+
+
+/* Style the counter cards */
+.cards {
+	margin-bottom: 2%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center;
+  background-color: #f1f1f1;
+}
+
+.page {
+    display: flex;
+    height: auto;
+}
+
+.section1 {
+ 
+    flex: 75%;
+}
+.section2 {
+    
+    flex: 10%;
+}
+
+
+.yui3-button {
+    margin:10px 0px 10px 0px;
+    color: #fff;
+    background-color: #3476b7;
+}

@@ -1,0 +1,89 @@
+package it.cnr.istc.psts.wikitel.Authentication;
+
+import static it.cnr.istc.psts.wikitel.db.UserEntity.STUDENT_ROLE;
+import static it.cnr.istc.psts.wikitel.db.UserEntity.TEACHER_ROLE;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+/**
+ * The AuthConfiguration is a Spring Security Configuration.
+ * It extends WebSecurityConfigurerAdapter, meaning that it provides the settings for Web security.
+ */
+
+@Configuration
+@EnableWebSecurity
+public class AuthConfiguration extends WebSecurityConfigurerAdapter { 
+
+	/**
+     * The datasource is automatically injected into the AuthConfiguration (using its getters and setters)
+     * and it is used to access the DB to get the Credentials to perform authentiation and authorization
+     */
+	
+    @Autowired
+    DataSource datasource;
+
+    /**
+     * This method provides the whole authentication and authorization configuration to use.
+     */
+    
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+    	
+        http
+        		// authorization paragraph: qui definiamo chi può accedere a cosa
+                .authorizeRequests()
+                // chiunque (autenticato o no) può accedere alle pagine index, login, register, ai css e alle immagini
+                .antMatchers(HttpMethod.GET, "/", "/index", "/css/**","/js/**", "/images/**","/menu","/suppli","/json","/lessons").permitAll()
+                // chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
+                .antMatchers(HttpMethod.POST,  "/register", "/mauro").permitAll()
+                // solo gli utenti autenticati con ruolo ADMIN possono accedere a risorse con path /admin/**
+                .antMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(STUDENT_ROLE)
+                .antMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority(STUDENT_ROLE)
+                
+                .antMatchers(HttpMethod.GET, "/teachers/**").hasAnyAuthority(TEACHER_ROLE)
+                .antMatchers(HttpMethod.POST, "/teachers/**").hasAnyAuthority(TEACHER_ROLE)
+                // tutti gli utenti autenticati possono accere alle pagine rimanenti 
+                .anyRequest().authenticated().and().formLogin()
+                .loginPage("/index").usernameParameter("email") .failureUrl("/failure").
+                defaultSuccessUrl("/default")
+
+                .and().logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")        
+                .invalidateHttpSession(true)
+                .clearAuthentication(true).permitAll().and().csrf().disable();
+
+                    
+               
+    }
+
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    	auth.jdbcAuthentication()
+        .dataSource(this.datasource)
+        .authoritiesByUsernameQuery("SELECT email, role FROM user_entity WHERE email=?")
+        .usersByUsernameQuery("SELECT email, password, 1 as enabled FROM user_entity WHERE email=?");
+}
+
+    /**
+     * This method defines a "passwordEncoder" Bean.
+     * The passwordEncoder Bean is used to encrypt and decrpyt the Credentials passwords.
+     */
+    
+    @Bean
+    PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}

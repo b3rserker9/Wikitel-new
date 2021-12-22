@@ -1,0 +1,156 @@
+{
+    "interests": [
+        {
+            "id": "Categoria:Archeologia",
+            "name": "Archeologia"
+        },
+        {
+            "id": "Categoria:Architettura",
+            "name": "Architettura"
+        },
+        {
+            "id": "Categoria:Arte",
+            "name": "Arte"
+        },
+        {
+            "id": "Categoria:Geografia",
+            "name": "Geografia"
+        },
+        {
+            "id": "Categoria:Economia",
+            "name": "Economia"
+        },
+        {
+            "id": "Categoria:Storia",
+            "name": "Storia"
+        },
+        {
+            "id": "Categoria:Scienza",
+            "name": "Scienza"
+        },
+        {
+            "id": "Categoria:Biologia",
+            "name": "Biologia"
+        },
+        {
+            "id": "Categoria:Agricoltura",
+            "name": "Agricoltura"
+        },
+        {
+            "id": "Categoria:Antropologia",
+            "name": "Antropologia"
+        },
+        {
+            "id": "Categoria:Astronomia",
+            "name": "Astronomia"
+        },
+        {
+            "id": "Categoria:Botanica",
+            "name": "Botanica"
+        },
+        {
+            "id": "Categoria:Branche_della_fisica",
+            "name": "Branche della fisica"
+        },
+        {
+            "id": "Categoria:Chiese_d%27Italia",
+            "name": "Chiese d'Italia"
+        },
+        {
+            "id": "Categoria:Chimica",
+            "name": "Chimica"
+        },
+        {
+            "id": "Categoria:Cinema",
+            "name": "Cinema"
+        },
+        {
+            "id": "Categoria:Cultura",
+            "name": "Cultura"
+        },
+        {
+            "id": "Categoria:Elettronica",
+            "name": "Elettronica"
+        },
+        {
+            "id": "Categoria:Farmaci",
+            "name": "Farmaci"
+        },
+        {
+            "id": "Categoria:Geologia",
+            "name": "Geologia"
+        },
+        {
+            "id": "Categoria:Industria",
+            "name": "Industria"
+        },
+        {
+            "id": "Categoria:Informatica",
+            "name": "Informatica"
+        },
+        {
+            "id": "Categoria:Ingegneria",
+            "name": "Ingegneria"
+        },
+        {
+            "id": "Categoria:Letteratura",
+            "name": "Letteratura"
+        },
+        {
+            "id": "Categoria:Medicina",
+            "name": "Medicina"
+        },
+        {
+            "id": "Categoria:Musica",
+            "name": "Musica"
+        },
+        {
+            "id": "Categoria:Natura",
+            "name": "Natura"
+        },
+        {
+            "id": "Categoria:Opere_d%27arte",
+            "name": "Opere d'arte"
+        },
+        {
+            "id": "Categoria:Politica",
+            "name": "Politica"
+        },
+        {
+            "id": "Categoria:Psichiatria",
+            "name": "Psichiatria"
+        },
+        {
+            "id": "Categoria:Psicologia",
+            "name": "Psicologia"
+        },
+        {
+            "id": "Categoria:Filosofia",
+            "name": "Filosofia"
+        },
+        {
+            "id": "Categoria:Religione",
+            "name": "Religione"
+        },
+        {
+            "id": "Categoria:Società",
+            "name": "Società"
+        },
+        {
+            "id": "Categoria:Sociologia",
+            "name": "Sociologia"
+        },
+        {
+            "id": "Categoria:Software",
+            "name": "Software"
+        },
+        {
+            "id": "Categoria:Statistica",
+            "name": "Statistica"
+        },
+        {
+            "id": "Categoria:Tecnologia",
+            "name": "Tecnologia"
+        }
+    ]
+}
