@@ -21,17 +21,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import it.cnr.istc.pst.oratio.Item.ArithItem;
 import it.cnr.istc.pst.oratio.Solver;
 import it.cnr.istc.pst.oratio.SolverException;
+import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
+import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.UserService;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
+import it.cnr.istc.psts.wikitel.db.Prova;
 import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 import it.cnr.istc.psts.wikitell.LessonManager;
@@ -50,11 +57,20 @@ public class pageController {
 	@Autowired
 	private LessonService lessonservice;
 	
-	Solver solver = new Solver();
+	@Autowired
+	private ModelService modelservice;
+	 private final Solver s = new Solver();
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Model model) throws NoSuchFieldException, SolverException {
-			
+		RestTemplate restTemplate = new RestTemplate();
+		s.read("real x, y; x + y >= 7.0;");
+		s.solve();
+		//Prova prova = restTemplate.getForObject("http://192.168.1.79:5015/wiki?page=Palombaro_lungo", Prova.class);
+		//System.out.println(prova.getLength());
+		System.out.println(((ArithItem) s.get("x")).getValue());
+		System.out.println(((ArithItem) s.get("y")).getValue());
+
 		Json_reader interests = json("/json/user_model.json",true);
 		model.addAttribute("interests", interests.getInterests());
 			return "index";
@@ -89,11 +105,15 @@ public class pageController {
     }
 	
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
-	public String profile(Model model) {
+	public String profile(Model model) throws IOException {
+		 ObjectMapper mapper = new ObjectMapper();
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
-    	Json_reader interests = json("/json/user_"+ userentity.getId() +".json",false);
-    	model.addAttribute("interests", interests.getInterests());
+    	String name = userentity.getFirst_name();
+    	System.out.println(name.substring(name.length() - 1));
+    	Json_reader interests = json("/json/user_model.json",true);
+    	model.addAttribute("gender",name.substring(name.length() - 1));
+		model.addAttribute("all_interests",interests.getInterests());
     	model.addAttribute("user",userentity);
     	model.addAttribute("teacher",true);
 			return "admin/profilo";
@@ -135,11 +155,29 @@ public class pageController {
 		return "teachers/lezione";
 	}
 	
+	@GetMapping(value = "/Argomento/{id}")
+	public String det_Arg(@PathVariable("id")Long id , Model model) {
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
+		DateFormat df = new SimpleDateFormat("yy"); // Just the year, with 2 digits
+		String formattedDate = df.format(Calendar.getInstance().getTime());
+		DateFormat df2 = new SimpleDateFormat("yy"); // Just the year, with 2 digits
+		System.out.println(formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
+		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
+		model.addAttribute("students",userservice.getTeacher("STUDENT"));
+		model.addAttribute("arg",modelservice.getModel(id));
+		
+		
+		
+		return "teachers/Argomento";
+	}
+	
 	@GetMapping(value = "/profile/{id}")
 	public String det_profilo(@PathVariable(required = false) Long id, Model model) {
 		UserEntity user = userservice.getUserId(id);
-		Json_reader interests = json("/json/user_"+ user.getId() +".json",false);
-    	model.addAttribute("interests", interests.getInterests());
+		for (final JsonNode interest : WikitelNewApplication.USER_MODEL.get("interests"))
+			System.out.println(interest.asText());
+    
     	model.addAttribute("user",user);
     	model.addAttribute("teacher",false);
 		return "admin/profilo";

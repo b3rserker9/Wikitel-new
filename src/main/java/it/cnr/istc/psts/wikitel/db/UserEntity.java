@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Type;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import it.cnr.istc.psts.wikitel.controller.Interests;
@@ -42,20 +43,28 @@ public class UserEntity {
     private String password;
     private String first_name;
     private String last_name;
-   
+    @Column(columnDefinition="text")
+    private String profile;
+    @Column(columnDefinition="text")
+    private String src;
+    
+    @OneToMany
+    private final Collection<FileEntity> file = new ArrayList<>();
     
     @Column(nullable = false)
 	private String role;
     @OneToMany
     private final Collection<RuleEntity> learnt_topics = new ArrayList<>();
+    @JsonManagedReference
     @ManyToMany(mappedBy = "teachers")
+    
     private final Collection<ModelEntity> models = new ArrayList<>();
     @ManyToMany(mappedBy = "students")
+    
     private final Collection<UserEntity> teachers = new ArrayList<>();
     @ManyToMany
     private final Collection<UserEntity> students = new ArrayList<>();
-    @ManyToMany(mappedBy = "followed_by")
-    
+    @ManyToMany(mappedBy = "followed_by") 
     @JsonBackReference
     private final List<LessonEntity> following_lessons = new ArrayList<>();
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)

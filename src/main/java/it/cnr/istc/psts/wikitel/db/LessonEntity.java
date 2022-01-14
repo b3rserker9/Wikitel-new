@@ -15,6 +15,7 @@ import javax.persistence.OneToMany;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import it.cnr.istc.psts.wikitel.db.UserEntity;
 import lombok.Data;
 
 @Entity
@@ -47,6 +48,9 @@ public class LessonEntity {
         followed_by.remove(student);
     }
 
+    public Collection<UserEntity> getStudents() {
+        return Collections.unmodifiableCollection(followed_by);
+    }
    
     public void addGoal(final RuleEntity goal) {
         goals.add(goal);

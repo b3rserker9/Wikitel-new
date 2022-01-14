@@ -8,18 +8,24 @@ import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 import it.cnr.istc.psts.wikitel.db.Email;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
+import it.cnr.istc.psts.wikitel.db.ModelEntity;
+import it.cnr.istc.psts.wikitel.db.RuleEntity;
 import lombok.Data;
 
 @Data
 public class Response {
 
 	private String status;
+	private Long rule;
+	private Long model;
 	private User data;
 	private UserEntity data2;
 	private Email data3;
 	private LessonEntity data4;
 	private List<LessonEntity> data5;
 	private Long data6;
+	private ModelEntity data7;
+	private List<ModelEntity> data8;
 	
 	public Response(String status, User user) {
 		this.status=status;
@@ -35,20 +41,31 @@ public class Response {
 		this.data3=email;
 	}
 	
+	public Response(Long rule, Long model ) {
+		this.rule = rule;
+		this.model = model;
+	}
+	
 	public Response(String status, LessonEntity lesson ) {
 		this.status=status;
 		this.data4=lesson;
 	}
-	public Response(String status, List<LessonEntity> lessons) {
+	
+	public Response(String status, ModelEntity model ) {
+		this.status=status;
+		this.data7=model;
+	}
+	public  Response(String status, List<LessonEntity> lessons) {
 		this.status=status;
 		this.data5=lessons;
 	}
 	public Response(String status2, Long id) {
 		this.status=status2;
 		this.data6=id;
-	}
+	}    
 	public Response(String status2) {
 		this.status=status2;
-	}
-
+	}   
+	
+	
 }

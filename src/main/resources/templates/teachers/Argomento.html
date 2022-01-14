@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="shortcut icon" href="/images/wikitel.png" />
+<title>Wikitel</title>
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+	<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" />
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	
+	<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+	
+	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	
+	<script src="https://kit.fontawesome.com/ced3f913ea.js" crossorigin="anonymous"></script>
+	<script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+		<script src="https://unpkg.com/gojs/release/go-debug.js"></script>
+		<script src="https://unpkg.com/gojs@2.1/release/go.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/gojs@2.1/release/go.js"></script>
+		<script type="text/javascript" src="/js/Argomento.js"></script>
+		<script type="text/javascript" src="/js/graph.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+		<link th:href="@{/css/teacher_index.css}" rel="stylesheet">
+		<link th:href="@{/css/hello.css}" rel="stylesheet">
+		<link th:href="@{/css/argomento.css}" rel="stylesheet">
+		
+		  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+		
+		
+</head>
+<style>
+.modal-option{
+	width: 1200px;
+    max-width: none;
+    
+}
+.cont{
+	    height: 900px;
+}
+.chip img {
+  float: left;
+  margin: 0 10px 0 -25px;
+  height: 50px;
+  width: 50px;
+  border-radius: 50%;
+}
+ul.ui-autocomplete {
+    z-index: 1100;
+}
+body{
+	font-family: 'Nunito', sans-serif;
+}
+
+
+.btn{
+	margin-bottom: 2%;
+}
+.chip {
+  display: inline-block;
+  padding: 0 25px;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  border-radius: 25px;
+  background-color: #f1f1f1;
+      margin-bottom: 2%;
+    margin-right: 2%;
+}
+</style>
+<script>
+function openNav() {
+	if(document.getElementById("mySidebar").style.width == "250px"){
+   document.getElementById("mySidebar").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+  }else{
+	 document.getElementById("mySidebar").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+}
+}
+
+
+</script>
+<body  >
+<nav class="navbar navbar-light bg-light" style="z-index: 1030;">
+	<span style="font-size:25px;cursor:pointer;margin-right: 2%;" onclick="openNav()"><i class="fas fa-bars"></i></span>
+  <a class="navbar-brand" th:href="@{/default}"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy" >
+                WikiTEL </a>
+  
+  
+     <div class="btn-group">
+  <button type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <span style="font-size: 18px;"><i class="fas fa-user"></i></span>
+  </button>
+  
+  <div class="dropdown-menu dropdown-menu-right">
+    <a class="dropdown-item" th:href="@{profile}">Profile</a></li>
+    <button class="dropdown-item" type="button">Another action</button>
+    <a th:href="@{logout}" class="dropdown-item" type="button"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
+  </div>
+</div>
+    
+</nav>
+<div id="mySidebar" class="sidebar">
+  <a href="#">Dashboard</a>
+  <a href="#">Calendar</a>
+  <a href="#" data-toggle="modal" data-target="#exampleModalCenter">Partecipanti</a>
+  
+  <a  data-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
+    My course
+  </a>
+  <div class="collapse" id="collapse">
+  
+</div>
+</div>
+ <div id="main">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-lesson-modal">Nuova Lezione</button>
+  
+  <div id="myDiagramDiv"   style="width:1000px; height:1000px; background-color: rgb(255, 255, 255);"></div>
+  
+  
+  <div class="rows" id="rows">
+  
+</div></div>
+
+
+<div class="modal fade" id="new-lesson-modal" tabindex="-1" aria-labelledby="new-lesson-modal-label" aria-hidden="true">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <form id="new_lesson">
+            <div class="modal-header">
+               <h5 class="modal-title" id="new-lesson-modal-label">Nuova lezione</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+               <div class="form-floating my-1">
+                  <div class="col-sm-9 text-secondary">
+                     <div class="name"  >
+                        <p id="model_name" th:text="${arg.name}" th:value="${arg.id}" style="font-size: 1.5em;color: black;"></p>
+                     </div>
+                  </div>
+               </div>
+               <div class="form-floating my-1">
+                  <input type="text" class="form-control" id="new-lesson-name" placeholder="Nome" required>
+                  <label for="new-lesson-name" class="col-form-label">Nome</label>
+               </div>
+               <hr />
+               <div class="rubrica">
+               <button type="button" class="btn btn-primary pos" data-toggle="modal" data-target="#exampleModal">
+ <i class="fas fa-address-book"></i>
+</button>
+               <h6>Studenti</h6></div>
+               <div class="col" >
+                  <div class="list-group row flex-row mx-1" id="new-lesson-students-list">
+                     <div class="form-group">
+                     
+                        <div class="input-group mb-3">
+                           <input type="text" class="form-control" id="students" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                           <div class="input-group-append">
+                              <button type="button" class="btn btn-info" id="add">add</button>
+                           </div>
+                        </div>
+                        <div class="topics" id="chips" style="max-height:160px;overflow:auto;">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+               <hr />
+               <h6>Obiettivi didattici</h6>
+               <div class="form-check">
+                  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+                  <label class="form-check-label" for="flexRadioDefault1">
+                  Default radio
+                  </label>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" onclick="Create_new_lesson()" class="btn btn-sm btn-primary" id="create-new-lesson">Crea</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+ 
+
+ 
+ </div>
+ 
+ <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-option" role="document">
+    <div class="modal-content cont">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      
+      <div class="modal-body flex">
+      <div class="search_bar">
+       <div class="mt-3 inputs"> <i class="fa fa-search"></i> <input type="text" class="form-control " id="search" placeholder="Search Tasks..." onkeyup="searchFunction()"> </div>
+      </div>
+      <div id="root" class="profile_card">
+         <div class="card profile-card-1">
+       
+         <div class=prova>
+    		        <img src="https://images.pexels.com/photos/946351/pexels-photo-946351.jpeg?w=500&h=650&auto=compress&cs=tinysrgb" alt="profile-sample1" class="background"/>
+    		        <img src="https://randomuser.me/api/portraits/women/20.jpg" alt="profile-image" class="profile"/>
+                    <div class="card-content">
+                    <h2>Savannah Fields<small>Engineer</small></h3>
+                      <div class="icon-block">
+         <button class="btn"><i class="fa fa-home"></i></button></div>
+                    </div>
+                </div>
+         </div>
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+</body>
+

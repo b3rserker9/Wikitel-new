@@ -14,7 +14,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import lombok.Data;
+
 @Entity
+
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class RuleEntity {
 
@@ -27,10 +33,12 @@ public class RuleEntity {
     private final Set<String> topics = new HashSet<>();
     private Long length;
     @ManyToMany(mappedBy = "effects")
+    @JsonBackReference
     private final Set<RuleEntity> preconditions = new HashSet<>();
     @ManyToMany
     private final Set<RuleEntity> effects = new HashSet<>();
     @OneToMany(orphanRemoval = true)
+    @JsonManagedReference
     private final Set<RuleSuggestionRelationEntity> suggestions = new HashSet<>();
 
     public Long getId() {
@@ -54,7 +62,11 @@ public class RuleEntity {
     }
 
     public Set<String> getTopics() {
-        return Collections.unmodifiableSet(topics);
+        return topics;
+    }
+    
+    public Set<RuleSuggestionRelationEntity> getSuggestions() {
+        return this.suggestions;
     }
 
     public void addTopic(final String topic) {
@@ -97,13 +109,7 @@ public class RuleEntity {
         effects.remove(effect);
     }
 
-    public Set<RuleSuggestionRelationEntity> getSuggestions() {
-        return Collections.unmodifiableSet(suggestions);
-    }
-
-    public void addSuggestion(final RuleSuggestionRelationEntity suggestion) {
-        suggestions.add(suggestion);
-    }
+   
 
     public void removeSuggestion(final RuleSuggestionRelationEntity suggestion) {
         suggestions.remove(suggestion);

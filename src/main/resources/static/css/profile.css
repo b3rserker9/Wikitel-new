@@ -4,6 +4,21 @@ body{
     text-align: left;
     background-color: #e2e8f0;    
 }
+.modal-option {
+    width: 50% !important;
+    height: 75% !important;
+    max-width: 50%;
+    min-width: 50%;
+    padding: 0;
+}
+.cont {
+    height: auto;
+}
+
+.modal-open .modal {
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
 .main-body {
     padding: 15px;
 }
@@ -58,4 +73,116 @@ body{
 	max-width: 100%;
 
 }
+}
+.preview{
+	border-radius: 50%;
+	    border: 1px dashed #444;
+    width: 200px;
+    height: 200px;
+    transition: 500ms all;
+     position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+.fas{
+	 position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+}
+.images{
+	    display: flex;
+    flex-wrap: wrap;
+    max-height: 650px;
+    justify-content: flex-start;
+    max-width: max-content;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.mr{
+	margin-right: 1%;
+	margin-bottom: 1%;
+}
+
+.photo-upload{
+		height: auto;
+		margin: 20px 0;
+		position :relative;
+		text-align :center;
+		width :100%;
+}
+	.input-file{
+		height: 0.1px;
+		opacity: 0;
+		overflow: hidden;
+		position: absolute;
+		width: 0.1px;
+		z-index: -1;
+		}
+		
+		.label{
+		background: #a5a1a1a8;
+			border-radius: 50%;
+			display: inline-block;
+			text-align: center;
+  			cursor: pointer;
+  			border: 1px dashed #444;
+    width: 200px;
+    height: 200px;
+    transition: 500ms all;
+    font-size: 4em;
+    position: relative;
+			}
+			
+			.labels{
+		background: #a5a1a1a8;
+			border-radius: 50%;
+			display: inline-block;
+			text-align: center;
+  			cursor: pointer;
+  			border: 1px dashed #444;
+    width: 200px;
+    height: 200px;
+    transition: 500ms all;
+    font-size: 2em;
+    position: absolute;
+      top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+			}
+			
+			.input-hidden {
+  position: absolute;
+  left: -9999px;
+}
+
+input[type=radio]:checked + label>img {
+  border: 1px solid #fff;
+  box-shadow: 0 0 3px 3px #090;
+}
+
+/* Stuff after this is only to make things more pretty */
+input[type=radio] + label>img {
+  border: 1px dashed #444;
+  width: 200px;
+  height: 200px;
+  transition: 500ms all;
+}
+
+input[type=file] + label>img {
+  border: 1px dashed #444;
+  width: 200px;
+  height: 200px;
+  transition: 500ms all;
+}
+
+input[type=radio]:checked + label>img {
+  transform: 
+    rotateZ(-10deg) 
+    rotateX(10deg);
 }

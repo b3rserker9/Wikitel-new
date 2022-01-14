@@ -5,7 +5,10 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 @Embeddable
+@Data
 public class RuleSuggestionRelationId  implements Serializable{
 
     @Column(name = "RULE_ID")

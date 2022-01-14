@@ -23,9 +23,11 @@
 	<script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
 		
 		<script type="text/javascript" src="/js/teacher_index.js"></script>
+		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 		<link th:href="@{/css/teacher_index.css}" rel="stylesheet">
 		<link th:href="@{/css/hello.css}" rel="stylesheet">
+		<link th:href="@{/css/multistep.css}" rel="stylesheet">
 		
 		  <link
     rel="stylesheet"
@@ -39,9 +41,21 @@ body{
 	font-family: 'Nunito', sans-serif;
 }
 
-
+.form-check{
+	padding-left: 1.5em;
+}
 .btn{
 	margin-bottom: 2%;
+}
+.precondition-list{
+	margin-top: 3%;
+}
+
+div#suggested-preconditions-list{
+	display: flex;
+	flex-wrap: wrap;
+	    flex-direction: row;
+	
 }
 .chip {
   display: inline-block;
@@ -55,9 +69,19 @@ body{
     margin-right: 2%;
 }
 
+
+.load{
+	position: relative;
+}
+.spinner-border{
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px;
+}
+
 </style>
 <body onload="ajaxGet()">
-
 <script>
 function openNav() {
 	if(document.getElementById("mySidebar").style.width == "250px"){
@@ -124,11 +148,22 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
   <div class="dropdown-menu dropdown-menu-right">
     <a class="dropdown-item" th:href="@{profile}">Profile</a></li>
     <button class="dropdown-item" type="button">Another action</button>
-    <a th:href="@{logout}" class="dropdown-item" type="button"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
+    <a class="dropdown-item" type="button" th:href="@{logout}"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
   </div>
 </div>
     </ul>
 </nav>
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+  <!-- Position it: -->
+  <!-- - `.toast-container` for spacing between toasts -->
+  <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
+  <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
+  <div class="toast-container position-absolute top-0 end-0 p-3" id="notification">
+
+    <!-- Then put toasts within -->
+    
+  </div>
+</div>
 
 <div id="mySidebar" class="sidebar">
   <a href="#">Dashboard</a>
@@ -189,7 +224,7 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
   </div>
   </div>
   </div>
-  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_lesson1">Nuova lezione</button>
+  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_lesson1">Nuovo Argomento</button>
   
   <div class="rows" id="rows">
   
@@ -198,34 +233,132 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
  </div>
 
 
-<div class="modal fade" id="new_lesson1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Nuova lessione</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form id="new_lesson">
-      <div class="modal-body">
-        
-          <div class="form-group">
-            <label for="name" class="col-form-label">Nome:</label>
-            <input type="text" class="form-control" id="name" name="name">
-            <p id="error"></p>
-   			
-          </div>
-         
-        
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary">Crea</button>
-      </div>
-      </form>
-    </div>
+<div class="modal fade" id="new_lesson1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+         <form id="new_models">
+            <div class="modal-header">
+               <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" >
+               <div class="modal-split">
+                  <div class="titolo" style="text-align: center;">
+                     <h1>Argomento</h1>
+                  </div>
+                  
+                  <label for="new-model-name" style="margin-top: 2%;">Nome</label>
+                  <input type="text" class="form-control" id="new-model-name" placeholder="Nome" required>
+                   <div class="invalid-feedback">
+          Please a name for your modal.
+      
+                  </div>
+               </div>
+               <div class="modal-split">
+                  <div class="titolo" style="text-align: center;">
+                     <h1>Nuovo obiettivo</h1>
+                  </div>
+                  <label for="new-rule-name">Nome</label>
+                  <input type="text" class="form-control" id="new-rule-name" placeholder="Nome">
+                  <div class="invalid-feedback">
+          Please a name for your modal.
+      
+                  </div>
+                  <label for="new-rule-type">Tipo</label>
+                  <select class="form-select" id="new-rule-type" aria-label="Tipo di obiettivo" onChange="update()">
+                     <option value="1">Testo</option>
+                     <option value="4">File</option>
+                     <option value="2">Pagina Web</option>
+                     <option value="3">Pagina Wikipedia</option>
+                  </select>
+                  <div id="url" style="display: none;margin-top: 2%;">
+                     <label for="new-rule-url">URL</label>
+                     <input type="url" class="form-control" id="new-rule-url" placeholder="URL">
+                     <div class="invalid-feedback">
+          Please a name for your modal.
+      
+                  </div>
+                  </div>
+                   <div class="form-group" id="textarea" style="margin-top: 2%;">
+    <textarea class="form-control" id="rule_Textarea" rows="3"></textarea>
   </div>
+  <div class="mb-3" id="file" style="display: none;">
+  <label for="formFile" class="form-label"></label>
+  <input class="form-control" type="file" id="formFile">
+</div>
+               </div>
+            </div>
+            <div class="modal-footer">
+               
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <form id="new_precondition">
+            <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <div class="form-floating">
+                     <select class="form-select" id="rule_list" aria-label="Floating label select example">
+                
+                     </select>
+                     <label for="floatingSelect">Tipo</label>
+                  </div>
+                  <hr>
+               <div class="form-floating">
+                  <input type="number" class="form-control" id="rule-length" placeholder="Nome">
+                  <label for="rule-length">Durata (secondi)</label>
+               </div>
+               <hr>
+               <select class="col d-flex justify-content-start form-select" id="approach"
+                  aria-label="Approccio">
+                  <option value="1">Top-down</option>
+                  <option value="2">Bottom-up</option>
+               </select>
+               <hr>
+               <div class="row align-items-center">
+                  <h6>Argomenti correlati:</h6>
+                  <div class="form-floating">
+                     <select class="form-select" id="new-precondition-type" aria-label="Floating label select example">
+                        <option value="1">Suggeriti</option>
+                        <option value="2">Esistenti</option>
+                        <option value="3">Nuovo obiettivo</option>
+                     </select>
+                     <label for="floatingSelect">Tipo</label>
+                  </div>
+                  <div class="precondition-list" id="suggested-preconditions-list-div">
+                     <div class="list-group list-group-flush overflow-auto" id="suggested-preconditions-list"
+                        style="max-height:260px;overflow:auto;">
+                     </div>
+                  </div>
+                  <div class="row h-25 my-1 d-none" id="existing-preconditions-list-div">
+                     <div class="list-group list-group-flush overflow-auto" id="existing-preconditions-list"
+                        style="max-height:260px;overflow:auto;">
+                     </div>
+                  </div>
+               </div>
+               <div class="row h-25">
+                  <div class="list-group list-group-flush overflow-auto" id="preconditions-list"
+                     style="max-height:200px;overflow:auto;">
+                  </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+               <button type="button" onclick="Create_new_precondition()" class="btn btn-primary">Save changes</button>
+            </div>
+         </form>
+      </div>
+   </div>
 </div>
 </body>
 </html>

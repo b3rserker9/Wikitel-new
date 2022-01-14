@@ -64,26 +64,38 @@ function openNav() {
 
 </script>
 <body>
-<nav class="navbar navbar-light bg-light" style="z-index: 1030;">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;">
 	<span style="font-size:25px;cursor:pointer;margin-right: 2%;" onclick="openNav()"><i class="fas fa-bars"></i></span>
-  <a class="navbar-brand" th:href="@{/default}"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+  <a class="navbar-brand" href="#"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
                 WikiTEL</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse  justify-content-center" id="navbarNav">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Materiale didattico</button>
+  </li>
   
-  
+</ul>
+   
+  </div>
+  <ul class="nav navbar-nav navbar-right">
      <div class="btn-group">
   <button type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <span style="font-size: 18px;"><i class="fas fa-user"></i></span>
   </button>
-  
   <div class="dropdown-menu dropdown-menu-right">
     <a class="dropdown-item" th:href="@{profile}">Profile</a></li>
     <button class="dropdown-item" type="button">Another action</button>
-    <a th:href="@{logout}" class="dropdown-item" type="button"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
+    <a class="dropdown-item" type="button" th:href="@{logout}"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
   </div>
 </div>
-    
+    </ul>
 </nav>
-
 
 
 <div id="mySidebar" class="sidebar">
@@ -99,7 +111,11 @@ function openNav() {
 </div>
 </div>
  <div id="main">
- <div id="page" class="container-fluid d-print-block">
+ <div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+  <div class="page">
+  	<div class="section1">
+  	 <div id="page" class="container-fluid d-print-block">
         <header id="page-header" class="row">
     <div class="col-12 pt-3 pb-3">
         <div class="card ">
@@ -114,6 +130,8 @@ function openNav() {
     </div>
 </header>
 
+
+
 <div class="col-12 pt-3 pb-3">
         <div class="card ">
             <div class="card-body ">
@@ -126,6 +144,55 @@ function openNav() {
         </div>
     </div>
     </div>
+  	
+  <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+  	</div>
+  	<div class="section2">
+  	    <div class="col-12 pt-3 pb-3">
+        <div class="card ">
+            <div class="card-body ">
+                <div class="d-sm-flex align-items-center">
+                    <div class="mr-auto">
+                        	<div class="calendar">
+  	<div id="demo" class="yui3-skin-sam yui3-g"> <!-- You need this skin class -->
+
+  <div id="leftcolumn" class="yui3-u">
+     <!-- Container for the calendar -->
+     <div id="mycalendar"></div>
+  </div>
+  <div id="rightcolumn" class="yui3-u">
+   <div id="links" style="padding-left:20px;">
+   </div>
+  </div>
+</div>
+  	</div></div>                       
+                </div>              
+            </div>
+        </div>
+    </div>
+   <div class="col-12 pt-3 pb-3">
+        <div class="card ">
+            <div class="card-body ">
+                <div class="d-sm-flex align-items-center">
+                    <div class="mr-auto">
+                        	<h5 class="card-title">Upcoming events</h5>
+      <p class="card-text">There are no upcoming events</p>
+       <a href="#" class="card-link">Go to calendar...</a>
+      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p></div>                       
+                </div>              
+            </div>
+        </div>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+  
+  <div class="rows" id="rows">
+  
+</div></div>
+</div>
+
  </div>
  
  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

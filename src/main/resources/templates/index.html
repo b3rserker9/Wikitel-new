@@ -170,37 +170,46 @@ body{
 
     
 
-<!-- Modal -->
-<div class="modal fade" id="modal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form id="register_form">
-  <h1 id="titolo">Register:</h1>
-  <!-- One "tab" for each step in the form: -->
-  <div class="tab">
-   <label for="firs_name" class="col-form-label">Nome:</label>
+
+<div class="modal fade register" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+   <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <form id="register_form">
+            <div class="modal-header">
+               <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body" >
+               <div class="modal-split">
+                  <div class="titolo" style="text-align: center;">
+                     <h1>Argomento</h1>
+                  </div>
+                  
+                  <label for="firs_name" class="col-form-label">Nome:</label>
             <input type="text" class="form-control" id="first_name" name="first_name">
     
     <label for="last_name" class="col-form-label">Cognome:</label>
     <input type="text" class="form-control" id="last_name" name="last_name">
-        
-  </div>
-  <div class="tab">
-   <label for="email" class="col-form-label">Email:</label>
+                   <div class="invalid-feedback">
+          Please a name for your modal.
+      
+                  </div>
+               </div>
+               <div class="modal-split">
+                  <div class="titolo" style="text-align: center;">
+                     <h1>Registrazione</h1>
+                  </div>
+                  <label for="email" class="col-form-label">Email:</label>
             <input type="text" class="form-control" id="email_r" name="email_r">
             <p id="error"></p>
     <label for="password" class="col-form-label">Password:</label>
             <input type="password" class="form-control" id="password_r" name="password_r">
-  </div>
-   <div class="tab" style="height: 210px; overflow: auto;">
-   <div class="Interest" id="interests">
+               </div>
+                 <div class="modal-split" style="height: 210px; overflow: auto;">
+                  <div class="titolo" style="text-align: center;">
+                     <h1>Interessi</h1>
+                  </div>
+                  <div class="Interest" id="interests">
    <div th:each="i : ${interests}">
                             <div class="form-check form-switch col">
   <input class="form-check-input" type="checkbox" role="switch"  th:value="${i.id}" th:name="${i.name}">
@@ -208,23 +217,14 @@ body{
 </div>
                             </div>
   </div>
-   </div>
-  <div style="overflow:auto;">
-    <div style="float:right; margin-top:12px;">
-      <button type="button" id="prevBtn" >Previous</button>
-      <button type="button" id="nextBtn" >Next</button>
-    </div>
-  </div>
-  <!-- Circles which indicates the steps of the form: -->
-  <div style="text-align:center;margin-top:40px;">
-    <span class="step"></span>
-    <span class="step"></span>
-    <span class="step"></span>
-  </div>
-        </form>
+               </div>
+            </div>
+            <div class="modal-footer">
+               
+            </div>
+         </form>
       </div>
-    </div>
-  </div>
+   </div>
 </div>
  
   

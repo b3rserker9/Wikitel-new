@@ -11,16 +11,28 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import lombok.Data;
+
 @Entity
+@Data
 public class ModelEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    
     @ManyToMany
+    
+    
+    @JsonBackReference
     private final Collection<UserEntity> teachers = new ArrayList<>();
     @OneToMany(orphanRemoval = true)
+    @JsonManagedReference
     private final Collection<RuleEntity> rules = new ArrayList<>();
 
     public Long getId() {
@@ -47,9 +59,6 @@ public class ModelEntity {
         teachers.remove(teacher);
     }
 
-    public Collection<RuleEntity> getRules() {
-        return Collections.unmodifiableCollection(rules);
-    }
 
     public void addRule(final RuleEntity rule) {
         rules.add(rule);

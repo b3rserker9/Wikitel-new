@@ -1,3 +1,4 @@
+
 .columns {
   float: left;
   width: 380px;
@@ -46,7 +47,16 @@
     flex: 10%;
 }
 
-
+.config{
+	font-size: 1.3em;
+	  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+i#conf:hover{
+	color: #736b6b;
+	
+}
 .yui3-button {
     margin:10px 0px 10px 0px;
     color: #fff;

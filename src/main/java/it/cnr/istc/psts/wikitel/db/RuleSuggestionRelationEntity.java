@@ -6,10 +6,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.Data;
 
 @Entity
-@Data
 public class RuleSuggestionRelationEntity {
 
     @EmbeddedId
@@ -17,6 +18,7 @@ public class RuleSuggestionRelationEntity {
     @ManyToOne
     @MapsId("rule_id")
     @JoinColumn(name = "RULE_ID")
+    @JsonBackReference
     private RuleEntity rule;
     @ManyToOne
     @MapsId("suggestion_id")
