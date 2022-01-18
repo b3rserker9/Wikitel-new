@@ -62,3 +62,18 @@ i#conf:hover{
     color: #fff;
     background-color: #3476b7;
 }
+
+.link{
+	text-decoration: none;
+}
+.questions {
+    display: flex;
+    flex-direction: column;
+}
+.popover{
+	max-width: 500px;
+}
+.testo{
+	display: flex;
+	justify-content: space-between;
+}

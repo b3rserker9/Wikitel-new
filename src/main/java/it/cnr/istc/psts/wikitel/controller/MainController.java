@@ -469,15 +469,15 @@ public class MainController {
 		
 	}
 	
-	@PostMapping("/Argomento/Getlessonsreal")
+	/*@PostMapping("/Argomento/Getlessonsreal")
 	public List<LessonEntity> getAlllessons(@RequestBody ObjectNode node){
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
     	List<ModelEntity> m = modelservice.getModelTeacher(nuovo);
     	System.out.println("User subscribe :  " + node.get("id").asLong());
-		return this.modelservice.getModel(node.get("id").asLong()).get;
+		return this.modelservice.getModel(node.get("id").asLong()).;
 		
-	}
+	}*/
 	
 	@GetMapping("/Getlessons_student")
 	public Response Getlessons_student(){

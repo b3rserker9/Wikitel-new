@@ -1,3 +1,12 @@
+	var question = [
+   ["attivo", "riflessivo","attivo? Preferisci sperimentare e anche confrontare le tue osservazioni con gli altri, anche mentre lo stai pensando; ti piace il lavoro di gruppo. "+
+   " "+ 
+"riflessivo? Preferisci lavorare prima di tutto da solo, organizzare il materiale e studiarlo. "+
+"Non c'è una risposta giusta! Dipende da quali caratteristiche, individualmente, è quello di ottenere il miglior risultato."],
+   ["pratico", "intuitivo","pratico? Senti (con i tuoi sensi) il materiale di apprendimento. intuitivo? Hai un approccio cerebrale.Non c'è una risposta giusta! L'obiettivo è assimilare le informazioni nel migliore dei modi."],
+   ["visivo", "verbale","visivo? Ti piacerebbe vedere diagrammi e studiare su materiali completamente di immage e grafico. verbale? Preferisci leggere le descrizioni scritte a parole.Non c'è una risposta giusta! L'obiettivo è assimilare le informazioni nel migliore dei modi."],
+   ["sequenziale", "globale","sequenziale? Ti piacerebbe avere una sequenza di argomenti all'interno di una lessione che puoi seguire setp per passo . globale? Preferisci avere una descrizione globale della partizione e dopo tutte le specifiche."],
+];
 	let text;
 	let students = [];
 	let students_id = [];
@@ -7,8 +16,8 @@
 	let current_rule;
 	let r;
 	
-	
-	
+
+    
 	
 	function update() {
 				var select = document.getElementById('new-rule-type');
@@ -361,10 +370,13 @@ console.log("PPPPP4");
 $(document).ready(
 		function() {
 		
-	 
+	 			questions();
 				prep_modal();
 					
-		
+		var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)
+})
 			
 			$( "#pip" ).click(function() {
 				
@@ -388,7 +400,111 @@ $(document).ready(
 				
 			 
 			})
-			
+			function questions(){
+		let id=0;
+		//ROOT
+		let div = document.getElementById("question");
+		console.log(question.length);
+		for(let i=0;i<question.length;i++){
+		// LINK
+		let al = document.createElement('a');
+		al.className="link text-decoration-none";
+		al.setAttribute("data-toggle","collapse");
+		al.setAttribute("href","#collapseExample"+i);
+		al.setAttribute("role","button");
+		al.setAttribute("style","margin-top:2%;");
+		al.setAttribute("aria-controls","collapseExample");
+		al.textContent= question[i][0] + " o " +question[i][1] ;
+		let span = document.createElement('span');
+		al.appendChild(span);
+		let icon = document.createElement('i');
+		icon.className="fas fa-caret-down";
+		span.appendChild(icon);
+		
+		//Info
+		let info = document.createElement('a');
+		info.className="btn btn-link";
+		info.setAttribute("tabindex","0")
+		info.setAttribute("role","button");
+		info.setAttribute("data-bs-toggle","popover");
+		info.setAttribute("data-bs-trigger","focus");
+		info.setAttribute("data-bs-content",question[i][2]);
+		let span2 = document.createElement('span');
+		let icon2 = document.createElement('i');
+		icon2.className="fas fa-info-circle";
+		span2.appendChild(icon2);
+		info.appendChild(span2);
+		
+		let links = document.createElement('div')
+		links.className="links";
+		links.appendChild(al);
+		links.appendChild(info);
+		div.appendChild(links);
+		
+		//Collapse
+		let collapse = document.createElement('div');
+		collapse.className="collapse"
+		collapse.setAttribute("id","collapseExample"+i);
+		div.appendChild(collapse);
+		
+		//Testo
+		let text = document.createElement('div');
+		text.className="testo";
+		let right = document.createElement('p');
+		right.className="right";
+		right.textContent=question[i][0];
+		let left = document.createElement('p'); 
+		left.className="left";
+		left.textContent=question[i][1]
+		text.append(right);
+		text.append(left);
+		
+		//Card
+		let card = document.createElement('div');
+		card.className ="card card-body"
+		collapse.appendChild(card);
+		card.appendChild(text);
+		//radio
+		let r = document.createElement('div');
+		r.setAttribute("id","radios"+i);
+		card.appendChild(r);
+		for(let j=0 ;j<15;(j++)){
+			let radio = document.createElement('input');
+			let label = document.createElement('label');
+			radio.setAttribute("id","option" + j+id);
+			radio.setAttribute("name","options"+i);
+			radio.setAttribute("type","radio");
+			radio.setAttribute("value",j-7);
+			label.setAttribute("for","option"+j+id);
+			label.textContent= (j-7);
+			r.appendChild(radio);
+			r.appendChild(label);
+			id++;
+		}
+		
+		}
+		     $("#radios0").radioslider({
+    fillOrigin: '0',
+      size: 'small',
+       fit: true,
+});
+      $("#radios1").radioslider({
+    fillOrigin: '0',
+      size: 'small',
+       fit: true,
+});
+  $("#radios2").radioslider({
+    fillOrigin: '0',
+      size: 'small',
+       fit: true,
+});
+  $("#radios3").radioslider({
+    fillOrigin: '0',
+      size: 'small',
+       fit: true,
+});
+		
+	}
 			function prep_modal()
 {
   $(".modal").each(function() {
@@ -418,6 +534,7 @@ $(document).ready(
     	var page_track = 0;
 
     	$(n_button).click(function() {
+	console.log("click");
         if(document.getElementById("new-model-name").value.length == 0){
 	document.getElementById("new-model-name").setAttribute("class","form-control is-invalid")
 	

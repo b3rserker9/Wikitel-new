@@ -1,9 +1,142 @@
 let array;
-
 let rules = [];
 
-var nodeDataArray = [];
-let b=false;
+var nodes = null;
+var edges = null;
+var network = null;
+let uniqueChars = null;
+
+var LENGTH_MAIN = 350,
+  LENGTH_SERVER = 150,
+  LENGTH_SUB = 50,
+  WIDTH_SCALE = 2,
+  GREEN = "green",
+  RED = "#C5000B",
+  ORANGE = "orange",
+  //GRAY = '#666666',
+  GRAY = "gray",
+  BLACK = "#2B1B17";
+
+function draw() {
+  // Create a data table with nodes.
+  nodes = [];
+
+  // Create a data table with links.
+  edges = [];
+
+  nodes.push({ id: 1, label: "192.168.0.1", group: "switch", value: 10 });
+  nodes.push({ id: 2, label: "192.168.0.2", group: "switch", value: 8 });
+  nodes.push({ id: 3, label: "192.168.0.3", group: "switch", value: 6 });
+  edges.push({
+    from: 1,
+    to: 2,
+    length: LENGTH_MAIN,
+    width: WIDTH_SCALE * 6,
+    label: "0.71 mbps",
+  });
+  edges.push({
+    from: 1,
+    to: 3,
+    length: LENGTH_MAIN,
+    width: WIDTH_SCALE * 4,
+    label: "0.55 mbps",
+  });
+
+      rules.forEach(function(l){	
+	const rule = new Object();
+	rule.label = l.name;
+	rule.id = l.name;
+	rule.group = "switch"
+	nodes.push(rule);
+	console.log(rule);
+	l.suggestions.forEach(function(s){	
+		const pippo = new Object();
+		const edge = new Object();
+		
+		pippo.label = s.suggestion.page
+		pippo.id = pippo.label;
+		pippo.group = "desktop";
+		edge.from = l.name;
+		edge.to = pippo.id;
+		edge.length = LENGTH_MAIN;
+		edge.width = WIDTH_SCALE * 4;
+		console.log(pippo);
+		nodes.push(pippo);
+		edges.push(edge);
+		
+		})
+		console.log(nodes);
+	})
+ 
+ for(let i = 0;i<nodes.length;i++){
+	if(rules.some(e => e.name === nodes[i].label) && nodes[i].group == "desktop" ){
+		console.log(nodes[i]);
+		nodes.splice(i,1);
+		
+	}	
+	
+}
+nodes = nodes.filter((value, index, self) =>
+  index === self.findIndex((t) => (
+    t.id === value.id
+  ))
+)
+console.log(nodes);
+
+  // legend
+  var mynetwork = document.getElementById("mynetwork");
+  var x = -mynetwork.clientWidth / 2 + 50;
+  var y = -mynetwork.clientHeight / 2 + 50;
+  var step = 70;
+  
+
+  // create a network
+  var container = document.getElementById("mynetwork");
+  var data = {
+    nodes: nodes,
+    edges: edges,
+  };
+  var options = {
+    nodes: {
+      scaling: {
+        min: 16,
+        max: 32,
+      },
+    },
+    edges: {
+      color: GRAY,
+      smooth: false,
+    },
+    physics: {
+      barnesHut: { gravitationalConstant: -30000 },
+      stabilization: { iterations: 2500 },
+    },
+    groups: {
+      switch: {
+        shape: "triangle",
+        color: "#FF9900", // orange
+      },
+      desktop: {
+        shape: "dot",
+        color: "#2B7CE9", // blue
+      },
+      mobile: {
+        shape: "dot",
+        color: "#5A1E5C", // purple
+      },
+      server: {
+        shape: "square",
+        color: "#C5000B", // red
+      },
+      internet: {
+        shape: "square",
+        color: "#109618", // green
+      },
+    },
+  };
+  network = new vis.Network(container, data, options);
+}
+
  function ajaxGet() {
 				$.ajax({
 					type : "POST",
@@ -16,95 +149,16 @@ let b=false;
 						moedl = data;
 						rules = data.rules;
 						console.log(rules);
-					var $ = go.GraphObject.make;
-
-var myDiagram =
-  $(go.Diagram, "myDiagramDiv",
-    { "undoManager.isEnabled": true,
-    layout:
-              $(FlatTreeLayout,  // custom Layout, defined below
-                {
-                  angle: 90,
-                  compaction: go.TreeLayout.CompactionNone
-                }),
-                initialAutoScale: go.Diagram.Uniform });
-
-myDiagram.nodeTemplate =
-        $(go.Node, "Vertical",
-          { selectionObjectName: "BODY" },
-          $(go.Panel, "Auto", { name: "BODY" },
-            $(go.Shape, "RoundedRectangle",
-            { fill: "white", strokeWidth: 0 },
-              new go.Binding("fill","color"),
-              new go.Binding("stroke")),
-            $(go.TextBlock,
-              { font: "bold 12pt Arial, sans-serif", margin: new go.Margin(4, 2, 2, 2) },
-              new go.Binding("text","key"))
-          ),
-          $(go.Panel,  // this is underneath the "BODY"
-            { height: 17 },  // always this height, even if the TreeExpanderButton is not visible
-            $("TreeExpanderButton")
-          )
-        );
-
-      myDiagram.linkTemplate =
-        $(go.Link,
-          $(go.Shape, { strokeWidth: 1.5 }));
-          rules.forEach(function(l){	
-	const rule = new Object();
-	if(l.name == null){l.name="Tufo";}
-	rule.name = l.name;
-	rule.key = l.name;
-	nodeDataArray.push(rule);
-	console.log(rule);
-	l.suggestions.forEach(function(s){	
-		const pippo = new 	Object();
-		pippo.name = s.suggestion.page
-		pippo.key = pippo.name;
-		pippo.parent = l.name;
-		console.log(pippo);
-		nodeDataArray.push(pippo);
-		console.log(nodeDataArray);
-		})
-	})
-          
-
-console.log(nodeDataArray);
-	myDiagram.model = new go.TreeModel(nodeDataArray);
-							
-					},
+						 draw();
+					
+},
 					error : function(e) {
 						alert("Error!")
 						console.log("ERROR: ", e);
 					}
 				});
 			}
-// Customize the TreeLayout to position all of the leaf nodes at the same vertical Y position.
-    function FlatTreeLayout() {
-      go.TreeLayout.call(this);  // call base constructor
-    }
-    go.Diagram.inherit(FlatTreeLayout, go.TreeLayout);
 
-    // This assumes the TreeLayout.angle is 90 -- growing downward
-    FlatTreeLayout.prototype.commitLayout = function() {
-      go.TreeLayout.prototype.commitLayout.call(this);  // call base method first
-      // find maximum Y position of all Nodes
-      var y = -Infinity;
-      this.network.vertexes.each(function(v) {
-        y = Math.max(y, v.node.position.y);
-      });
-      // move down all leaf nodes to that Y position, but keeping their X position
-      this.network.vertexes.each(function(v) {
-        if (v.destinationEdges.count === 0) {
-          // shift the node down to Y
-          v.node.position = new go.Point(v.node.position.x, y);
-          // extend the last segment vertically
-          v.node.toEndSegmentLength = Math.abs(v.centerY - y);
-        } else {  // restore to normal value
-          v.node.toEndSegmentLength = 10;
-        }
-      });
-    };
 $(document).ready(
 		function() {
 			ajaxGet()
