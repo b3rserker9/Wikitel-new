@@ -344,7 +344,7 @@ public class MainController {
              ((TextRuleEntity) rule).setText(node.get("rule_text").asText());
             
              break;
-         case "web":
+         case "Pagina Web":
              rule = new WebRuleEntity();
              ((WebRuleEntity) rule).setUrl(node.get("rule_url").asText());
              break;
@@ -358,7 +358,9 @@ public class MainController {
              rule.getTopics().addAll(prova.getCategories());
 			 rule.setLength(prova.getLength());
 			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();
-			 for (String pre : prova.getPreconditions()) {
+			 int i = -1;
+			 for (String pre : prova.getPreconditions()) { 
+				 i++;
 				 RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
 			     WikiSuggestionEntity suggestion = null;
 			     if (  modelservice.getpage(pre)== null) {
@@ -376,14 +378,14 @@ public class MainController {
 			     
 			     relation.setRule(rule);
 			     relation.setSuggestion(suggestion);
+			     relation.setScore(prova.getRank2().get(i).doubleValue());
 			     relations.add(relation); 
 			     System.out.println(relation.getSuggestion().getId());
+			     
 			     relationservice.saverelation(relation);
 			     rule.getSuggestions().add(relation);
 			 }     
-			     for(int i=0; i< relations.size();i++) {
-			    	 relations.get(i).setScore(prova.getRank2().get(i).doubleValue());
-			     }
+			    
 			    
 			  
 			 break;

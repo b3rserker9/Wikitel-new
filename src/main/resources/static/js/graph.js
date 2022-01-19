@@ -1,10 +1,15 @@
 let array;
 let rules = [];
-
+var selected = null;
 var nodes = null;
 var edges = null;
 var network = null;
 let uniqueChars = null;
+
+
+function wiki_link(){
+	window.open("https://it.wikipedia.org/wiki/"+selected,"_blank");
+}
 
 var LENGTH_MAIN = 350,
   LENGTH_SERVER = 150,
@@ -23,24 +28,6 @@ function draw() {
 
   // Create a data table with links.
   edges = [];
-
-  nodes.push({ id: 1, label: "192.168.0.1", group: "switch", value: 10 });
-  nodes.push({ id: 2, label: "192.168.0.2", group: "switch", value: 8 });
-  nodes.push({ id: 3, label: "192.168.0.3", group: "switch", value: 6 });
-  edges.push({
-    from: 1,
-    to: 2,
-    length: LENGTH_MAIN,
-    width: WIDTH_SCALE * 6,
-    label: "0.71 mbps",
-  });
-  edges.push({
-    from: 1,
-    to: 3,
-    length: LENGTH_MAIN,
-    width: WIDTH_SCALE * 4,
-    label: "0.55 mbps",
-  });
 
       rules.forEach(function(l){	
 	const rule = new Object();
@@ -135,6 +122,17 @@ console.log(nodes);
     },
   };
   network = new vis.Network(container, data, options);
+var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
+  keyboard: false
+})
+  network.on("click", function (params) {
+  params.event = "[original event]";
+  console.log(params.nodes[0]);
+   selected=params.nodes[0].replaceAll(' ', '_');
+  console.log(selected.replaceAll(' ', '-'));
+   document.getElementById("button_link").textContent ="https://it.wikipedia.org/wiki/"+selected
+myModal.show()
+});
 }
 
  function ajaxGet() {

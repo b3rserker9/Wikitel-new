@@ -15,35 +15,40 @@
 	let current_modal;
 	let current_rule;
 	let r;
-	
+	let first = true;
+	var clone;
 
-    
+ 
 	
 	function update() {
 				var select = document.getElementById('new-rule-type');
 				var option = select.options[select.selectedIndex];
 				text=option.text;
-				console.log(option.value);
+				console.log(text);
 				switch(option.value){
 					case '2':
 					document.getElementById('url').style.display="block";
 					document.getElementById('textarea').style.display="none";
 					document.getElementById('file').style.display="none";
+					document.getElementById('question').style.display="none";
 					break;
 					case '1':
 					document.getElementById('url').style.display="none";
 					document.getElementById('textarea').style.display="block";
 					document.getElementById('file').style.display="none";
+					document.getElementById('question').style.display="none";
 					break;
 					case '3':
 					document.getElementById('url').style.display="none";
 					document.getElementById('textarea').style.display="none";
 					document.getElementById('file').style.display="none";
+					document.getElementById('question').style.display="none";
 					break;
 					case '4':
 					document.getElementById('url').style.display="none";
 					document.getElementById('textarea').style.display="none";
 					document.getElementById('file').style.display="block";
+					document.getElementById('question').style.display="block";
 					
 					break;
 				}
@@ -53,15 +58,12 @@
 
 
 	function New_rule() {
-		
-console.log("PPPPP3");
-				// PREPARE FORM DATA
 				 
 				var model = {				
 		
 			model_name: $("#new-model-name").val(),
 			rule_name : $("#new-rule-name").val(),
-			rule_type : "Testo",
+			rule_type : text,
 			rule_url :$("#new-rule-url").val(),
 			rule_text : $("#rule_Textarea").val()
 		
@@ -83,7 +85,8 @@ console.log("PPPPP4");
 					
 					success : function(data) {						
 						console.log("SUCCESS : ", data);
-				 var form = $("#formFile")[0].files[0];
+						if(text=="File"){
+	 var form = $("#formFile")[0].files[0];
 console.log(form);
     var data = new FormData();
     data.append("uploadfile", form);
@@ -105,11 +108,8 @@ console.log(form);
                 console.error(err);
             }
         });
-					//	Postsuggetion(data)
-						
-						
-						
-						
+				}	
+				resetformat();
 					},
 					error : function(e) {
 						alert("Error!")
@@ -138,7 +138,10 @@ console.log("PPPPP4");
 					
 					
 					success : function(data) {
-						$("#new_lesson1").modal('hide');
+						var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
+  keyboard: false
+})
+						myModal.hide();
 						add(data.data7)
 						New_rule()
 						console.log("SUCCESS : ", data);
@@ -367,12 +370,21 @@ console.log("PPPPP4");
 						a.push(model);
 						$('#new_lesson1').modal('hide');	
 			}
+			function resetformat(){
+	
+	var element = document.getElementById("clone");
+    element.parentNode.removeChild(element);
+    document.getElementById("new_lesson1").appendChild(clone);
+	prep_modal();
+	console.log("fatto");
+}
+  
 $(document).ready(
 		function() {
-		
+			 clone = document.getElementById("clone").cloneNode(true);
+		console.log(text);
 	 			questions();
 				prep_modal();
-					
 		var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
   return new bootstrap.Popover(popoverTriggerEl)
@@ -507,22 +519,23 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 	}
 			function prep_modal()
 {
+	console.log("dd");
   $(".modal").each(function() {
-
+console.log("dds");
   var element = this;
 	var pages = $(this).find('.modal-split');
 
   if (pages.length != 0)
   {
+	console.log("ddsd");
     	pages.hide();
     	pages.eq(0).show();
-
     	var b_button = document.createElement("button");
                 b_button.setAttribute("type","button");
           			b_button.setAttribute("class","btn btn-primary");
           			b_button.setAttribute("style","display: none;");
           			b_button.innerHTML = "Back";
-
+console.log("iam in");
     	var n_button = document.createElement("button");
                 n_button.setAttribute("type","button");
           			n_button.setAttribute("class","btn btn-primary");
@@ -607,3 +620,4 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 
   });
 }
+ 

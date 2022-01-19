@@ -99,8 +99,9 @@ console.log("PPPPP4");
 						let interest = [];
 						console.log("SUCCESS : ",  JSON.parse(data.status));
 					JSON.parse(data.status).forEach(function(element){
-						document.getElementById("int").innerHTML +='<span class="badge badge-primary" > '+ element.name +' </span>'
-						arr.push(element.name)
+						console.log(element.slice(10));
+						document.getElementById("int").innerHTML +='<span class="badge badge-primary" style="margin-right:1.5%;" > '+ element.slice(10) +' </span>'
+						arr.push(element.slice(10))
 					});
 						
 						
@@ -130,7 +131,6 @@ $(document).ready(
 
 var itemForm = document.getElementById('interests');
   		var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]');
-console.log(arr);
 $( "#edit_i" ).click(function() {
   		$('#interests').modal('show');
   		 
