@@ -7,6 +7,7 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.catalina.mapper.Mapper;
@@ -15,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -57,6 +59,8 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	    
 	    public void Solve() {
 	    	final StringBuilder sb = new StringBuilder();
+	    	System.out.println(lesson.getName());
+	    	System.out.println("prova: "+lesson.getFollowed_by().size());
 	        to_string(sb, lesson);
 	        
 	        final File lesson_file = new File(lesson.getName() + ".rddl");
@@ -216,17 +220,26 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		
 		 private static void to_string(final StringBuilder sb, final LessonEntity lesson_entity) {
 		        to_string(sb, lesson_entity.getModel());
-		     
+		        System.out.println(lesson_entity.getFollowed_by().size());
+		        System.out.println("goals "+lesson_entity.getGoals().size());
+		        
 		        sb.append("\n\n");
 		        sb.append("Lesson l_").append(lesson_entity.getId()).append(" = new Lesson();\n");
-		        for (final UserEntity student : lesson_entity.getStudents()) {
+		        for (final UserEntity student : lesson_entity.getFollowed_by()) {
 		            sb.append("User u_").append(student.getId()).append(" = new User(").append(student.getId());
 		            try {
-
-		                final JsonNode profile = WikitelNewApplication.mapper.readTree(student.getProfile());
-		                for (final JsonNode interest : WikitelNewApplication.USER_MODEL.get("interests")) {
-		                	System.out.println(profile);
-		                    sb.append(", ").append(profile.get(interest.get("id").asText()).asBoolean());
+		            	ObjectMapper mapper = new ObjectMapper();
+		        		List<String> profile = mapper.readValue(student.getProfile(), new TypeReference<List<String>>(){});
+		        		Json_reader interests = pageController.json("/json/user_model.json",true);
+		            	System.out.println("ciao " +profile.get(0));
+		                for (Interests interest : interests.getInterests()) {
+		                	Boolean i=false;
+		                	System.out.println(interest.getId());
+		                	System.out.println("profile" + profile);
+		                	if(profile.contains(interest.getId())) {
+		                		i=true;
+		                	}
+		                    sb.append(", ").append(i);
 		                    
 		                }
 		                sb.append(");\n");

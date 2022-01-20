@@ -58,6 +58,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -71,6 +72,7 @@ import it.cnr.istc.psts.wikitel.db.WebRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiSuggestionEntity;
 import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationEntity;
+import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
 import it.cnr.istc.psts.wikitel.Repository.LessonsRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
@@ -149,10 +151,13 @@ public class MainController {
 	}
 	
 	@GetMapping("/getprofile")
-	public Response getProfile() {
+	public Response getProfile() throws JsonMappingException, JsonProcessingException {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
 		Response response = new Response( nuovo.getProfile());
+		ObjectMapper mapper = new ObjectMapper();
+		Json_reader interests = pageController.json("/json/user_model.json",true);
+    	System.out.println("ciao " +interests.getInterests().get(0).getId());
 		return response;
 	}
 	
@@ -185,11 +190,13 @@ public class MainController {
 	@PostMapping("/edit_interests")
 	public Response edit_interests(@RequestBody User user) throws JsonGenerationException, JsonMappingException, IOException{
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	System.out.println("username2:PIPPO");
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
     	nuovo.setProfile(user.getProfile());
     	userservice.saveUser(nuovo);
     	Response response = new Response("Done", nuovo);
+    	ObjectMapper mapper = new ObjectMapper();
+    	List<String> profile = mapper.readValue(nuovo.getProfile(), new TypeReference<List<String>>(){});
+    	System.out.println("ciao " +profile.get(0));
 		return response;
 		
 	}
@@ -417,7 +424,7 @@ public class MainController {
 
     	lesson.setName(node.get("name").asText());
     	lesson.setModel(modelservice.getModel(node.get("models").asLong()));
-    	System.out.println("CIAO");
+    	
     	ObjectMapper mapper = new ObjectMapper();
     	List<Integer> map = mapper.readValue(node.get("students").asText(), List.class);
     	for(int id : map) {
@@ -428,14 +435,24 @@ public class MainController {
     		System.out.println("User subscribe :  " + id);
     	}
     	
+    	
     	lesson.setTeacher(nuovo);
+    	//List<Integer> goals = mapper.readValue(node.get("goals").asText(), List.class);
+    	List<Long> goals = mapper.readValue(node.get("goals").asText(), new TypeReference<List<Long>>(){});
+    	for(Long g : goals) {
+    		System.out.println("ID " + Long.valueOf(g));
+    		lesson.getGoals().add(this.modelservice.getRule(Long.valueOf(g)));
+    	}
+    	
     	lessonservice.save(lesson);
     	nuovo.getTeaching_lessons().add(lesson);
     	userservice.saveUser(nuovo);
-		Response response = new Response("Done",lesson);
+		Response response = new Response("Ciao",lesson);
 		 final LessonManager lesson_manager = new LessonManager(lesson);
+		 System.out.println("goalID"+node.get("goals"));
 		LESSONS.put(lesson.getId(),lesson_manager);
 		lesson_manager.Solve();
+		 System.out.println(node.get("goals"));
 		return response;
 		
 	}

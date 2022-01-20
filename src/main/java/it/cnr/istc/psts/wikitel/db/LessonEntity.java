@@ -48,9 +48,7 @@ public class LessonEntity {
         followed_by.remove(student);
     }
 
-    public Collection<UserEntity> getStudents() {
-        return Collections.unmodifiableCollection(followed_by);
-    }
+ 
    
     public void addGoal(final RuleEntity goal) {
         goals.add(goal);

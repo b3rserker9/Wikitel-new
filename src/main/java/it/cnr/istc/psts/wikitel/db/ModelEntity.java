@@ -35,21 +35,7 @@ public class ModelEntity {
     @JsonManagedReference
     private final Collection<RuleEntity> rules = new ArrayList<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    public Collection<UserEntity> getTeachers() {
-        return Collections.unmodifiableCollection(teachers);
-    }
+ 
 
     public void addTeacher(final UserEntity teacher) {
         teachers.add(teacher);

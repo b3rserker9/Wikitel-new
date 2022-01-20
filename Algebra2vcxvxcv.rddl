@@ -52,6 +52,7 @@ class Lesson {
   }
 }
 
-Lesson l_448 = new Lesson();
+Lesson l_473 = new Lesson();
+User u_216 = new User(216, false, false, false, false, true, false, false, true, false, false, true, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
 
 User u;

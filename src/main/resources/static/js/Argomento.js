@@ -158,13 +158,25 @@ console.log(text);
 	
 
 function Create_new_lesson() {
-console.log("PPPPP3");
+	var itemForm = document.getElementById('lesson_goal');
+  		var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]');
+	function getData() { // this function will get called when the save button is clicked
+            result = [];
+            checkBoxes.forEach(item => { // loop all the checkbox item
+                if (item.checked) {  //if the check box is checked
+                    result.push(item.value); //stored the objects to result array
+                }
+            })
+            return result;
+        }
 				// PREPARE FORM DATA
+				console.log(getData());
 				 var lesson = {				
 		
 			name: $("#new-lesson-name").val(),
-			models : document.getElementById('model_name').getAttribute('value') ,
-			students : JSON.stringify(students_id)
+			models : document.getElementById('model_name').getAttribute('value'),
+			students : JSON.stringify(students_id),
+			goals : JSON.stringify(getData())
 		
 				}
 		console.log(document.getElementById('model_name').getAttribute('value'));

@@ -52,6 +52,6 @@ class Lesson {
   }
 }
 
-Lesson l_448 = new Lesson();
+Lesson l_474 = new Lesson();
 
 User u;

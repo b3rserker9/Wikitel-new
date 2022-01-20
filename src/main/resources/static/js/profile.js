@@ -146,11 +146,8 @@ function getData() { // this function will get called when the save button is cl
             result = [];
             checkBoxes.forEach(item => { // loop all the checkbox item
                 if (item.checked) {  //if the check box is checked
-                    let data = {    // create an object
-                        id: item.value,
-                        name: item.name
-                    }
-                    result.push(data); //stored the objects to result array
+                    
+                    result.push(item.value); //stored the objects to result array
                 }
             })
             return result;

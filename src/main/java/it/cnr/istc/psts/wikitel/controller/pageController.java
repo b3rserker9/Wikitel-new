@@ -166,6 +166,7 @@ public class pageController {
 		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("students",userservice.getTeacher("STUDENT"));
 		model.addAttribute("arg",modelservice.getModel(id));
+		model.addAttribute("goal",modelservice.getModel(id).getRules());
 		
 		
 		
