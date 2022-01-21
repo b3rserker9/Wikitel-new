@@ -5,8 +5,41 @@ var nodes = null;
 var edges = null;
 var network = null;
 let uniqueChars = null;
+let text="dot";
 
+	function update() {
+				var select = document.getElementById('new-rule-type');
+				var option = select.options[select.selectedIndex];
+				console.log($("#Add_node_name").val());
+				switch(option.value){
+					case '2':
+					document.getElementById('url').style.display="block";
+					document.getElementById('textarea').style.display="none";
+					document.getElementById('file').style.display="none";
+					text="dot"
+					break;
+					case '1':
+					document.getElementById('url').style.display="none";
+					document.getElementById('textarea').style.display="block";
+					document.getElementById('file').style.display="none";
+					text="dot"
+					break;
+					case '3':
+					document.getElementById('url').style.display="none";
+					document.getElementById('textarea').style.display="none";
+					document.getElementById('file').style.display="none";
+					text="square"
 
+					break;
+					case '4':
+					document.getElementById('url').style.display="none";
+					document.getElementById('textarea').style.display="none";
+					document.getElementById('file').style.display="block";
+					text="triangle"
+					break;
+				}
+				
+}
 function wiki_link(){
 	window.open("https://it.wikipedia.org/wiki/"+selected,"_blank");
 }
@@ -69,7 +102,8 @@ nodes = nodes.filter((value, index, self) =>
   ))
 )
 console.log(nodes);
-
+nodes = new vis.DataSet(nodes);
+edges = new vis.DataSet(edges);
   // legend
   var mynetwork = document.getElementById("mynetwork");
   var x = -mynetwork.clientWidth / 2 + 50;
@@ -128,6 +162,7 @@ var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
   network.on("click", function (params) {
   params.event = "[original event]";
   console.log(params.nodes[0]);
+  select=params.nodes[0]
    selected=params.nodes[0].replaceAll(' ', '_');
   console.log(selected.replaceAll(' ', '-'));
    document.getElementById("button_link").textContent ="https://it.wikipedia.org/wiki/"+selected
@@ -156,6 +191,12 @@ myModal.show()
 					}
 				});
 			}
+			
+		function addNode() {
+  console.log(selected);
+  nodes.add({ id: $("#Add_node_name").val(), label: $("#Add_node_name").val(),group : text});
+  edges.add({from: select, to:$("#Add_node_name").val(), length:LENGTH_MAIN, width : WIDTH_SCALE * 4 });
+}
 
 $(document).ready(
 		function() {

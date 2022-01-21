@@ -64,12 +64,9 @@ public class pageController {
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Model model) throws NoSuchFieldException, SolverException {
 		RestTemplate restTemplate = new RestTemplate();
-		s.read("real x, y; x + y >= 7.0;");
-		s.solve();
 		//Prova prova = restTemplate.getForObject("http://192.168.1.79:5015/wiki?page=Palombaro_lungo", Prova.class);
 		//System.out.println(prova.getLength());
-		System.out.println(((ArithItem) s.get("x")).getValue());
-		System.out.println(((ArithItem) s.get("y")).getValue());
+		
 
 		Json_reader interests = json("/json/user_model.json",true);
 		model.addAttribute("interests", interests.getInterests());

@@ -71,7 +71,9 @@ body{
 	font-family: 'Nunito', sans-serif;
 }
 
-
+.none{
+	border:solid .5px #ced4da;
+}
 .btn{
 	margin-bottom: 2%;
 }
@@ -160,7 +162,7 @@ function openNav() {
                   </div>
                </div>
                <div class="form-floating my-1">
-                  <input type="text" class="form-control" id="new-lesson-name" placeholder="Nome" required>
+                  <input type="text" class="form-controls" id="new-lesson-name" placeholder="Nome" required>
                   <label for="new-lesson-name" class="col-form-label">Nome</label>
                </div>
                <hr />
@@ -174,7 +176,7 @@ function openNav() {
                      <div class="form-group">
                      
                         <div class="input-group mb-3">
-                           <input type="text" class="form-control" id="students" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                           <input type="text" class="form-controls" id="students" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
                            <div class="input-group-append">
                               <button type="button" class="btn btn-info" id="add">add</button>
                            </div>
@@ -218,6 +220,37 @@ function openNav() {
       </div>
       <div class="modal-body">
          <button class="button" id="button_link" onclick="wiki_link()"></button>
+      <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#Add" aria-expanded="false" aria-controls="collapseExample" style="margin-top:1.5% ;">
+    Aggiungi nodo <span style="margin-left: 1%;"><i class="fas fa-plus-circle"></i></span>
+  </button>
+         <div class="collapse" id="Add">
+  <div class="card card-body">
+  <input type="text" class="form-control" id="Add_node_name" placeholder="Nome" required>
+                  <label for="Add_node_name" class="col-form-label">Nome</label>
+   <select class="form-select" id="new-rule-type" aria-label="Tipo di obiettivo" onChange="update()">
+                     <option value="1">Testo</option>
+                     <option value="4">File</option>
+                     <option value="2">Pagina Web</option>
+                     <option value="3">Pagina Wikipedia</option>
+                  </select>
+                       <div id="url" style="display: none;margin-top: 2%;">
+                     <label for="new-rule-url">URL</label>
+                     <input type="url" class="form-control none" id="new-rule-url" placeholder="URL">
+                     <div class="invalid-feedback">
+          Please a name for your modal.
+      
+                  </div>
+                  </div>
+                   <div class="form-group" id="textarea" style="margin-top: 2%;">
+    <textarea class="form-control none" id="rule_Textarea" rows="3"></textarea>
+  </div>
+  <div class="mb-3" id="file" style="display: none;">
+  <label for="formFile" class="form-label"></label>
+  <input class="form-control" type="file" id="formFile">
+</div>
+<button type="button" class="btn btn-primary" onclick="addNode()"></button>
+    </div>
+</div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
