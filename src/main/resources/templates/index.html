@@ -18,16 +18,28 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-		
+		<script src="https://kit.fontawesome.com/ced3f913ea.js" crossorigin="anonymous"></script>
 		
 		
 		<link th:href="@{/css/success_modal.css}" rel="stylesheet">
 		<link th:href="@{/css/index.css}" rel="stylesheet">
-		
+		<link th:href="@{/css/profile.css}" rel="stylesheet">
 </head>
 <style>
+.role_name {
+    display: flex;
+    justify-content: space-around;
+}
+input[type=radio]:checked + label>img {
+  border: 1px solid #fff;
+  box-shadow: 0 0 3px 3px rgb(255, 0, 0);
+}
 body{
 	font-family: 'Nunito', sans-serif;
+}
+.role {
+    display: flex;
+    justify-content: space-evenly;
 }
 .Interest {
     display: grid;
@@ -44,13 +56,94 @@ body{
 }
 
 
+.h:hover{
+	background-color: #cccfd173;
+	
+}
 
+.image-upload .btn:hover .text{
+  opacity: 1;
+}
+
+
+.text{
+  color: #000000de;
+  font-size: 3.5em;
+  opacity: 0;
+}
+
+.texts{
+  color: #000000de;
+  font-size: 3.5em;
+}
+.image-upload {
+  position: relative;
+  width: 23%;
+}
+
+.s{
+	margin: auto;
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+/* Make the image responsive */
+.image-upload img{
+  width: 200px;
+  height: 200px;
+}
+
+.xs{
+  width: 150px;
+  height: 150px;
+}
+
+/* Style the button and place it in the middle of the container/image */
+.image-upload .btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #cccfd173;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+ width: 200px;
+  height: 200px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.image-upload .btn:hover {
+  opacity: 1;      
+}
+.panel-body {
+	display: flex;
+    position: relative;
+    padding: 15px;
+    border: 1px solid #e2e2e2;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+    
+   .badge{
+	margin-top: 2%;
+}
+.image-upload > input
+{
+    display: none;
+}
 
 </style>
 <body>
 <script type="text/javascript" src="/js/wikitel.js"></script>
 	<div id="body-guest">
-    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+    <nav class="navbar navbar-expand-sm navbar-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
@@ -182,8 +275,16 @@ body{
             <div class="modal-body" >
                <div class="modal-split">
                   <div class="titolo" style="text-align: center;">
-                     <h1>Argomento</h1>
+                     <h1>Dati Profilo</h1>
                   </div>
+                    <div class="image-upload s">
+        <img  id="myImg" src="https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper.png"  alt="Admin" class="rounded-circle" width="150">
+   
+
+ <button type="button" class="btn btn-light rounded-circle" data-toggle="modal" data-target="#exampleModal">
+ <div class="text"><i class="fas fa-plus"></i></div>
+</button>
+</div>
                   
                   <label for="firs_name" class="col-form-label">Nome:</label>
             <input type="text" class="form-control" id="first_name" name="first_name">
@@ -191,7 +292,7 @@ body{
     <label for="last_name" class="col-form-label">Cognome:</label>
     <input type="text" class="form-control" id="last_name" name="last_name">
                    <div class="invalid-feedback">
-          Please a name for your modal.
+          Please put your last name.
       
                   </div>
                </div>
@@ -204,6 +305,28 @@ body{
             <p id="error"></p>
     <label for="password" class="col-form-label">Password:</label>
             <input type="password" class="form-control" id="password_r" name="password_r">
+               </div>
+               <div class="modal-split">
+                  <div class="titolo" style="text-align: center;">
+                     <h1>Autorità</h1>
+                  </div>
+                  <div class="role">
+              <div class="mr">
+  <input type="radio" id="default" name="roles" class="input-hidden" value="STUDENT"  >
+  <label for="default"><img  id="default_img" src="https://www.shareicon.net/data/512x512/2015/09/18/642819_administrator_512x512.png" alt="Admin" class="rounded-circle xs" width="150">
+  </label>
+</div>
+
+<div class="mr">
+  <input type="radio" id="admin" name="roles" class="input-hidden" value="TEACHER"  >
+  <label for="admin"><img  id="admin_img" src="https://e7.pngegg.com/pngimages/682/686/png-clipart-writing-infographic-writer-homework-essay-admin-icon.png" alt="Admin" class="rounded-circle xs" width="150"></label>
+</div>
+
+                  </div>
+                  <div class="role_name">
+                  <p>Default</p>
+<p>Admin</p>
+                  </div>
                </div>
                  <div class="modal-split" style="height: 210px; overflow: auto;">
                   <div class="titolo" style="text-align: center;">
@@ -226,7 +349,74 @@ body{
       </div>
    </div>
 </div>
- 
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-option">
+    <div class="modal-content cont">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <div class="images">
+      
+      
+      <div class="mr">
+  <input type="radio" id="avatar1" name="drone" class="input-hidden" value="avatar1"  
+         checked>
+  <label for="avatar1"><img  id="1" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Admin" class="rounded-circle" width="150"> </label>
+</div>
+
+<div class="mr">
+  <input type="radio" id="avatar2" name="drone" class="input-hidden" value="avatar2"  >
+  <label for="avatar2"><img  id="2" src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+
+<div class="mr">
+  <input type="radio" id="avatar3" name="drone" class="input-hidden" value="avatar3"  >
+  <label for="avatar3"><img  id="3" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+
+<div class="mr">
+  <input type="radio" id="avatar4" name="drone" class="input-hidden" value="avatar4"  >
+  <label for="avatar4"><img  id="4" src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+      
+      <div class="mr">
+  <input type="radio" id="avatar7" name="drone" class="input-hidden" value="avatar7"  >
+  <label for="avatar7"><img  id="7" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+      
+     <div class="mr">
+  <input type="radio" id="avatar8" name="drone" class="input-hidden" value="avatar8"  >
+  <label for="avatar8"><img  id="8" src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+      
+      <div class="mr">
+  <input type="radio" id="avatar5" name="drone" class="input-hidden" value="avatar5"  >
+  <label for="avatar5"><img  id="5" src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+      
+<div class="mr" >
+			<input type="file" name="photo-upload-button" id="photo-upload-button" accept="image/*" class="input-file"/>
+			<input type="radio" id="plus" name="drone" class="input-hidden" value="plus">
+			<label class="label" for="photo-upload-button">
+      <img id="file-ip-1-preview" class="rounded-circle" width="150">
+      <label class="labels" id="backg" for="plus" onclick="showPreview()">
+      <i id="plus" class="fas fa-plus" ></i>
+      </label>
+    </label>
+</div>
+
+
+      </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="image()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
   
 </body>
 </html>

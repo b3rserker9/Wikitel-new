@@ -5,7 +5,9 @@
 <title>Wikitel</title>
 <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	
+	<link rel="stylesheet" href="https://cdn.datatables.net/select/1.3.4/css/select.dataTables.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
 	<link rel="stylesheet"
@@ -19,6 +21,7 @@
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 	
@@ -29,6 +32,11 @@
 	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 	<script src="https://kit.fontawesome.com/ced3f913ea.js" crossorigin="anonymous"></script>
 	<script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+	
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+	<script src="https://cdn.datatables.net/select/1.3.4/js/dataTables.select.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
 		<script type="text/javascript" src="/js/Argomento.js"></script>
 		<script type="text/javascript" src="/js/graph.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
@@ -44,7 +52,9 @@
 		
 </head>
 <style>
-
+.table_modal{
+	    max-width: 676px;
+}
 #mynetwork {
   width: 100%;
   height: 1000px;
@@ -117,7 +127,7 @@ function openNav() {
   <div class="dropdown-menu dropdown-menu-right">
     <a class="dropdown-item" th:href="@{profile}">Profile</a></li>
     <button class="dropdown-item" type="button">Another action</button>
-    <a th:href="@{logout}" class="dropdown-item" type="button"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
+    <a th:href="@{/logout}" class="dropdown-item" type="button"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
   </div>
 </div>
     
@@ -136,8 +146,11 @@ function openNav() {
 </div>
  <div id="main">
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new-lesson-modal">Nuova Lezione</button>
-  
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#table_modal">
+  Launch demo modal
+</button>
  <div id="mynetwork"></div>
+ 
   
   
   <div class="rows" id="rows">
@@ -145,6 +158,48 @@ function openNav() {
 </div></div>
 
 
+
+<!-- Modal Table -->
+<div class="modal fade" id="table_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog table_modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+    
+        <table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Score 1</th>
+                <th>Score 2</th>
+            </tr>
+        </thead>
+        <tbody id="row_element">
+            
+        </tbody>
+        <tfoot>
+            <tr>
+                <th></th>
+                <th>Name</th>
+                <th>Position</th>
+            <th>Score 2</th>
+            </tr>
+        </tfoot>
+    </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+         <button type="button" class="btn btn-sm btn-primary" id="try">Aggiorna</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Nuova lesione -->
 <div class="modal fade" id="new-lesson-modal" tabindex="-1" aria-labelledby="new-lesson-modal-label" aria-hidden="true">
    <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -225,15 +280,16 @@ function openNav() {
   </button>
          <div class="collapse" id="Add">
   <div class="card card-body">
-  <input type="text" class="form-control" id="Add_node_name" placeholder="Nome" required>
-                  <label for="Add_node_name" class="col-form-label">Nome</label>
+  <label for="Add_node_name" class="col-form-label">Nome</label>
+  <input type="text" class="form-control none" id="Add_node_name" placeholder="Nome" required>
+             <label for="new-rule-type" class="col-form-label">Tipo</label>     
    <select class="form-select" id="new-rule-type" aria-label="Tipo di obiettivo" onChange="update()">
                      <option value="1">Testo</option>
                      <option value="4">File</option>
                      <option value="2">Pagina Web</option>
                      <option value="3">Pagina Wikipedia</option>
                   </select>
-                       <div id="url" style="display: none;margin-top: 2%;">
+                       <div id="url" style="display: none;margin-top: 2%;margin-bottom:2%;">
                      <label for="new-rule-url">URL</label>
                      <input type="url" class="form-control none" id="new-rule-url" placeholder="URL">
                      <div class="invalid-feedback">
@@ -248,7 +304,12 @@ function openNav() {
   <label for="formFile" class="form-label"></label>
   <input class="form-control" type="file" id="formFile">
 </div>
-<button type="button" class="btn btn-primary" onclick="addNode()"></button>
+<label for="graph_rilevanza" class="col-form-label">Rilevanza</label>
+ <select class="form-select" id="graph_rilevanza" aria-label="Tipo di obiettivo" onChange="update_add()">
+                     <option value="1">Alternativa</option>
+                     <option value="2">approfondimento</option>
+                  </select>
+<button type="button" class="btn btn-primary" onclick="addNode()" style="margin-top: 1%;">Add</button>
     </div>
 </div>
       </div>
@@ -278,15 +339,7 @@ function openNav() {
       <div id="root" class="profile_card">
          <div class="card profile-card-1">
        
-         <div class=prova>
-    		        <img src="https://images.pexels.com/photos/946351/pexels-photo-946351.jpeg?w=500&h=650&auto=compress&cs=tinysrgb" alt="profile-sample1" class="background"/>
-    		        <img src="https://randomuser.me/api/portraits/women/20.jpg" alt="profile-image" class="profile"/>
-                    <div class="card-content">
-                    <h2>Savannah Fields<small>Engineer</small></h3>
-                      <div class="icon-block">
-         <button class="btn"><i class="fa fa-home"></i></button></div>
-                    </div>
-                </div>
+       
          </div>
       </div>
       </div>

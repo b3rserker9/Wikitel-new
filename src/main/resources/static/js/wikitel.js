@@ -1,4 +1,130 @@
+let src = "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper.png"
+function image(){
+	if(document.querySelector( 'input[name="drone"]:checked').id != "plus"){
+	document.getElementById("myImg").src = document.getElementById(document.querySelector( 'input[name="drone"]:checked').id.slice(-1)).src
+	src = document.getElementById(document.querySelector( 'input[name="drone"]:checked').id.slice(-1)).src
+	}
+}
+	 
+function getData() { 
+	var itemForm = document.getElementById('interests'); // getting the parent container of all the checkbox inputs
+        var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]'); // get all the check box
+        let result = [];// this function will get called when the save button is clicked
+            result = [];
+            checkBoxes.forEach(item => { // loop all the checkbox item
+                if (item.checked) {  //if the check box is checked
+                    let data =  item.value
+                    
+                    result.push(data); //stored the objects to result array
+                }
+            })
+            return result;
+        }
+	function ajaxPost() {
+console.log("PPPPP3");
+				// PREPARE FORM DATA
+				var user = {
+			profile: JSON.stringify(getData()),					
+			first_name : $("#first_name").val(),
+			last_name: $("#last_name").val(),
+			email: $("#email_r").val(),
+			password : $("#password_r").val(),
+			src : src,
+			role : $('input[name=roles]:checked').val()
+				}
+console.log("PPPPP4");
+				// DO POST
+				$.ajax({
+						
+					type : "POST",
+					contentType: "application/json",
+					url :"register",
+					data : JSON.stringify(user),
+					dataType: "json",
+					success : function(data) {
+						
+						console.log("SUCCESS : ", data);
+						if(document.querySelector( 'input[name="drone"]:checked').id =="plus"){
+						event.preventDefault();
+						uploadFile();
+			
+						}
+						  $('#modal2').modal('hide');
+
+						$('#modal3').modal('show');
+						
+					},
+					error : function(e) {
+						alert("Error!")
+						console.log("ERROR: ", e);
+					}
+				});
+					$("#ok").click(function(){
+    			$("#modal1").modal('show');
+  });
+			
+				
+
+			}
+			
+			function uploadFile(e) {
+
+	var getSelectedValue = document.querySelector( 'input[name="drone"]:checked');   
+if(getSelectedValue != null) {   
+         console.log(getSelectedValue.id);
+		 var form = $("#photo-upload-button")[0].files[0];
+console.log(form);
+    var data = new FormData();
+    data.append("uploadfile", form);
+    console.log(data);
+  $.ajax({
+            url: "/uploadFile",
+            type: "POST",
+            data: data,
+            DataType:'json',
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (res) {
+				$('#exampleModal').modal('hide');
+                document.getElementById("myImg").src = document.getElementById("file-ip-1-preview").src;
+              
+            },
+            error: function (err) {
+                console.log(err);
+            }
+        });
+  }
+  else {  
+         document.write("Nothing has been selected");  
+         }
+}
+
+ function showPreview(){
+	document.getElementById('photo-upload-button').click()
+	const chooseFile = document.getElementById("photo-upload-button");
+const imgPreview = document.getElementById("file-ip-1-preview");
+console.log(imgPreview.src);
+chooseFile.addEventListener("change", function () {
+  const files = chooseFile.files[0];
+ 
+  if (files) {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(files);
+    fileReader.addEventListener("load", function () {
+      imgPreview.style.display = "block";
+      document.getElementById('backg').style.background="#a5a1a100"
+      imgPreview.src=this.result ;
+      file=files;
+      document.getElementById("myImg").src = this.result;
+      console.log(imgPreview.src);
+    });    
+  }
+   });	
+  }
+
 function validateForm(i) {
+	
 	let valid = true;
 switch(i){
 case 0:
@@ -77,97 +203,28 @@ console.log("PPPPP9");
  case 2:
  valid = false;
  break;
+ case 3:
+ valid = false;
+ break;
  }
   console.log(valid);
   return valid; 
 }
 $(document).ready(
 		function() {
+			$('#modal3').modal('show');
 			prep_modal();
-	
-
-
-
-
-
-
-function fixStepIndicator(n) {
-  // This function removes the "active" class of all steps...
-  var i, x = document.getElementsByClassName("step");
-  for (i = 0; i < x.length; i++) {
-    x[i].className = x[i].className.replace(" active", "");
-  }
-  //... and adds the "active" class on the current step:
-  x[n].className += " active";
-}
-	var url=window.location;
-	console.log("PPPPP");
-	console.log(url);
-			// SUBMIT FORM
-			$("#register_form").submit(function() {
-				console.log("PPPPP2");
-				// Prevent the form from submitting via the browser.
-				event.preventDefault();
-				ajaxPost();
-			});
 			
-			 var itemForm = document.getElementById('interests'); // getting the parent container of all the checkbox inputs
-        var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]'); // get all the check box
-        let result = [];
-function getData() { // this function will get called when the save button is clicked
-            result = [];
-            checkBoxes.forEach(item => { // loop all the checkbox item
-                if (item.checked) {  //if the check box is checked
-                    let data =  item.value
-                    
-                    result.push(data); //stored the objects to result array
-                }
-            })
-            return result;
-        }
-			function ajaxPost() {
-console.log("PPPPP3");
-				// PREPARE FORM DATA
-				var user = {
-			profile: JSON.stringify(getData()),					
-			first_name : $("#first_name").val(),
-			last_name: $("#last_name").val(),
-			email: $("#email_r").val(),
-			password : $("#password_r").val()
-				}
-console.log("PPPPP4");
-				// DO POST
-				$.ajax({
-						
-					type : "POST",
-					contentType: "application/json",
-					url :"register",
-					data : JSON.stringify(user),
-					dataType: "json",
-					success : function(data) {
-						$('#modal2').modal('hide');
-						$('#modal3').modal('show');
-						console.log("SUCCESS : ", data);
-						
-					},
-					error : function(e) {
-						alert("Error!")
-						console.log("ERROR: ", e);
-					}
-				});
-					$("#ok").click(function(){
-    			$("#modal1").modal('show');
-  });
-			
-				
-
-			}
+		
+		
 
 		})
 		
 		function prep_modal()
 {
+	
   $(".register").each(function() {
+	
 
   var element = this;
 	var pages = $(this).find('.modal-split');
@@ -204,22 +261,22 @@ console.log("PPPPP4");
 
     		if(page_track == pages.length-2)
     		{
+	console.log("1" + page_track);
+	console.log("1" + pages.length);
+	  console.log(  $('input[name=roles]:checked').val());
     			$(n_button).text("Submit");
     		}
 
         if(page_track == pages.length-1)
         {
+	console.log("prova")
           n_button.setAttribute("type","submit");
-          $("#new_models").submit(function() {
-				console.log("PPPPP2");
-				console.log(a);
+          $("#register_form").submit(function() {
 				// Prevent the form from submitting via the browser.
 				event.preventDefault();
-				if(a.some(a => a.name === $("#new-model-name").val())){
-					alert("Argomento gia esistente");
-				}else{
-				Create_model();
-				}
+				
+				ajaxPost();
+				
 				
 			});
         }

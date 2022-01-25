@@ -14,9 +14,9 @@
 	let suggestion = [];
 	let current_modal;
 	let current_rule;
-	let r;
 	let first = true;
 	var clone;
+	let rules=[];
 
  
 	
@@ -85,6 +85,10 @@ console.log("PPPPP4");
 					
 					success : function(data) {						
 						console.log("SUCCESS : ", data);
+							var myModal = new bootstrap.Modal(document.getElementById('new_lesson1'), {
+  keyboard: false
+})
+						myModal.hide();
 						if(text=="File"){
 	 var form = $("#formFile")[0].files[0];
 console.log(form);
@@ -138,10 +142,7 @@ console.log("PPPPP4");
 					
 					
 					success : function(data) {
-						var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
-  keyboard: false
-})
-						myModal.hide();
+					
 						add(data.data7)
 						New_rule()
 						console.log("SUCCESS : ", data);
@@ -160,7 +161,7 @@ console.log("PPPPP4");
 			}
 			
 			function Create_new_precondition() {
-				
+				console.log(current_rule);
 					var itemForm = document.getElementById('suggested-preconditions-list');
   		var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]');
   		 // this function will get called when the save button is clicked
@@ -243,38 +244,37 @@ console.log(precondition);
 			}
 			
 			function precondition_setup(data){
+				rules = data;
+				let rule = null;
 				var x = document.getElementById("rule_list");
-				 r = [];
 				console.log();
 				let suggestion=[];
-				data.forEach(function(l){
-					suggestion[l.id]=data.suggestions;
-				r[l.id]=l;
-				console.log(l);
-    var x = document.getElementById("rule_list");
+				for(let i = 0;i<rules.length;i++){
+				console.log(rules[i]);
   var option = document.createElement("option");
-  option.text = l.name;
-   option.value = l.id;
+  option.text = rules[i].name;
+   option.value = i;
   x.add(option);
-});
+}
 var x = document.getElementById("rule_list").options[0].value;
   
 $('#rule_list').on('change', function (e) {
 	$('#suggested-preconditions-list').empty();
-        x=this.value
-         console.log(x);
-          let rule = r[x];
+        let i =this.value
+         console.log(i);
+           rule = rules[i];
   console.log(rule);
   $("#rule-length").val(rule.length);
   let suggestions = rule.suggestions;
   console.log(suggestions);
+  current_rule=rule.id;
   suggestions.forEach(function(l){		
 							document.getElementById("suggested-preconditions-list").innerHTML+='<div class="form-check col-6">'+
  ' <input class="form-check-input" type="checkbox" name="'+l.suggestion.page+'" id="flexRadioDefault1">'
  +' <label class="form-check-label" for="flexRadioDefault1">'+ l.suggestion.page +' </label></div>'
 						})
         });
-  let rule = r[x];
+   rule = rules[0];
   console.log(rule.length);
   $("#rule-length").val(rule.length);
   let suggestions = rule.suggestions;
@@ -284,7 +284,7 @@ $('#rule_list').on('change', function (e) {
  ' <input class="form-check-input" type="checkbox" name="'+l.suggestion.page+'" id="flexRadioDefault1">'
  +' <label class="form-check-label" for="flexRadioDefault1">'+ l.suggestion.page +' </label></div>'
 						})
-						current_rule=rule[0].id;
+						current_rule=rules[0].id;
 			}
 
 			
@@ -381,6 +381,7 @@ console.log("PPPPP4");
   
 $(document).ready(
 		function() {
+			
 			 clone = document.getElementById("clone").cloneNode(true);
 		console.log(text);
 	 			questions();
@@ -399,7 +400,6 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 			
 			
 			$("#new_precondition").submit(function() {
-				console.log("PPPPP2");
 				event.preventDefault();
 				
 				Create_new_precondition();
@@ -411,7 +411,7 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 			
 				
 			 
-			})
+			});
 			function questions(){
 		let id=0;
 		//ROOT

@@ -66,8 +66,6 @@ public class pageController {
 		RestTemplate restTemplate = new RestTemplate();
 		//Prova prova = restTemplate.getForObject("http://192.168.1.79:5015/wiki?page=Palombaro_lungo", Prova.class);
 		//System.out.println(prova.getLength());
-		
-
 		Json_reader interests = json("/json/user_model.json",true);
 		model.addAttribute("interests", interests.getInterests());
 			return "index";

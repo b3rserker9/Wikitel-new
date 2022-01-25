@@ -212,6 +212,8 @@ console.log(students_id);
 
 $(document).ready(
 		function() {
+			
+		
 			var pathArray = window.location.pathname.split('/');
 console.log(pathArray[2]);
 

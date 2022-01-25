@@ -127,24 +127,28 @@ public class MainController {
 	
 	private ModelEntity m;
 	
+	private UserEntity current_user;
+	
 	static final Map<Long, LessonManager> LESSONS = new HashMap<>();
 	
 	
 	@PostMapping("/register")
-	public Response register(@RequestBody User user) throws JsonGenerationException, JsonMappingException, IOException{
+	public Response register(@RequestBody  ObjectNode node) throws JsonGenerationException, JsonMappingException, IOException{
 		System.out.println("entratoodòjfkòjòfdaeHJLFJ");
 		Json_reader interests=new Json_reader();
 		
-		Response response = new Response("Done", user);
+		Response response = new Response("Done");
 		UserEntity nuovo = new UserEntity();
-		nuovo.setEmail(user.getEmail());
-		nuovo.setFirst_name(user.getFirst_name());
-		nuovo.setLast_name(user.getLast_name());
-		nuovo.setPassword(this.passwordEncoder.encode(user.getPassword()));
-		nuovo.setRole(nuovo.STUDENT_ROLE);
-		nuovo.setProfile(user.getProfile());
+		nuovo.setEmail(node.get("email").asText());
+		nuovo.setFirst_name(node.get("first_name").asText());
+		nuovo.setLast_name(node.get("last_name").asText());
+		nuovo.setPassword(this.passwordEncoder.encode(node.get("password").asText()));
+		nuovo.setProfile(node.get("profile").asText());
+		nuovo.setSrc(node.get("src").asText());
+		nuovo.setRole(node.get("role").asText());
+		current_user = nuovo;
 		userrepository.save(nuovo);
-		System.out.println(user.getProfile());
+		System.out.println("Done");
 		
 		return response;
 		
@@ -201,16 +205,43 @@ public class MainController {
 		
 	}
 	
-	@PostMapping("/uploadFile")
-	public Response uploadfile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
+	@PostMapping("/uploadFile_profile")
+	public Response uploadfileprofile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String file1 =  uploadfile.getOriginalFilename();
     	System.out.println(file1);
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	System.out.println(nuovo.getFirst_name());
     	String baseDir="C:\\Users\\utente\\Documents\\workspace-spring-tool-suite-4-4.11.1.RELEASE\\Wikitel-new\\src\\main\\resources\\static\\images\\";
     	uploadfile.transferTo(new File(baseDir + nuovo.getId() +".jpg"));
     	nuovo.setSrc("\\images\\" + nuovo.getId() + ".jpg");
     	this.userservice.saveUser(nuovo);
+    	Response response = new Response("Done");
+		return response;
+		
+	}
+	
+	@PostMapping("/uploadFileText_profile")
+	public Response uploadfiletextprofile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	nuovo.getFile().add(fileservice.save(uploadfile));
+    	System.out.println(uploadfile);
+    	Response response = new Response("Done");
+		return response;
+		
+	}
+	
+	@PostMapping("/uploadFile")
+	public Response uploadfile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
+
+		String file1 =  uploadfile.getOriginalFilename();
+    	System.out.println(file1);
+    	System.out.println(current_user.getFirst_name());
+    	String baseDir="C:\\Users\\utente\\Documents\\workspace-spring-tool-suite-4-4.11.1.RELEASE\\Wikitel-new\\src\\main\\resources\\static\\images\\";
+    	uploadfile.transferTo(new File(baseDir + current_user.getId() +".jpg"));
+    	current_user.setSrc("\\images\\" + current_user.getId() + ".jpg");
+    	this.userservice.saveUser(current_user);
     	Response response = new Response("Done");
 		return response;
 		
@@ -295,7 +326,9 @@ public class MainController {
              rule.getTopics().addAll(prova.getCategories());
 			 rule.setLength(prova.getLength());
 			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();
+			 int i = -1;
 			 for (String pre : prova.getPreconditions()) {
+				 i++;
 				 RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
 			     WikiSuggestionEntity suggestion = null;
 			     if (  modelservice.getpage(pre)== null) {
@@ -313,14 +346,14 @@ public class MainController {
 			     
 			     relation.setRule(rule);
 			     relation.setSuggestion(suggestion);
+			     relation.setScore(prova.getRank1().get(i).doubleValue());
+			     relation.setScore2(prova.getRank2().get(i).doubleValue());
 			     relations.add(relation); 
 			     System.out.println(relation.getSuggestion().getId());
 			     relationservice.saverelation(relation);
 			     rule.getSuggestions().add(relation);
 			 }     
-			     for(int i=0; i< relations.size();i++) {
-			    	 relations.get(i).setScore(prova.getRank2().get(i).doubleValue());
-			     }
+			
     	
 			     RuleEntity main_rule= this.modelservice.getRule(node.get("rule_id").asLong());
 			    	rule.addEffect(main_rule);
@@ -385,7 +418,8 @@ public class MainController {
 			     
 			     relation.setRule(rule);
 			     relation.setSuggestion(suggestion);
-			     relation.setScore(prova.getRank2().get(i).doubleValue());
+			     relation.setScore(prova.getRank1().get(i).doubleValue());
+			     relation.setScore2(prova.getRank2().get(i).doubleValue());
 			     relations.add(relation); 
 			     System.out.println(relation.getSuggestion().getId());
 			     

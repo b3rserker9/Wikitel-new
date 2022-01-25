@@ -25,6 +25,7 @@ public class RuleSuggestionRelationEntity {
     @JoinColumn(name = "SUGGESTION_ID")
     private SuggestionEntity suggestion;
     private Double score;
+    private Double score2;
 
     public RuleSuggestionRelationId getId() {
         return id;
@@ -53,8 +54,14 @@ public class RuleSuggestionRelationEntity {
     public Double getScore() {
         return score;
     }
+    public Double getScore2() {
+        return score2;
+    }
 
     public void setScore(final Double score) {
         this.score = score;
+    }
+    public void setScore2(final Double score) {
+        this.score2 = score;
     }
 }

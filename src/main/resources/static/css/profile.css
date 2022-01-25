@@ -1,9 +1,4 @@
-body{
-    margin-top:20px;
-    color: #1a202c;
-    text-align: left;
-    background-color: #e2e8f0;    
-}
+
 .modal-option {
     width: 50% !important;
     height: 75% !important;
@@ -181,8 +176,4 @@ input[type=file] + label>img {
   transition: 500ms all;
 }
 
-input[type=radio]:checked + label>img {
-  transform: 
-    rotateZ(-10deg) 
-    rotateX(10deg);
-}
+
