@@ -12,7 +12,15 @@ import lombok.Data;
 @Data
 public class Questionario {
 	
-	 @Id
+	 public Questionario(int activeOrreflexive, int praticalOrintuitive, int visualOrverbal, int sequentialOrglobal) {
+		super();
+		this.activeOrreflexive = activeOrreflexive;
+		this.praticalOrintuitive = praticalOrintuitive;
+		this.visualOrverbal = visualOrverbal;
+		this.sequentialOrglobal = sequentialOrglobal;
+	}
+
+	@Id
 	    @GeneratedValue(strategy = GenerationType.AUTO)
 	    private Long id;
 	 

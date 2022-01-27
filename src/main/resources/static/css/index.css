@@ -89,3 +89,17 @@ button:hover {
 .step.finish {
   background-color: #04AA6D;
 }
+.link{
+	text-decoration: none;
+}
+.questions {
+    display: flex;
+    flex-direction: column;
+}
+.popover{
+	max-width: 500px;
+}
+.testo{
+	display: flex;
+	justify-content: space-between;
+}

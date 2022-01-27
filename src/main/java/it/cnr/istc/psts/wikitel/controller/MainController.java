@@ -32,6 +32,7 @@ import it.cnr.istc.psts.wikitel.db.FileEntity;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.Prova;
+import it.cnr.istc.psts.wikitel.db.Questionario;
 import it.cnr.istc.psts.wikitel.db.RuleEntity;
 import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationId;
 
@@ -136,7 +137,6 @@ public class MainController {
 	public Response register(@RequestBody  ObjectNode node) throws JsonGenerationException, JsonMappingException, IOException{
 		System.out.println("entratoodòjfkòjòfdaeHJLFJ");
 		Json_reader interests=new Json_reader();
-		
 		Response response = new Response("Done");
 		UserEntity nuovo = new UserEntity();
 		nuovo.setEmail(node.get("email").asText());
@@ -146,6 +146,7 @@ public class MainController {
 		nuovo.setProfile(node.get("profile").asText());
 		nuovo.setSrc(node.get("src").asText());
 		nuovo.setRole(node.get("role").asText());
+		nuovo.setQuestionario(node.get("one").asText());
 		current_user = nuovo;
 		userrepository.save(nuovo);
 		System.out.println("Done");
@@ -248,13 +249,13 @@ public class MainController {
 	}
 	
 	@PostMapping("/uploadFileText")
-	public Response uploadfiletext(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
+	public ModelEntity uploadfiletext(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
     	nuovo.getFile().add(fileservice.save(uploadfile));
     	System.out.println(uploadfile);
-    	Response response = new Response("Done");
-		return response;
+
+		return this.m;
 		
 	}
 	
@@ -455,7 +456,8 @@ public class MainController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
     	LessonEntity lesson = new LessonEntity();
-
+    
+    	
     	lesson.setName(node.get("name").asText());
     	lesson.setModel(modelservice.getModel(node.get("models").asLong()));
     	

@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Type;
@@ -47,6 +48,9 @@ public class UserEntity {
     private String profile;
     @Column(columnDefinition="text")
     private String src;
+    
+    @Column(columnDefinition="text")
+    private String Questionario;
     
     @OneToMany
     private final Collection<FileEntity> file = new ArrayList<>();

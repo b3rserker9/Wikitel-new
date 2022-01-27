@@ -5,12 +5,15 @@ let current_edge = [];
 var selected = null;
 var nodes = [];
 var edges = [];
+let type="text";
 var network = null;
 let uniqueChars = null;
 let text="desktop";
-let color="green";
+let arrow="to";
 let tables = [];
+let c=null;
 let raw = [];
+	let all=[];
 var nodesDataset;
 var edgesDataset;
 	function update_add() {
@@ -19,10 +22,10 @@ var edgesDataset;
 				console.log(option.value);
 				switch(option.value){
 					case '2':
-					color="red"
+					arrow="to, from"
 					break;
 					case '1':
-					color="green"
+					arrow="to"
 					break;
 				}
 				
@@ -37,18 +40,21 @@ var edgesDataset;
 					document.getElementById('textarea').style.display="none";
 					document.getElementById('file').style.display="none";
 					text="desktop"
+					
 					break;
 					case '1':
 					document.getElementById('url').style.display="none";
 					document.getElementById('textarea').style.display="block";
 					document.getElementById('file').style.display="none";
 					text="desktop"
+					type="text"
 					break;
 					case '3':
 					document.getElementById('url').style.display="none";
 					document.getElementById('textarea').style.display="none";
 					document.getElementById('file').style.display="none";
 					text="server"
+					type="wikipedia"
 
 					break;
 					case '4':
@@ -56,9 +62,18 @@ var edgesDataset;
 					document.getElementById('textarea').style.display="none";
 					document.getElementById('file').style.display="block";
 					text="switch"
+					type = "file"
 					break;
 				}
 				
+}
+function getRandomColor() {
+  var letters = '0123456789ABCDEF';
+  var color = '#';
+  for (var i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 }
 function wiki_link(){
 	window.open("https://it.wikipedia.org/wiki/"+selected,"_blank");
@@ -68,40 +83,58 @@ function wiki_link(){
 var network;
 var allNodes;
 var highlightActive = false;
- 
+ function order(){
+	console.log(rules);
+
+	let order = [];
+	rules.forEach(function(l){
+				order =[];
+	l.suggestions.forEach(function(s){	
+		console.log(s.score2);
+		order.push(s.score2);
+	})
+		order.sort(function(a, b){return b-a});
+		order.unshift(l.name);
+		console.log(order);
+		all.push(order);
+	})
+}
 function redrawAll() {
 	rules.forEach(function(l){	
 	const rule = new Object();
 	rule.label = l.name;
 	rule.id = l.name;
-	rule.group = 5;
+	let prova = getRandomColor();
+	rule.group = l.name;
 	current_rule.push(rule);
 	nodes.push(rule);
-	console.log(rule);
+	let m;
+		for(let i = 0;i<all.length;i++){
+			if(all[i][0]== l.name){
+				 m=all[i][1];
+			}
+		}
 	l.suggestions.forEach(function(s){	
 		raw = ["",s.suggestion.page,s.score,s.score2];
+		if(s.score2==0){s.score2=0.05}
 		const pippo = new Object();
-		const edge = new Object();
+
 		
 		pippo.label = s.suggestion.page
 		pippo.id = pippo.label;
-		pippo.group = 6;
+		pippo.group = l.name;
+		pippo.color = prova;
 		pippo.title =s.score2;
-		edge.from = l.name;
-		edge.to = pippo.id;
+		edges.push({ from: l.name, to: pippo.id, color: { opacity: s.score2/m },width: 4 });
 
-		console.log(pippo);
 		nodes.push(pippo);
-		edges.push(edge);
 		tables.push(raw);
 		
 		})
-		console.log(nodes);
-		console.log(tables);
+
 	})
 	 for(let i = 0;i<nodes.length;i++){
 	if(rules.some(e => e.name === nodes[i].label) && nodes[i].group == 6 ){
-		console.log(nodes[i]);
 		nodes.splice(i,1);
 		
 	}	
@@ -113,7 +146,7 @@ nodes = nodes.filter((value, index, self) =>
   ))
 )
 for(let i = 0;i<nodes.length;i++){
-if(nodes[i].title<0.2){
+if(nodes[i].title<0.1){
 		 nodes[i].color = "rgba(200,200,200,0.5)";
 	}
 	}
@@ -148,23 +181,46 @@ if(nodes[i].title<0.2){
     } );
     
   
-console.log(nodes);
 nodesDataset = new vis.DataSet(nodes); // these come from WorldCup2014.js
  edgesDataset = new vis.DataSet(edges); // these come from WorldCup2014.js
 
   var container = document.getElementById("mynetwork");
   var options = {
+	groups: {
+      file: {
+        shape: "icon",
+        icon: {
+          face: "'FontAwesome'",
+          code: "\uf15b",
+          size: 50,
+          color: "#000000",
+        },
+      },
+      wikipedia: {
+        shape: "icon",
+        icon: {
+          face: "'FontAwesome'",
+          code: "\uf266",
+          size: 50,
+          color: "#000000",
+        },
+      },
+        text: {
+        shape: "icon",
+        icon: {
+          face: "'FontAwesome'",
+          code: "\uf031",
+          size: 50,
+          color: "#000000",
+        },
+      },
+    },
     nodes: {
       shape: "dot",
       scaling: {
         min: 10,
         max: 30,
-        label: {
-          min: 8,
-          max: 30,
-          drawThreshold: 12,
-          maxVisible: 20,
-        },
+       
       },
       font: {
         size: 12,
@@ -178,17 +234,19 @@ nodesDataset = new vis.DataSet(nodes); // these come from WorldCup2014.js
         type: "continuous",
       },
     },
-    physics: false,
-    interaction: {
-      tooltipDelay: 200,
-      hideEdgesOnDrag: true,
-      hideEdgesOnZoom: true,
-    },
+     physics: {
+    // Even though it's disabled the options still apply to network.stabilize().
+    enabled: false,
+    solver: "repulsion",
+    repulsion: {
+      nodeDistance: 300 // Put more distance between the nodes.
+    }
+  }
   };
   var data = { nodes: nodesDataset, edges: edgesDataset }; // Note: data is coming from ./datasources/WorldCup2014.js
 
   network = new vis.Network(container, data, options);
-
+network.stabilize();
   // get a JSON object
   allNodes = nodesDataset.get({ returnType: "Object" });
 	console.log(allNodes);
@@ -211,6 +269,35 @@ nodesDataset = new vis.DataSet(nodes); // these come from WorldCup2014.js
    nodesDataset= new vis.DataSet(nodes);
      var container = document.getElementById("mynetwork");
   var options = {
+	 groups: {
+      file: {
+        shape: "icon",
+        icon: {
+          face: "'FontAwesome'",
+          code: "\uf15b",
+          size: 50,
+          color: "#000000",
+        },
+      },
+      wikipedia: {
+        shape: "icon",
+        icon: {
+          face: "'FontAwesome'",
+          code: "\uf266",
+          size: 50,
+          color: "#000000",
+        },
+      },
+        text: {
+        shape: "icon",
+        icon: {
+          face: "'FontAwesome'",
+          code: "\uf031",
+          size: 50,
+          color: "#000000",
+        },
+      },
+    },
     nodes: {
       shape: "dot",
       scaling: {
@@ -235,7 +322,11 @@ nodesDataset = new vis.DataSet(nodes); // these come from WorldCup2014.js
         type: "continuous",
       },
     },
-    physics: false,
+     physics: {
+      hierarchicalRepulsion: {
+        avoidOverlap: 1,
+      },
+    },
    
   };
   var data = { nodes: nodesDataset, edges: edgesDataset }; // Note: data is coming from ./datasources/WorldCup2014.js
@@ -243,23 +334,27 @@ nodesDataset = new vis.DataSet(nodes); // these come from WorldCup2014.js
    network = new vis.Network(container, data, options);
   console.log(nodes);
        network.on("click", function (params) {
+if((params.nodes.length)>0){
   params.event = "[original event]";
-  console.log(params.nodes[0]);
+  console.log(params);
   select=params.nodes[0]
    selected=params.nodes[0].replaceAll(' ', '_');
   console.log(selected.replaceAll(' ', '-'));
    document.getElementById("button_link").textContent ="https://it.wikipedia.org/wiki/"+selected
 myModal.show()
+}
 });
   });
        network.on("click", function (params) {
+		if((params.nodes.length)>0){
   params.event = "[original event]";
-  console.log(params.nodes[0]);
+  console.log(params);
   select=params.nodes[0]
    selected=params.nodes[0].replaceAll(' ', '_');
   console.log(selected.replaceAll(' ', '-'));
    document.getElementById("button_link").textContent ="https://it.wikipedia.org/wiki/"+selected
 myModal.show()
+}
 });
 }
 
@@ -294,7 +389,7 @@ var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
 })
   network.on("click", function (params) {
   params.event = "[original event]";
-  console.log(params.nodes[0]);
+  console.log(params);
   select=params.nodes[0]
    selected=params.nodes[0].replaceAll(' ', '_');
   console.log(selected.replaceAll(' ', '-'));
@@ -314,6 +409,7 @@ myModal.show()
 						moedl = data;
 						rules = data.rules;
 						console.log(rules);
+						order();
 						 redrawAll();;
 					
 },
@@ -326,8 +422,8 @@ myModal.show()
 			
 		function addNode() {
   console.log(selected);
-  nodesDataset.add({ id: $("#Add_node_name").val(), label: $("#Add_node_name").val(),group : 6});
-  edgesDataset.add({from: select, to:$("#Add_node_name").val()});
+  nodesDataset.add({ id: $("#Add_node_name").val(), label: $("#Add_node_name").val(),group : type });
+  edgesDataset.add({from: select, to:$("#Add_node_name").val(),arrows: arrow});
 }
 
 

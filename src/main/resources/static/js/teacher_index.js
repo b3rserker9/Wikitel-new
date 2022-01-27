@@ -17,10 +17,16 @@
 	let first = true;
 	var clone;
 	let rules=[];
-
+	let close = false;
  
-	
+	function active(model){
+		var span = document.getElementById(model.name+"s");
+		span.removeChild(span);
+		document.getElementById(model.name+"a").className="";
+		
+	}
 	function update() {
+		$('#new_lesson1').modal('hide');	
 				var select = document.getElementById('new-rule-type');
 				var option = select.options[select.selectedIndex];
 				text=option.text;
@@ -85,10 +91,7 @@ console.log("PPPPP4");
 					
 					success : function(data) {						
 						console.log("SUCCESS : ", data);
-							var myModal = new bootstrap.Modal(document.getElementById('new_lesson1'), {
-  keyboard: false
-})
-						myModal.hide();
+							
 						if(text=="File"){
 	 var form = $("#formFile")[0].files[0];
 console.log(form);
@@ -107,6 +110,7 @@ console.log(form);
 	console.log("SUCCESS : ", data);
 			document.getElementById('load').style.display="none";
 						document.getElementById('h3').style.opacity="1";
+						active(data);
             },
             error: function (err) {
                 console.error(err);
@@ -341,7 +345,7 @@ console.log("PPPPP4");
 								document.getElementById("collapse").innerHTML +='<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/'+ l.id + '">'+ l.name + '</a></div>'
 							}
 							else{
-								document.getElementById("rows").innerHTML +='<div class="columns animate__animated animate__bounce"><div class="cards">  <button type="button" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion('+ l.id +')"><i class="fas fa-cog"></i></button><a href="/Argomento/'+ l.id + '"> <h3 >'+ l.name + '</h3></a> </div></div>'
+								document.getElementById("rows").innerHTML +='<div class="columns animate__animated animate__bounce" id="'+l.id+'"><div class="cards" id="'+l.id+'c">  <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion('+ l.id +')"><i class="fas fa-cog"></i></button><a id="' + l.name +'a" href="/Argomento/'+ l.id + '"> <h3 >'+ l.name + '</h3></a> </div></div>'
 								document.getElementById("collapse").innerHTML +='<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/'+ l.id + '">'+ l.name + '</a></div>'
 							
 							}
@@ -364,11 +368,11 @@ console.log("PPPPP4");
 							document.getElementById("collapse").innerHTML +='<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/'+ model.id + '">'+ model.name + '</a></div>'
 							}else{
 						
-						document.getElementById("rows").innerHTML +='<div class="columns animate__animated animate__bounce"><div class="cards">  <button type="button" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" "><i class="fas fa-cog"></i></button><a href="/Argomento/'+ model.id + '"> <h3 >'+ model.name + '</h3></a> </div></div>'
-								document.getElementById("collapse").innerHTML +='<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/'+ model.id + '">'+ model.name + '</a></div>'
+						document.getElementById("rows").innerHTML +='<div class="columns animate__animated animate__bounce" id="'+model.id+'"><div class="cards" id="'+model.id+'c">  <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion('+ model.id +')"><i class="fas fa-cog"></i></button><a id="' + model.name +'a" href="/Argomento/'+ model.id + '" class="disabled"> <h3 >'+ model.name + '</h3></a> <span id="' + model.name +'s" class="spinner-border"></span> </div></div>'
+									document.getElementById("collapse").innerHTML +='<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/'+ model.id + '">'+ model.name + '</a></div>'
 						}
 						a.push(model);
-						$('#new_lesson1').modal('hide');	
+						
 			}
 			function resetformat(){
 	
@@ -378,14 +382,15 @@ console.log("PPPPP4");
 	prep_modal();
 	console.log("fatto");
 }
-  
+
 $(document).ready(
 		function() {
-			
+
 			 clone = document.getElementById("clone").cloneNode(true);
 		console.log(text);
 	 			questions();
 				prep_modal();
+				
 		var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
   return new bootstrap.Popover(popoverTriggerEl)
@@ -495,26 +500,31 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 		}
 		
 		}
-		     $("#radios0").radioslider({
+	
+		var one =     $("#radios0").radioslider({
     fillOrigin: '0',
       size: 'small',
        fit: true,
 });
-      $("#radios1").radioslider({
+     var two= $("#radios1").radioslider({
     fillOrigin: '0',
       size: 'small',
        fit: true,
 });
-  $("#radios2").radioslider({
+ var three = $("#radios2").radioslider({
     fillOrigin: '0',
       size: 'small',
        fit: true,
 });
-  $("#radios3").radioslider({
+  var four =$("#radios3").radioslider({
     fillOrigin: '0',
       size: 'small',
        fit: true,
 });
+		one.radioslider('setValue', '0');
+		two.radioslider('setValue', '0');
+		three.radioslider('setValue', '0');
+		four.radioslider('setValue', '0');
 		
 	}
 			function prep_modal()
@@ -558,17 +568,25 @@ console.log("iam in");
     		if(page_track == 0)
     		{
     			$(b_button).show();
+
+    			$('#new_lesson1').modal('hide');
     		}
 
     		if(page_track == pages.length-2)
     		{
+		
     			$(n_button).text("Submit");
+    		
+    			console.log("prova");
     		}
+
 
         if(page_track == pages.length-1)
         {
           n_button.setAttribute("type","submit");
+   
           $("#new_models").submit(function() {
+    			       n_button.setAttribute("data-dismiss","modal");
 				console.log("PPPPP2");
 				console.log(a);
 				// Prevent the form from submitting via the browser.

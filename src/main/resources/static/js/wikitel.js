@@ -1,9 +1,28 @@
-let src = "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper.png"
+	var question = [
+   ["attivo", "riflessivo","attivo? Preferisci sperimentare e anche confrontare le tue osservazioni con gli altri, anche mentre lo stai pensando; ti piace il lavoro di gruppo. "+
+   " "+ 
+"riflessivo? Preferisci lavorare prima di tutto da solo, organizzare il materiale e studiarlo. "+
+"Non c'è una risposta giusta! Dipende da quali caratteristiche, individualmente, è quello di ottenere il miglior risultato."],
+   ["pratico", "intuitivo","pratico? Senti (con i tuoi sensi) il materiale di apprendimento. intuitivo? Hai un approccio cerebrale.Non c'è una risposta giusta! L'obiettivo è assimilare le informazioni nel migliore dei modi."],
+   ["visivo", "verbale","visivo? Ti piacerebbe vedere diagrammi e studiare su materiali completamente di immage e grafico. verbale? Preferisci leggere le descrizioni scritte a parole.Non c'è una risposta giusta! L'obiettivo è assimilare le informazioni nel migliore dei modi."],
+   ["sequenziale", "globale","sequenziale? Ti piacerebbe avere una sequenza di argomenti all'interno di una lessione che puoi seguire setp per passo . globale? Preferisci avere una descrizione globale della partizione e dopo tutte le specifiche."],
+];
+let src = "https://e7.pngegg.com/pngimages/84/165/png-clipart-united-states-avatar-organization-information-user-avatar-service-computer-wallpaper.png";
+
+
+
+
+
 function image(){
 	if(document.querySelector( 'input[name="drone"]:checked').id != "plus"){
 	document.getElementById("myImg").src = document.getElementById(document.querySelector( 'input[name="drone"]:checked').id.slice(-1)).src
 	src = document.getElementById(document.querySelector( 'input[name="drone"]:checked').id.slice(-1)).src
 	}
+}
+function close(){
+	console.log("fatto");
+	 $('#modal1').modal('hide');
+
 }
 	 
 function getData() { 
@@ -20,6 +39,7 @@ function getData() {
             })
             return result;
         }
+
 	function ajaxPost() {
 console.log("PPPPP3");
 				// PREPARE FORM DATA
@@ -30,7 +50,8 @@ console.log("PPPPP3");
 			email: $("#email_r").val(),
 			password : $("#password_r").val(),
 			src : src,
-			role : $('input[name=roles]:checked').val()
+			role : $('input[name=roles]:checked').val(),
+			one :JSON.stringify({one:$('input[name=options0]:checked').val(),two:$('input[name=options1]:checked').val(),three:$('input[name=options2]:checked').val(),four:$('input[name=options3]:checked').val()})
 				}
 console.log("PPPPP4");
 				// DO POST
@@ -49,9 +70,8 @@ console.log("PPPPP4");
 						uploadFile();
 			
 						}
-						  $('#modal2').modal('hide');
-
-						$('#modal3').modal('show');
+						
+						 
 						
 					},
 					error : function(e) {
@@ -61,6 +81,7 @@ console.log("PPPPP4");
 				});
 					$("#ok").click(function(){
     			$("#modal1").modal('show');
+    			$('#modal3').modal('hide');
   });
 			
 				
@@ -200,10 +221,20 @@ console.log("PPPPP9");
 }
   
  break;
- case 2:
- valid = false;
+  case 2:
+  console.log("nope");
+ if($('input[name=roles]:checked').val()){
+	console.log("try");
+	valid= false;
+}else{
+ valid = true;
+ }
  break;
  case 3:
+ valid = false;
+ break;
+
+  case 4:
  valid = false;
  break;
  }
@@ -212,10 +243,12 @@ console.log("PPPPP9");
 }
 $(document).ready(
 		function() {
-			$('#modal3').modal('show');
 			prep_modal();
-			
-		
+			questions();
+				var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)
+})
 		
 
 		})
@@ -228,7 +261,7 @@ $(document).ready(
 
   var element = this;
 	var pages = $(this).find('.modal-split');
-
+console.log(pages);
   if (pages.length != 0)
   {
     	pages.hide();
@@ -261,24 +294,31 @@ $(document).ready(
 
     		if(page_track == pages.length-2)
     		{
-	console.log("1" + page_track);
-	console.log("1" + pages.length);
-	  console.log(  $('input[name=roles]:checked').val());
+
     			$(n_button).text("Submit");
+    			
+    			
     		}
 
         if(page_track == pages.length-1)
         {
 	console.log("prova")
+	
           n_button.setAttribute("type","submit");
+         
           $("#register_form").submit(function() {
+	  $('#modal2').modal('hide');
+
+						$('#modal3').modal('show');
 				// Prevent the form from submitting via the browser.
 				event.preventDefault();
 				
 				ajaxPost();
 				
 				
+				
 			});
+			
         }
 
     		if(page_track < pages.length-1)
@@ -318,4 +358,114 @@ $(document).ready(
 
   });
 }
+	function questions(){
+		console.log("prova");
+		let id=0;
+		//ROOT
+		let div = document.getElementById("question");
+		console.log(question.length);
+		for(let i=0;i<question.length;i++){
+		// LINK
+		let al = document.createElement('a');
+		al.className="link text-decoration-none";
+		al.setAttribute("data-toggle","collapse");
+		al.setAttribute("href","#collapseExample"+i);
+		al.setAttribute("role","button");
+		al.setAttribute("style","margin-top:2%;");
+		al.setAttribute("aria-controls","collapseExample");
+		al.textContent= question[i][0] + " o " +question[i][1] ;
+		let span = document.createElement('span');
+		al.appendChild(span);
+		let icon = document.createElement('i');
+		icon.className="fas fa-caret-down";
+		span.appendChild(icon);
 		
+		//Info
+		let info = document.createElement('a');
+		info.className="btn btn-link";
+		info.setAttribute("tabindex","0")
+		info.setAttribute("role","button");
+		info.setAttribute("data-bs-toggle","popover");
+		info.setAttribute("data-bs-trigger","focus");
+		info.setAttribute("data-bs-content",question[i][2]);
+		let span2 = document.createElement('span');
+		let icon2 = document.createElement('i');
+		icon2.className="fas fa-info-circle";
+		span2.appendChild(icon2);
+		info.appendChild(span2);
+		
+		let links = document.createElement('div')
+		links.className="links";
+		links.appendChild(al);
+		links.appendChild(info);
+		div.appendChild(links);
+		
+		//Collapse
+		let collapse = document.createElement('div');
+		collapse.className="collapse"
+		collapse.setAttribute("id","collapseExample"+i);
+		div.appendChild(collapse);
+		
+		//Testo
+		let text = document.createElement('div');
+		text.className="testo";
+		let right = document.createElement('p');
+		right.className="right";
+		right.textContent=question[i][0];
+		let left = document.createElement('p'); 
+		left.className="left";
+		left.textContent=question[i][1]
+		text.append(right);
+		text.append(left);
+		
+		//Card
+		let card = document.createElement('div');
+		card.className ="card card-body"
+		collapse.appendChild(card);
+		card.appendChild(text);
+		//radio
+		let r = document.createElement('div');
+		r.setAttribute("id","radios"+i);
+		card.appendChild(r);
+		for(let j=0 ;j<15;(j++)){
+			let radio = document.createElement('input');
+			let label = document.createElement('label');
+			radio.setAttribute("id","option" + j+id);
+			radio.setAttribute("name","options"+i);
+			radio.setAttribute("type","radio");
+			radio.setAttribute("value",j-7);
+			label.setAttribute("for","option"+j+id);
+			label.textContent= (j-7);
+			r.appendChild(radio);
+			r.appendChild(label);
+			id++;
+		}
+		
+		}
+		
+		var one =     $("#radios0").radioslider({
+    fillOrigin: '0',
+      size: 'small',
+       fit: true,
+});
+     var two= $("#radios1").radioslider({
+    fillOrigin: '0',
+      size: 'small',
+       fit: true,
+});
+ var three = $("#radios2").radioslider({
+    fillOrigin: '0',
+      size: 'small',
+       fit: true,
+});
+  var four =$("#radios3").radioslider({
+    fillOrigin: '0',
+      size: 'small',
+       fit: true,
+});
+		one.radioslider('setValue', '0');
+		two.radioslider('setValue', '0');
+		three.radioslider('setValue', '0');
+		four.radioslider('setValue', '0');
+		
+	}		

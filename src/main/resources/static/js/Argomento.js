@@ -22,7 +22,7 @@ console.log("HERE");
 								document.getElementById("collapse").innerHTML +='<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/'+ l.id + '">'+ l.name + '</a></div>'
 							}
 							else{
-								document.getElementById("rows").innerHTML +='<div class="columns animate__animated animate__bounce"><div class="cards">  <button type="button" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion('+ l.id +')"><i class="fas fa-cog"></i></button><a href="/Argomento/'+ l.id + '"> <h3 >'+ l.name + '</h3></a> </div></div>'
+								document.getElementById("rows").innerHTML +='<div class="columns animate__animated animate__bounce"><div class="cards">  <button type="button" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion('+ l.id +')"><i class="fas fa-cog"></i></button><a href="/Argomento/'+ l.id + '"> <h3 >'+ l.name + '</h3> <span class="spinner-border spinner-border-sm"></span></a> </div></div>'
 								document.getElementById("collapse").innerHTML +='<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/'+ l.id + '">'+ l.name + '</a></div>'							
 							}
 						})											
@@ -176,8 +176,8 @@ function Create_new_lesson() {
 			name: $("#new-lesson-name").val(),
 			models : document.getElementById('model_name').getAttribute('value'),
 			students : JSON.stringify(students_id),
-			goals : JSON.stringify(getData())
-		
+			goals : JSON.stringify(getData()),
+			activeor :$('input[name=roles]:checked').val()
 				}
 		console.log(document.getElementById('model_name').getAttribute('value'));
 				
@@ -212,7 +212,9 @@ console.log(students_id);
 
 $(document).ready(
 		function() {
-			
+				 $("#students").autocomplete({
+      source: students
+    });
 		
 			var pathArray = window.location.pathname.split('/');
 console.log(pathArray[2]);
@@ -255,8 +257,6 @@ else{
 document.getElementById('students').value = '';
 });
 		
-			 $( "#students" ).autocomplete({
-      source: students
-    });
+		
 			
 			});
