@@ -80,7 +80,7 @@ console.log("PPPPP4");
 					}
 				});
 					$("#ok").click(function(){
-    			$("#modal1").modal('show');
+    			$("#modal1").modal('toggle');
     			$('#modal3').modal('hide');
   });
 			

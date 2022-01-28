@@ -140,7 +140,7 @@ console.log("PPPPP4");
 						
 					type : "POST",
 					contentType: "application/json",
-					url :"http://localhost:7000/NewModel",
+					url :"NewModel",
 					data : $("#new-model-name").val(),
 					
 					
