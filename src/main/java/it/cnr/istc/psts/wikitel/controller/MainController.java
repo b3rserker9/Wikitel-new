@@ -347,8 +347,8 @@ public class MainController {
 			     
 			     relation.setRule(rule);
 			     relation.setSuggestion(suggestion);
-			     relation.setScore(prova.getRank1().get(i).doubleValue());
-			     relation.setScore2(prova.getRank2().get(i).doubleValue());
+			     relation.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
+			     relation.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
 			     relations.add(relation); 
 			     System.out.println(relation.getSuggestion().getId());
 			     relationservice.saverelation(relation);
@@ -393,7 +393,7 @@ public class MainController {
              rule = new WikiRuleEntity();
              this.modelservice.saverule(rule);
              
-             Prova prova = restTemplate.getForObject("http://192.168.1.79:5015/wiki?page="+ node.get("model_name").asText(), Prova.class);
+             Prova prova = restTemplate.getForObject("http://localhost:5015/wiki?page="+ node.get("model_name").asText(), Prova.class);
              ((WikiRuleEntity) rule).setUrl(prova.getUrl());
              System.out.println(prova.getPreconditions());
              rule.getTopics().addAll(prova.getCategories());
@@ -411,7 +411,6 @@ public class MainController {
 						suggestion.setPage(pre);
 						modelservice.savewikisuggestion(suggestion);
 				}else {
-					 System.out.println("Ciao2");
 					 
 					suggestion = modelservice.getpage(pre);
 				}    
@@ -419,8 +418,9 @@ public class MainController {
 			     
 			     relation.setRule(rule);
 			     relation.setSuggestion(suggestion);
-			     relation.setScore(prova.getRank1().get(i).doubleValue());
-			     relation.setScore2(prova.getRank2().get(i).doubleValue());
+			    
+			     relation.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
+			     relation.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
 			     relations.add(relation); 
 			     System.out.println(relation.getSuggestion().getId());
 			     

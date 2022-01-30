@@ -19,10 +19,9 @@
 	let rules=[];
 	let close = false;
  
-	function active(model){
-		var span = document.getElementById(model.name+"s");
-		span.removeChild(span);
-		document.getElementById(model.name+"a").className="";
+	function active(name){
+		var span = document.getElementById(name+"s");
+		span.className="";
 		
 	}
 	function update() {
@@ -89,7 +88,8 @@ console.log("PPPPP4");
 					dataType: "json",
 					
 					
-					success : function(data) {						
+					success : function(data) {	
+						active($("#new-model-name").val());				
 						console.log("SUCCESS : ", data);
 							
 						if(text=="File"){
@@ -117,7 +117,7 @@ console.log(form);
             }
         });
 				}	
-				resetformat();
+				
 					},
 					error : function(e) {
 						alert("Error!")
@@ -149,6 +149,7 @@ console.log("PPPPP4");
 					
 						add(data.data7)
 						New_rule()
+						resetformat();
 						console.log("SUCCESS : ", data);
 						
 						
@@ -529,9 +530,7 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
 	}
 			function prep_modal()
 {
-	console.log("dd");
   $(".modal").each(function() {
-console.log("dds");
   var element = this;
 	var pages = $(this).find('.modal-split');
 
@@ -577,16 +576,14 @@ console.log("iam in");
 		
     			$(n_button).text("Submit");
     		
-    			console.log("prova");
     		}
 
 
         if(page_track == pages.length-1)
         {
           n_button.setAttribute("type","submit");
-   
           $("#new_models").submit(function() {
-    			       n_button.setAttribute("data-dismiss","modal");
+    			       
 				console.log("PPPPP2");
 				console.log(a);
 				// Prevent the form from submitting via the browser.
@@ -595,6 +592,7 @@ console.log("iam in");
 					alert("Argomento gia esistente");
 				}else{
 				Create_model();
+				$('#new_lesson1').modal('hide');
 				}
 				
 			});
