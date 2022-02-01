@@ -11,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import it.cnr.istc.psts.wikitel.db.FileEntity;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
+import it.cnr.istc.psts.wikitel.db.Model;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.Prova;
 import it.cnr.istc.psts.wikitel.db.RuleEntity;
@@ -64,7 +64,7 @@ import it.cnr.istc.psts.wikitel.db.WebRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiSuggestionEntity;
 import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationEntity;
-
+import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
 
 import it.cnr.istc.psts.wikitel.Repository.UserRepository;
@@ -98,6 +98,8 @@ public class MainController {
 	
 	@Autowired
 	private ModelService  modelservice;
+	@Autowired
+	private ModelRepository  modelrepository;
 	
 	@Autowired
 	private RuleSuggestionRelationService relationservice;
@@ -494,11 +496,10 @@ public class MainController {
 	}
 
 	@GetMapping("/Getlessons")
-	public List<ModelEntity> getAllModel(){
+	public List<Model> getAllModel(){
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
-    	List<ModelEntity> m = modelservice.getModelTeacher(nuovo);
-    			
+    	List<Model> m = this.modelrepository.findByTeachersonly(nuovo.getId());
 		return m;
 		
 	}

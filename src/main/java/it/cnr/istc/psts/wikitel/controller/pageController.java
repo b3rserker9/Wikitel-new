@@ -1,13 +1,13 @@
 package it.cnr.istc.psts.wikitel.controller;
 
-import java.io.File;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+
 import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,10 +35,12 @@ import it.cnr.istc.pst.oratio.Solver;
 import it.cnr.istc.pst.oratio.SolverException;
 import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
+import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.UserService;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
+import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.Prova;
 import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
@@ -59,6 +61,9 @@ public class pageController {
 	
 	@Autowired
 	private LessonService lessonservice;
+	
+	@Autowired
+	private ModelRepository modelrepository;
 	
 	@Autowired
 	private ModelService modelservice;
@@ -88,11 +93,10 @@ public class pageController {
 		Json_reader interests = json("/json/user_model.json",true);
 		System.out.println("username1:PIPPO");
     	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	System.out.println("username2:PIPPO");
     	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
+    	model.addAttribute("model", this.modelrepository.findByTeachersonly(userentity.getId()));
     	model.addAttribute("interests", interests.getInterests());
     	model.addAttribute("user",userentity);
-    	model.addAttribute("lessons",lessonservice.getlesson(userentity));
     	model.addAttribute("Teachers",userservice.getTeacher(userentity.TEACHER_ROLE));
     	//se e' admin
     	if (userentity.getRole().equals(UserEntity.STUDENT_ROLE)) {

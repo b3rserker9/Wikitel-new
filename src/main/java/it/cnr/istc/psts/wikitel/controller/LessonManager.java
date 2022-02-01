@@ -14,8 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.catalina.mapper.Mapper;
-import org.apache.el.lang.FunctionMapperImpl;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,9 +192,9 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	                final UserEntity student_entity = userservice.getUserId(student_id);
 	                stimuli.get(student_entity.getId()).add(st);
 
-	                final WsContext wsc = UserController.ONLINE.get(student_id);
+	               /* final WsContext wsc = UserController.ONLINE.get(student_id);
 	                if (wsc != null)
-	                    wsc.send(st);
+	                    wsc.send(st);*/
 	            } catch (NumberFormatException | NoSuchFieldException e) {
 	                LOG.error("Cannot find atom's user..", e);
 	            }

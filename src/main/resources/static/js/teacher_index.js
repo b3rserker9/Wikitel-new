@@ -21,8 +21,8 @@ let rules = [];
 let close = false;
 
 function active(name) {
-    var span = document.getElementById(name + "s");
-    span.className = "";
+    var span = document.getElementById(name);
+    span.style.display="none";
 
 }
 
@@ -91,7 +91,7 @@ function New_rule() {
 
 
         success: function(data) {
-            active($("#new-model-name").val());
+            active($("#new-model-name").val()+'s');
             console.log("SUCCESS : ", data);
 
             if (text == "File") {
@@ -110,8 +110,6 @@ function New_rule() {
                     cache: false,
                     success: function(res) {
                         console.log("SUCCESS : ", data);
-                        document.getElementById('load').style.display = "none";
-                        document.getElementById('h3').style.opacity = "1";
                         active(data);
                     },
                     error: function(err) {
@@ -321,43 +319,6 @@ function GetSuggestion(id) {
                 document.getElementById("collapse").innerHTML += '<div class="form-check">' +
                     ' <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">' +
                     ' <label class="form-check-label" for="flexRadioDefault1">' + l.page + ' </label></div>'
-            })
-
-
-        },
-        error: function(e) {
-            alert("Error!")
-            console.log("ERROR: ", e);
-        }
-    });
-}
-
-function ajaxGet() {
-    console.log("PPPPP3");
-    // PREPARE FORM DATA
-
-    console.log("PPPPP4");
-    // DO POST
-    $.ajax({
-
-        type: "GET",
-        contentType: "application/json",
-        url: "Getlessons",
-        dataType: "json",
-
-        success: function(data) {
-
-            console.log("SUCCESS : ", data);
-            a = data;
-
-            data.forEach(function(l) {
-                if (document.getElementById("rows") == null) {
-                    document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/' + l.id + '">' + l.name + '</a></div>'
-                } else {
-                    document.getElementById("rows").innerHTML += '<div class="columns animate__animated animate__bounce" id="' + l.id + '"><div class="cards" id="' + l.id + 'c">  <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion(' + l.id + ')"><i class="fas fa-cog"></i></button><a id="' + l.name + 'a" href="/Argomento/' + l.id + '"> <h3 >' + l.name + '</h3></a> </div></div>'
-                    document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/' + l.id + '">' + l.name + '</a></div>'
-
-                }
             })
 
 
