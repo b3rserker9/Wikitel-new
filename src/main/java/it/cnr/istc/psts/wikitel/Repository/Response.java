@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 
 import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
-import it.cnr.istc.psts.wikitel.db.Email;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.RuleEntity;
@@ -20,7 +19,6 @@ public class Response {
 	private Long model;
 	private User data;
 	private UserEntity data2;
-	private Email data3;
 	private LessonEntity data4;
 	private List<LessonEntity> data5;
 	private Long data6;
@@ -34,12 +32,7 @@ public class Response {
 	public Response(String status, UserEntity user) {
 		this.status=status;
 		this.data2=user;
-	}
-	
-	public Response(String status, Email email ) {
-		this.status=status;
-		this.data3=email;
-	}
+	}	
 	
 	public Response(Long rule, Long model ) {
 		this.rule = rule;

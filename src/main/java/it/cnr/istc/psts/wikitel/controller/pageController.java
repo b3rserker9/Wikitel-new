@@ -34,6 +34,7 @@ import it.cnr.istc.pst.oratio.Item.ArithItem;
 import it.cnr.istc.pst.oratio.Solver;
 import it.cnr.istc.pst.oratio.SolverException;
 import it.cnr.istc.psts.WikitelNewApplication;
+import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.UserService;
@@ -50,6 +51,8 @@ import it.cnr.istc.psts.wikitell.LessonManager;
 
 @Controller
 public class pageController {
+	
+
 	
 	@Autowired
 	private UserService userservice;
@@ -68,6 +71,7 @@ public class pageController {
 		//System.out.println(prova.getLength());
 		Json_reader interests = json("/json/user_model.json",true);
 		model.addAttribute("interests", interests.getInterests());
+		System.out.println("ONLINE: "+UserController.ONLINE);
 			return "index";
 	}
 	

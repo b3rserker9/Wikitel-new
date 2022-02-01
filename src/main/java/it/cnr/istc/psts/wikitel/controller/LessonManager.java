@@ -7,49 +7,78 @@ import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.catalina.mapper.Mapper;
 import org.apache.el.lang.FunctionMapperImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import it.cnr.istc.pst.oratio.Atom;
 import it.cnr.istc.pst.oratio.Bound;
 import it.cnr.istc.pst.oratio.GraphListener;
 import it.cnr.istc.pst.oratio.Rational;
 import it.cnr.istc.pst.oratio.Solver;
 import it.cnr.istc.pst.oratio.SolverException;
 import it.cnr.istc.pst.oratio.StateListener;
+import it.cnr.istc.pst.oratio.timelines.ExecutorException;
 import it.cnr.istc.pst.oratio.timelines.ExecutorListener;
 import it.cnr.istc.pst.oratio.timelines.TimelinesExecutor;
+import it.cnr.istc.pst.oratio.utils.Flaw;
+import it.cnr.istc.pst.oratio.utils.Resolver;
 
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.RuleEntity;
+import it.cnr.istc.psts.wikitel.db.TextRuleEntity;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
+import it.cnr.istc.psts.wikitel.db.WebRuleEntity;
+import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
 import it.cnr.istc.psts.WikitelNewApplication;
+import it.cnr.istc.psts.wikitel.Service.ModelService;
+import it.cnr.istc.psts.wikitel.Service.UserService;
+import it.cnr.istc.psts.wikitel.controller.Message.Stimulus;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 
 
 
 public class LessonManager implements StateListener, GraphListener, ExecutorListener  {
+	
+	@Autowired
+	ModelService modelservice;
+	
+	@Autowired
+	UserService userservice;
 
 	   static final Logger LOG = LoggerFactory.getLogger(LessonManager.class);
 	   private LessonEntity lesson;
-	   private static  ObjectMapper pippo = new ObjectMapper();
-	   
-	 
-	    private final Solver solver = new Solver();
+	   private ScheduledFuture<?> scheduled_feature;
+	   private final Solver solver = new Solver();
+	    private final Map<Long, Atom> c_atoms = new HashMap<>();
 	    private final TimelinesExecutor executor = new TimelinesExecutor(solver);
+	    private final Set<String> topics = new HashSet<>();
+	    private final Map<Long, Collection<Stimulus>> stimuli = new HashMap<>();
+	    private Rational current_time = new Rational();
+	    private final Map<Long, Flaw> flaws = new HashMap<>();
+	    private Flaw current_flaw = null;
+	    private final Map<Long, Resolver> resolvers = new HashMap<>();
+	    private Resolver current_resolver = null;
+	    
 	    
 	    public LessonManager(final LessonEntity lesson) {
 	        this.lesson = lesson;
-	        
+	        for (final UserEntity student : lesson.getFollowed_by())
+	            stimuli.put(student.getId(), new ArrayList<>());
 	 
 	 
 	        solver.addStateListener(this);
@@ -91,7 +120,39 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	        }
 	       // setState(LessonState.Stopped);
 	    }
+	    
+	    public void play() {
+	    	scheduled_feature = WikitelNewApplication.EXECUTOR.scheduleAtFixedRate(() -> {
+	            try {
+	                executor.tick();
+	            } catch (ExecutorException e) {
+	                LOG.error("cannot execute the given solution..", e);
+	                scheduled_feature.cancel(false);
+	            }
+	        }, 1, 1, TimeUnit.SECONDS);
+	    	//setState(LessonState.Running);
+	    }
+	    
+	    public void pause() {
+	        scheduled_feature.cancel(false);
+	       // setState(LessonState.Paused);
+	    }
 
+	    public void stop() {
+	        scheduled_feature.cancel(false);
+	       // setState(LessonState.Stopped);
+	    }
+
+
+	    /**
+	     * @return the stimuli
+	     */
+	    public Collection<Stimulus> getStimuli(final long user_id) {
+	        if (!stimuli.containsKey(user_id) || stimuli.get(user_id).isEmpty())
+	            return null;
+	        return stimuli.get(user_id);
+	    }
+	    
 		@Override
 		public void endAtoms(long[] arg0) {
 			// TODO Auto-generated method stub
@@ -105,8 +166,40 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		}
 
 		@Override
-		public void startAtoms(long[] arg0) {
-			// TODO Auto-generated method stub
+		public void startAtoms(long[] atoms) {
+			final long current_time = System.currentTimeMillis();
+			for (int i = 0; i < atoms.length; i++) {
+	            final Atom atom = c_atoms.get(atoms[i]);
+	            if (atom.getType().getName().equals("Use"))
+	                continue;
+	            final long rule_id = Long.parseLong(atom.getType().getName().substring(3));
+	            final RuleEntity rule_entity = this.modelservice.getRule(rule_id);
+
+	            Stimulus st = null;
+	            if (rule_entity instanceof TextRuleEntity)
+	                st = new Message.Stimulus.TextStimulus(lesson.getId(), rule_id, current_time, false,
+	                        rule_entity.getName());
+	            else if (rule_entity instanceof WebRuleEntity)
+	                st = new Message.Stimulus.URLStimulus(lesson.getId(), rule_id, current_time, false,
+	                        rule_entity.getName(), ((WebRuleEntity) rule_entity).getUrl());
+	            else if (rule_entity instanceof WikiRuleEntity)
+	                st = new Message.Stimulus.URLStimulus(lesson.getId(), rule_id, current_time, false,
+	                        rule_entity.getName(), ((WikiRuleEntity) rule_entity).getUrl());
+
+	            try {
+	                final long student_id = atom.get("u").getName().equals("u")
+	                        ? lesson.getFollowed_by().iterator().next().getId()
+	                        : Long.parseLong(atom.get("u").getName().substring(2));
+	                final UserEntity student_entity = userservice.getUserId(student_id);
+	                stimuli.get(student_entity.getId()).add(st);
+
+	                final WsContext wsc = UserController.ONLINE.get(student_id);
+	                if (wsc != null)
+	                    wsc.send(st);
+	            } catch (NumberFormatException | NoSuchFieldException e) {
+	                LOG.error("Cannot find atom's user..", e);
+	            }
+	        }
 			
 		}
 

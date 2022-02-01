@@ -5,88 +5,75 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpServerErrorException.InternalServerError;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import it.cnr.istc.psts.wikitel.db.Email;
 import it.cnr.istc.psts.wikitel.db.FileEntity;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.Prova;
-import it.cnr.istc.psts.wikitel.db.Questionario;
 import it.cnr.istc.psts.wikitel.db.RuleEntity;
-import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationId;
+
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.dao.DataIntegrityViolationException;
 
-import java.io.Console;
+import org.springframework.core.io.ByteArrayResource;
+
+
+
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
-import javax.persistence.NoResultException;
-import javax.servlet.http.HttpServletRequest;
 
 import it.cnr.istc.psts.wikitel.db.TextRuleEntity;
+import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.WebRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiSuggestionEntity;
 import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationEntity;
-import it.cnr.istc.psts.WikitelNewApplication;
-import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
-import it.cnr.istc.psts.wikitel.Repository.LessonsRepository;
+
 import it.cnr.istc.psts.wikitel.Repository.Response;
-import it.cnr.istc.psts.wikitel.Repository.RuleSuggestionRelationRepository;
+
 import it.cnr.istc.psts.wikitel.Repository.UserRepository;
-import it.cnr.istc.psts.wikitel.Repository.WikiSuggestionRepository;
+
 import it.cnr.istc.psts.wikitel.Service.FileService;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.RuleSuggestionRelationService;
 import it.cnr.istc.psts.wikitel.Service.UserService;
-import it.cnr.istc.psts.wikitel.controller.pageController;
-import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 
 @RestController
@@ -102,13 +89,7 @@ public class MainController {
 	
 	@Autowired
 	private UserService userservice;
-	
-	@Autowired
-	private LessonsRepository lessonrepository;
-	
-	@Autowired
-	private RuleSuggestionRelationRepository relationrep;
-	
+		
 	@Autowired
 	private LessonService lessonservice;
 	
@@ -121,8 +102,6 @@ public class MainController {
 	@Autowired
 	private RuleSuggestionRelationService relationservice;
 	
-	@Autowired
-	private WikiSuggestionRepository wikirep;
 	
 	private LessonEntity l;
 	
@@ -213,7 +192,7 @@ public class MainController {
     	System.out.println(file1);
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
     	System.out.println(nuovo.getFirst_name());
-    	String baseDir="C:\\Users\\utente\\Documents\\workspace-spring-tool-suite-4-4.11.1.RELEASE\\Wikitel-new\\src\\main\\resources\\static\\images\\";
+    	String baseDir=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\";
     	uploadfile.transferTo(new File(baseDir + nuovo.getId() +".jpg"));
     	nuovo.setSrc("\\images\\" + nuovo.getId() + ".jpg");
     	this.userservice.saveUser(nuovo);
@@ -239,7 +218,7 @@ public class MainController {
 		String file1 =  uploadfile.getOriginalFilename();
     	System.out.println(file1);
     	System.out.println(current_user.getFirst_name());
-    	String baseDir="C:\\Users\\utente\\Documents\\workspace-spring-tool-suite-4-4.11.1.RELEASE\\Wikitel-new\\src\\main\\resources\\static\\images\\";
+    	String baseDir=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\";
     	uploadfile.transferTo(new File(baseDir + current_user.getId() +".jpg"));
     	current_user.setSrc("\\images\\" + current_user.getId() + ".jpg");
     	this.userservice.saveUser(current_user);
@@ -310,7 +289,7 @@ public class MainController {
 	}
 	
 	@RequestMapping(value = "/NewPrecondition",  method = RequestMethod.POST)
-	public Long NewPrecondition(@RequestBody ObjectNode node) throws JsonProcessingException{	
+	public Long NewPrecondition(@RequestBody ObjectNode node) throws JsonProcessingException, RestClientException, UnknownHostException{	
 		RestTemplate restTemplate = new RestTemplate();
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
@@ -321,7 +300,7 @@ public class MainController {
              String name= node.get("rule_name").asText();
              name = name.replace(' ','_');
              System.out.println(name);
-             Prova prova = restTemplate.getForObject("http://192.168.1.79:5015/wiki?page="+name, Prova.class);
+             Prova prova = restTemplate.getForObject("http://"+ InetAddress.getLocalHost().getHostAddress()+":5015/wiki?page="+name, Prova.class);
              ((WikiRuleEntity) rule).setUrl(prova.getUrl());
              System.out.println(prova.getPreconditions());
              rule.getTopics().addAll(prova.getCategories());
@@ -372,7 +351,7 @@ public class MainController {
 }
 	
 	@RequestMapping(value = "/Newrule",  method = RequestMethod.POST)
-	public Long NewModel(@RequestBody ObjectNode node) throws JsonProcessingException{	
+	public Long NewModel(@RequestBody ObjectNode node) throws JsonProcessingException, RestClientException, UnknownHostException{	
 		RestTemplate restTemplate = new RestTemplate();
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
@@ -393,7 +372,7 @@ public class MainController {
              rule = new WikiRuleEntity();
              this.modelservice.saverule(rule);
              
-             Prova prova = restTemplate.getForObject("http://localhost:5015/wiki?page="+ node.get("model_name").asText(), Prova.class);
+             Prova prova = restTemplate.getForObject("http://" + InetAddress.getLocalHost().getHostAddress() + ":5015/wiki?page="+ node.get("model_name").asText(), Prova.class);
              ((WikiRuleEntity) rule).setUrl(prova.getUrl());
              System.out.println(prova.getPreconditions());
              rule.getTopics().addAll(prova.getCategories());
@@ -573,11 +552,11 @@ public class MainController {
 		
 	}
 	
-	@PostMapping("/mauro")
-	public Response email(@RequestBody Email email){
-		System.out.println("username2:PIPPO");
-		Response response = new Response("Done", email);
-		if(userservice.getUser(email.getEmail()) == null) {
+	@PostMapping("/getEmail")
+	public Response email(@RequestBody ObjectNode node){
+		Response response = new Response("Done");
+		System.out.println("prova");
+		if(userservice.getUser(node.get("email").asText()) == null) {
 			response.setStatus("Done");
 		}else {
 			response.setStatus("No");
