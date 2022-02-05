@@ -46,4 +46,10 @@ public class LessonService {
 		Optional<LessonEntity> result = lessonsrepository.findByName(name);
 		return result.orElse(null);
 	}
+	@Transactional
+	public List<LessonEntity> lezionePerDocente(Long id) {
+		
+		return this.lessonsrepository.findByTeachersonly(id);
+	}
+	
 }

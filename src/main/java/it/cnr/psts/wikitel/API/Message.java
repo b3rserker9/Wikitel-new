@@ -1,23 +1,234 @@
-package it.cnr.istc.psts.wikitel.controller;
+package it.cnr.psts.wikitel.API;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import it.cnr.psts.wikitel.API.Lesson.LessonState;
+
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
-@JsonSubTypes({
+@JsonSubTypes({ @Type(value = Message.Online.class, name = "online"),
+        @Type(value = Message.Follower.class, name = "follower"),
+        @Type(value = Message.ProfileUpdate.class, name = "profile-update"),
+        @Type(value = Message.FollowLesson.class, name = "follow-lesson"),
+        @Type(value = Message.UnfollowLesson.class, name = "unfollow-lesson"),
+        @Type(value = Message.RemoveLesson.class, name = "remove-lesson"),
+        @Type(value = Message.LessonStateUpdate.class, name = "lesson-state-update"),
         @Type(value = Message.Stimulus.TextStimulus.class, name = "text-stimulus"),
         @Type(value = Message.Stimulus.QuestionStimulus.class, name = "question-stimulus"),
         @Type(value = Message.Stimulus.URLStimulus.class, name = "url-stimulus") })
 public abstract class Message {
-	
-	  /**
+
+    /**
+     * This message is used for communicating that a user is now online/offline.
+     */
+    public static class Online extends Message {
+
+        private final long user;
+        private final boolean online;
+
+        @JsonCreator
+        public Online(@JsonProperty("user") final long user, @JsonProperty("online") final boolean online) {
+            this.user = user;
+            this.online = online;
+        }
+
+        /**
+         * @return the user.
+         */
+        public long getUser() {
+            return user;
+        }
+
+        /**
+         * @return the connected state.
+         */
+        public boolean isOnline() {
+            return online;
+        }
+    }
+
+    /**
+     * This message is used for communicating to a teacher that a student has been
+     * added/removed.
+     */
+    public static class Follower extends Message {
+
+        private final long student;
+        private final boolean added;
+
+        @JsonCreator
+        public Follower(@JsonProperty("student") final long student, @JsonProperty("added") final boolean added) {
+            this.student = student;
+            this.added = added;
+        }
+
+        /**
+         * @return the student.
+         */
+        public long getStudent() {
+            return student;
+        }
+
+        /**
+         * @return the added state.
+         */
+        public boolean isAdded() {
+            return added;
+        }
+    }
+
+    /**
+     * This message is used for communicating that a user profile has been updated.
+     */
+    public static class ProfileUpdate extends Message {
+
+        private final long user;
+        private final String profile;
+
+        @JsonCreator
+        public ProfileUpdate(@JsonProperty("user") long user, @JsonProperty("profile") String profile) {
+            this.user = user;
+            this.profile = profile;
+        }
+
+        public long getUser() {
+            return user;
+        }
+
+        public String getProfile() {
+            return profile;
+        }
+    }
+
+    /**
+     * This message is used for communicating that a student is following a lesson.
+     */
+    public static class FollowLesson extends Message {
+
+        private final User student;
+        private final long lesson;
+        private final Set<String> interests; // interests are here to allow their definition within the lesson model..
+
+        @JsonCreator
+        public FollowLesson(@JsonProperty("student") final User student, @JsonProperty("lesson") final long lesson,
+                @JsonProperty("interests") final Set<String> interests) {
+            this.student = student;
+            this.lesson = lesson;
+            this.interests = interests;
+        }
+
+        /**
+         * @return the following student.
+         */
+        public User getStudent() {
+            return student;
+        }
+
+        /**
+         * @return the followed lesson.
+         */
+        public long getLesson() {
+            return lesson;
+        }
+
+        /**
+         * @return the user's interests.
+         */
+        public Set<String> getInterests() {
+            return Collections.unmodifiableSet(interests);
+        }
+    }
+
+    /**
+     * This message is used for communicating that a student is not following a
+     * lesson anymore.
+     */
+    public static class UnfollowLesson extends Message {
+
+        private final long student;
+        private final long lesson;
+
+        @JsonCreator
+        public UnfollowLesson(@JsonProperty("student") final long student, @JsonProperty("lesson") final long lesson) {
+            this.student = student;
+            this.lesson = lesson;
+        }
+
+        /**
+         * @return the unfollowing student.
+         */
+        public long getStudent() {
+            return student;
+        }
+
+        /**
+         * @return the unfollowed lesson.
+         */
+        public long getLesson() {
+            return lesson;
+        }
+    }
+
+    /**
+     * This message is used for communicating that a lesson has been removed.
+     */
+    public static class RemoveLesson extends Message {
+
+        private final long lesson;
+
+        @JsonCreator
+        public RemoveLesson(@JsonProperty("lesson") final long lesson) {
+            this.lesson = lesson;
+        }
+
+        /**
+         * @return the removed lesson.
+         */
+        public long getLesson() {
+            return lesson;
+        }
+    }
+
+    /**
+     * This message is used for communicating that a lesson has changed its state.
+     */
+    public static class LessonStateUpdate extends Message {
+
+        private final long lesson;
+        private final LessonState state;
+
+        @JsonCreator
+        public LessonStateUpdate(@JsonProperty("lesson") final long lesson,
+                @JsonProperty("state") final LessonState state) {
+            this.lesson = lesson;
+            this.state = state;
+        }
+
+        /**
+         * @return the removed lesson.
+         */
+        public long getLesson() {
+            return lesson;
+        }
+
+        /**
+         * @return the new lesson's state.
+         */
+        public LessonState getState() {
+            return state;
+        }
+    }
+
+    /**
      * This message is used for communicating the creation of a new stimulus. This
      * is the base class for representing stimuli.
      */
@@ -212,5 +423,4 @@ public abstract class Message {
             return id;
         }
     }
-
 }

@@ -1,16 +1,21 @@
 package it.cnr.istc.psts.wikitel.controller;
 
 
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,12 +24,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import it.cnr.istc.psts.wikitel.db.FileEntity;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.Model;
@@ -32,6 +37,10 @@ import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.Prova;
 import it.cnr.istc.psts.wikitel.db.RuleEntity;
 
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessageType;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,7 +65,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import it.cnr.istc.psts.wikitel.db.TextRuleEntity;
 import it.cnr.istc.psts.wikitel.db.User;
@@ -104,7 +113,9 @@ public class MainController {
 	@Autowired
 	private RuleSuggestionRelationService relationservice;
 	
-	
+    @Autowired
+    private SimpMessagingTemplate webSocket;
+    
 	private LessonEntity l;
 	
 	private ModelEntity m;
@@ -112,7 +123,7 @@ public class MainController {
 	private UserEntity current_user;
 	
 	static final Map<Long, LessonManager> LESSONS = new HashMap<>();
-	
+	public  List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
 	
 	@PostMapping("/register")
 	public Response register(@RequestBody  ObjectNode node) throws JsonGenerationException, JsonMappingException, IOException{
@@ -131,10 +142,27 @@ public class MainController {
 		current_user = nuovo;
 		userrepository.save(nuovo);
 		System.out.println("Done");
-		
+		String eventFormatted = new JSONObject()
+        .put ("title", "prova")
+        .put ("text", "pippo").toString();
+		for ( SseEmitter emitter : emitters) {
+		    try {
+		        emitter.send(SseEmitter.event().name("latestNews").data(eventFormatted));
+		     } catch (IOException e) {
+		        emitters.remove(emitter);
+		     }
+		}
 		return response;
 		
 	}
+	@MessageMapping("/register")
+	public void prova(@Payload pippo pippo, SimpMessageHeaderAccessor headerAccessor ) {
+		UserController.ONLINE.put(pippo.getUser_id(), pippo.getSession());
+		System.out.println("sessionID" + pippo.getSession());
+	}
+	 
+	
+	
 	
 	@GetMapping("/getprofile")
 	public Response getProfile() throws JsonMappingException, JsonProcessingException {
@@ -519,7 +547,7 @@ public class MainController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
     	List<LessonEntity> l = nuovo.getFollowing_lessons();
-		Response response = new Response("Done",l);			
+		Response response = new Response("Done",l);		
 		return response;
 		
 	}

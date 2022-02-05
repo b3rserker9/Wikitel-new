@@ -63,11 +63,6 @@ public class UserEntity {
     @ManyToMany(mappedBy = "teachers")
     
     private final Collection<ModelEntity> models = new ArrayList<>();
-    @ManyToMany(mappedBy = "students")
-    
-    private final Collection<UserEntity> teachers = new ArrayList<>();
-    @ManyToMany
-    private final Collection<UserEntity> students = new ArrayList<>();
     @ManyToMany(mappedBy = "followed_by") 
     @JsonBackReference
     private final List<LessonEntity> following_lessons = new ArrayList<>();

@@ -356,8 +356,26 @@ function resetformat() {
 
 $(document).ready(
     function() {
+	var current_user = document.getElementById("nameid").getAttribute('value');
+	console.log(current_user);
+        // defined a connection to a new socket endpoint
+        var socket = new SockJS('/comunication');
+        var stompClient = Stomp.over(socket);
+        stompClient.connect({ }, function(frame) {
+	var url = socket._transport.url.split('/');
+	var index = url.length -2;
+	var session = url[index];
+            // subscribe to the /topic/message endpoint
+            stompClient.subscribe("/queue/notify-user"+session, function(data) {
+                var message = data.body;
+                console.log(message)
+            });
+            var message={"session":session,"user_id":current_user};
+            stompClient.send("/app/register",{},JSON.stringify(message))
 
-        clone = document.getElementById("clone").cloneNode(true);
+        });
+        
+          clone = document.getElementById("clone").cloneNode(true);
         console.log(text);
         questions();
         prep_modal();

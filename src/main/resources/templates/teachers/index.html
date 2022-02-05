@@ -24,7 +24,8 @@
     <script src="/js/rSlider.min.js"></script>
 	<script src="https://kit.fontawesome.com/ced3f913ea.js" crossorigin="anonymous"></script>
 	<script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
-		
+		<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+		<script src="/webjars/stomp-websocket/stomp.min.js"></script>
 		<script type="text/javascript" src="/js/teacher_index.js"></script>
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
@@ -90,6 +91,7 @@ div#suggested-preconditions-list{
 
 </style>
 <body >
+<div hidden="true" id="nameid" th:value="${user.id}"></div>
 <script>
 function openNav() {
 	if(document.getElementById("mySidebar").style.width == "250px"){

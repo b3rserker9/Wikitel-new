@@ -6,6 +6,7 @@ import static it.cnr.istc.psts.wikitel.db.UserEntity.TEACHER_ROLE;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.messaging.core.MessageSendingOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,9 +30,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.socket.WebSocketSession;
+
 
 import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.wikitel.Service.UserService;
+import it.cnr.istc.psts.wikitel.controller.MainController;
 import it.cnr.istc.psts.wikitel.controller.UserController;
 import it.cnr.istc.psts.wikitel.controller.pageController;
 
@@ -49,11 +56,14 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 	
     @Autowired
     DataSource datasource;
+    @Autowired
+    private SimpMessagingTemplate webSocket;
+   
     
-
-    /**
-     * This method provides the whole authentication and authorization configuration to use.
-     */
+    
+    private final MessageSendingOperations<String> messageSendingOperations = null;
+    private final List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+ 
   
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -62,9 +72,9 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
         		// authorization paragraph: qui definiamo chi può accedere a cosa
                 .authorizeRequests()
                 // chiunque (autenticato o no) può accedere alle pagine index, login, register, ai css e alle immagini
-                .antMatchers(HttpMethod.GET, "/", "/index", "/css/**","/js/**", "/images/**","/json","/lessons").permitAll()
+                .antMatchers(HttpMethod.GET, "/", "/index", "/css/**","/js/**", "/images/**","/json","/lessons","/prova2").permitAll()
                 // chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
-                .antMatchers(HttpMethod.POST,  "/register", "/getEmail").permitAll()
+                .antMatchers(HttpMethod.POST,  "/register", "/getEmail", "/prova2").permitAll()
                 // solo gli utenti autenticati con ruolo ADMIN possono accedere a risorse con path /admin/**
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(STUDENT_ROLE)
                 .antMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority(STUDENT_ROLE)
@@ -80,7 +90,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 					@Override
 					public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 							Authentication authentication) throws IOException, ServletException {
-					UserController.ONLINE.add(authentication.getName());
+						
 					response.sendRedirect("/default");
 						
 					}

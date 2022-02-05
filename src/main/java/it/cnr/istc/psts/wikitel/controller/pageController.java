@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -68,6 +69,9 @@ public class pageController {
 	@Autowired
 	private ModelService modelservice;
 	 private final Solver s = new Solver();
+	 
+
+
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
 	public String index(Model model) throws NoSuchFieldException, SolverException {
@@ -77,6 +81,7 @@ public class pageController {
 		Json_reader interests = json("/json/user_model.json",true);
 		model.addAttribute("interests", interests.getInterests());
 		System.out.println("ONLINE: "+UserController.ONLINE);
+		
 			return "index";
 	}
 	
