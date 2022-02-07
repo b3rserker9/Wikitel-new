@@ -5,16 +5,17 @@ let ids = [];
 let result = [];
 
 
-function ajaxGet2(id) {
+function ajaxGet2() {
+	
     console.log("PPPPP3");
     console.log("HERE");
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "Getlessonsreal",
+        url: "/Getlessonsreal",
         dataType: "json",
         data: JSON.stringify({
-            id: id
+            id: document.getElementById("modelid").getAttribute('value')
         }),
         success: function(data) {
             console.log("SUCCESS : ", data);
@@ -81,16 +82,11 @@ function searchFunction() {
 }
 
 function GetStudent() {
-    console.log("PPPPP3");
-    // PREPARE FORM DATA
-
-    console.log("PPPPP4");
-    // DO POST
     $.ajax({
 
         type: "GET",
         contentType: "application/json",
-        url: "http://localhost:7000/getstudents",
+        url: "/getstudents",
         dataType: "json",
 
         success: function(data) {
@@ -100,12 +96,9 @@ function GetStudent() {
                 students[i] = data[i].first_name + ' ' + data[i].last_name;
                 ids[data[i].id] = data[i];
                 student[students[i]] = data[i];
-                console.log(ids);
                 create_card_profile(data[i]);
             }
 
-
-            console.log(students);
 
         },
         error: function(e) {
@@ -153,7 +146,6 @@ function create_card_profile(student) {
     small.appendChild(text_s);
     profile_card.appendChild(prova);
     root.appendChild(profile_card);
-    console.log(text);
 }
 
 
@@ -188,7 +180,7 @@ function Create_new_lesson() {
 
         type: "POST",
         contentType: "application/json",
-        url: "http://localhost:7000/NewLesson",
+        url: "/NewLesson",
         data: JSON.stringify(lesson),
         dataType: "json",
 
@@ -197,6 +189,10 @@ function Create_new_lesson() {
         success: function(data) {
             $('#new-lesson-modal').modal('hide');
             console.log("SUCCESS : ", data);
+                       
+                    document.getElementById("rows").innerHTML += '<div class="columns animate__animated animate__bounce"><div class="cards">  <button type="button" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion(' + data.id + ')"><i class="fas fa-cog"></i></button><a href="/Argomento/' + data.id + '"> <h3 >' + data.name + '</h3> <span class="spinner-border spinner-border-sm"></span></a> </div></div>'
+                   
+        
             students_id = [];
 
         },
@@ -213,6 +209,26 @@ function Create_new_lesson() {
 
 $(document).ready(
     function() {
+	console.log(document.getElementById("modelid").getAttribute('value'));
+	var current_user = document.getElementById("nameid").getAttribute('value');
+	console.log(current_user);
+        // defined a connection to a new socket endpoint
+        var socket = new SockJS('/comunication');
+        var stompClient = Stomp.over(socket);
+        stompClient.connect({ }, function(frame) {
+	var url = socket._transport.url.split('/');
+	var index = url.length -2;
+	var session = url[index];
+            // subscribe to the /topic/message endpoint
+            stompClient.subscribe("/queue/notify-user"+session, function(data) {
+                var message = data.body;
+                console.log(message)
+                setup_ws(message);
+            });
+            var message={"session":session,"user_id":current_user};
+            stompClient.send("/app/register",{},JSON.stringify(message))
+
+        });
         $("#students").autocomplete({
             source: students
         });
@@ -222,8 +238,6 @@ $(document).ready(
 
         GetStudent();
         $("#5").submit(function() {
-            console.log("PPPPP2");
-            console.log(a);
             event.preventDefault();
             Create_new_lesson();
 
@@ -260,3 +274,80 @@ $(document).ready(
 
 
     });
+    function setup_ws(msg) {
+
+        const c_msg = JSON.parse(msg);
+        switch (c_msg.type) {
+            case 'online':
+             console.log("online");
+                break;
+            case 'follower':
+            console.log("follower");
+                break;
+            case 'profile-update':
+                console.log("profileUpdate");
+                break;
+            case 'lesson-state-update':
+               console.log("lessonupdate")
+                break;
+            case 'text-stimulus':
+            case 'question-stimulus':
+            case 'url-stimulus':
+               console.log("stimulus");
+                break;
+            case 'Graph':
+              console.log("Graph");
+                break;
+            case 'StartedSolving':
+                console.log("solving the problem..");
+                break;
+            case 'SolutionFound':
+                console.log("hurray!! we have found a solution..");
+                break;
+            case 'InconsistentProblem':
+                console.log("unsolvable problem..");
+                break;
+            case 'FlawCreated':
+             console.log("FlawCreated");
+                break;
+            case 'FlawStateChanged':
+               console.log("FlawStateChanged");
+                break;
+            case 'FlawCostChanged':
+               console.log("FlawCostChanged")
+                break;
+            case 'FlawPositionChanged':
+              console.log("FlawCostChanged2")
+                break;
+            case 'CurrentFlaw':
+            console.log("FlawCostChanged3")
+                break;
+            case 'ResolverCreated':
+                console.log("FlawCostChanged4")
+                break;
+            case 'ResolverStateChanged':
+              console.log("FlawCostChanged5")
+                break;
+            case 'CurrentResolver':
+              console.log("FlawCostChanged6")
+                break;
+            case 'CausalLinkAdded':
+               console.log("FlawCostChanged7");
+                break;
+            case 'Timelines':
+             console.log("FlawCostChanged8")
+                break;
+            case 'Tick':
+               console.log("FlawCostChanged9")
+                break;
+            case 'StartingAtoms':
+                console.log("StartingAtoms")
+                break;
+            case 'EndingAtoms':
+               console.log("EndingAtoms")
+                break;
+            default:
+                console.log(msg);
+                break;
+        }
+}

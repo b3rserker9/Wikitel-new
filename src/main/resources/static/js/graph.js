@@ -16,6 +16,7 @@ let raw = [];
 let all = [];
 var nodesDataset;
 var edgesDataset;
+var prova;
 
 function update_add() {
     var select = document.getElementById('graph_rilevanza');
@@ -35,7 +36,6 @@ function update_add() {
 function update() {
     var select = document.getElementById('new-rule-type');
     var option = select.options[select.selectedIndex];
-    console.log($("#Add_node_name").val());
     switch (option.value) {
         case '2':
             document.getElementById('url').style.display = "block";
@@ -89,26 +89,26 @@ var allNodes;
 var highlightActive = false;
 
 function order() {
-    console.log(rules);
+
 
     let order = [];
     rules.forEach(function(l) {
         order = [];
         l.suggestions.forEach(function(s) {
-            console.log(s.score2);
+ 
             order.push(s.score2);
         })
         order.sort(function(a, b) {
             return b - a
         });
         order.unshift(l.name);
-        console.log(order);
+   
         all.push(order);
     })
 }
 
-function redrawAll() {
-    rules.forEach(function(l) {
+function start(){
+	 rules.forEach(function(l) {
         const rule = new Object();
         rule.label = l.name;
         rule.id = l.name;
@@ -150,6 +150,7 @@ function redrawAll() {
         })
 
     })
+    
     for (let i = 0; i < nodes.length; i++) {
         if (rules.some(e => e.name === nodes[i].label) && nodes[i].group == 6) {
             nodes.splice(i, 1);
@@ -181,12 +182,24 @@ function redrawAll() {
         }
     }
 
-    var prova = $('#example').DataTable({
+     prova = $('#example').DataTable({
+      dom: 'Blfrtip',
+    buttons: [
+        'selectAll',
+        'selectNone'
+    ],
+    language: {
+        buttons: {
+            selectAll: "Select all items",
+            selectNone: "Select none"
+        }
+    },
         columnDefs: [{
             orderable: false,
             className: 'select-checkbox',
             targets: 0
         }],
+     
         select: {
             style: 'multi',
             selector: 'td:first-child'
@@ -196,13 +209,15 @@ function redrawAll() {
         ]
 
     });
+	 nodesDataset = new vis.DataSet(nodes);
+    edgesDataset = new vis.DataSet(edges); 
+    redrawAll()
+}
 
-
-    nodesDataset = new vis.DataSet(nodes); // these come from WorldCup2014.js
-    edgesDataset = new vis.DataSet(edges); // these come from WorldCup2014.js
-
+function redrawAll() {
     var container = document.getElementById("mynetwork");
     var options = {
+	layout: {improvedLayout:false},
         groups: {
             file: {
                 shape: "icon",
@@ -255,7 +270,7 @@ function redrawAll() {
         },
         physics: {
             // Even though it's disabled the options still apply to network.stabilize().
-            enabled: false,
+            enabled: true,
             solver: "repulsion",
             repulsion: {
                 nodeDistance: 300 // Put more distance between the nodes.
@@ -265,20 +280,58 @@ function redrawAll() {
     var data = {
         nodes: nodesDataset,
         edges: edgesDataset
-    }; // Note: data is coming from ./datasources/WorldCup2014.js
+    }; 
 
     network = new vis.Network(container, data, options);
+    network.fit();
     network.stabilize();
+  
     // get a JSON object
     allNodes = nodesDataset.get({
         returnType: "Object"
     });
-    console.log(allNodes);
+    
     var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
         keyboard: false
     })
-    document.getElementById("try").addEventListener("click", function() {
-        nodes = []
+    
+    
+    network.on("click", function(params) {
+        if ((params.nodes.length) > 0) {
+            params.event = "[original event]";
+            select = params.nodes[0]
+            selected = params.nodes[0].replaceAll(' ', '_');
+            document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected
+            myModal.show()
+        }
+    });
+}
+
+
+
+/*function disegna(nodes, edges) {
+    var mynetwork = document.getElementById("mynetwork");
+    var x = -mynetwork.clientWidth / 2 + 50;
+    var y = -mynetwork.clientHeight / 2 + 50;
+    var step = 70;
+
+
+    var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
+        keyboard: false
+    })
+    network.on("click", function(params) {
+        params.event = "[original event]";
+        console.log(params);
+        select = params.nodes[0]
+        selected = params.nodes[0].replaceAll(' ', '_');
+        console.log(selected.replaceAll(' ', '-'));
+        document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected
+        myModal.show()
+    });
+}*/
+
+  function aggiorna(){
+	nodes = []
         nodesDataset = [];
         nodes.push(...current_rule);
         console.log(current_rule);
@@ -305,155 +358,14 @@ function redrawAll() {
             });
         }
         nodesDataset = new vis.DataSet(nodes);
-        var container = document.getElementById("mynetwork");
-        var options = {
-            groups: {
-                file: {
-                    shape: "icon",
-                    icon: {
-                        face: "'FontAwesome'",
-                        code: "\uf15b",
-                        size: 50,
-                        color: "#000000",
-                    },
-                },
-                wikipedia: {
-                    shape: "icon",
-                    icon: {
-                        face: "'FontAwesome'",
-                        code: "\uf266",
-                        size: 50,
-                        color: "#000000",
-                    },
-                },
-                text: {
-                    shape: "icon",
-                    icon: {
-                        face: "'FontAwesome'",
-                        code: "\uf031",
-                        size: 50,
-                        color: "#000000",
-                    },
-                },
-            },
-            nodes: {
-                shape: "dot",
-                scaling: {
-                    min: 10,
-                    max: 30,
-                    label: {
-                        min: 8,
-                        max: 30,
-                        drawThreshold: 12,
-                        maxVisible: 20,
-                    },
-                },
-                font: {
-                    size: 12,
-                    face: "Tahoma",
-                },
-            },
-            edges: {
-                width: 0.15,
-                color: {
-                    inherit: "from"
-                },
-                smooth: {
-                    type: "continuous",
-                },
-            },
-            physics: {
-                hierarchicalRepulsion: {
-                    avoidOverlap: 1,
-                },
-            },
-
-        };
-        var data = {
-            nodes: nodesDataset,
-            edges: edgesDataset
-        }; // Note: data is coming from ./datasources/WorldCup2014.js
-
-        network = new vis.Network(container, data, options);
-        console.log(nodes);
-        network.on("click", function(params) {
-            if ((params.nodes.length) > 0) {
-                params.event = "[original event]";
-                console.log(params);
-                select = params.nodes[0]
-                selected = params.nodes[0].replaceAll(' ', '_');
-                console.log(selected.replaceAll(' ', '-'));
-                document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected
-                myModal.show()
-            }
-        });
-    });
-    network.on("click", function(params) {
-        if ((params.nodes.length) > 0) {
-            params.event = "[original event]";
-            console.log(params);
-            select = params.nodes[0]
-            selected = params.nodes[0].replaceAll(' ', '_');
-            console.log(selected.replaceAll(' ', '-'));
-            document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected
-            myModal.show()
-        }
-    });
-}
-
-
-
-function disegna(nodes, edges) {
-    var mynetwork = document.getElementById("mynetwork");
-    var x = -mynetwork.clientWidth / 2 + 50;
-    var y = -mynetwork.clientHeight / 2 + 50;
-    var step = 70;
-
-
-
-
-    document.getElementById("try").addEventListener("click", function() {
-        console.log(prova.rows({
-            selected: true
-        }).data()[1][1]);
-        nodes = current_rule;
-        console.log(nodes);
-        for (let i = 0; i < prova.rows({
-                selected: true
-            }).count(); i++) {
-            console.log(prova.rows({
-                selected: true
-            }).data()[i][1]);
-            const pippo = new Object();
-            pippo.label = prova.rows({
-                selected: true
-            }).data()[i][1]
-            pippo.id = pippo.label;
-            pippo.group = "desktop";
-            nodes.push(pippo);
-            console.log(nodes);
-            disegna(nodes, edges);
-        }
-    });
-    var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
-        keyboard: false
-    })
-    network.on("click", function(params) {
-        params.event = "[original event]";
-        console.log(params);
-        select = params.nodes[0]
-        selected = params.nodes[0].replaceAll(' ', '_');
-        console.log(selected.replaceAll(' ', '-'));
-        document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected
-        myModal.show()
-    });
+	redrawAll()
 }
 
 function ajaxGet() {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "http://localhost:7000/Getmodel",
+        url: "Getmodel",
         dataType: "json",
         data: JSON.stringify({
             ids: document.getElementById('model_name').getAttribute('value')
@@ -462,9 +374,8 @@ function ajaxGet() {
             console.log("SUCCESS : ", data);
             moedl = data;
             rules = data.rules;
-            console.log(rules);
             order();
-            redrawAll();;
+            start();
 
         },
         error: function(e) {
@@ -475,7 +386,6 @@ function ajaxGet() {
 }
 
 function addNode() {
-    console.log(selected);
     nodesDataset.add({
         id: $("#Add_node_name").val(),
         label: $("#Add_node_name").val(),

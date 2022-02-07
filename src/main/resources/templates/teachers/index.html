@@ -90,7 +90,7 @@ div#suggested-preconditions-list{
 }
 
 </style>
-<body >
+<body>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
 <script>
 function openNav() {
@@ -237,6 +237,7 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
   <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
   		<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_lesson1">Nuovo Argomento</button>
   		<button type="button" class="btn btn-primary" onclick="active()">Nuovo Argomento</button>
+  		<button type="button" class="btn btn-primary" id="button_1" onclick="prova()">Messaggio</button>
   <div class="rows" id="rows">
   <div class="columns animate__animated animate__bounce" th:each="m : ${model}" >
    <div class="cards">

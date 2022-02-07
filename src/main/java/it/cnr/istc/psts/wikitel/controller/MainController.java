@@ -41,6 +41,7 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.support.MessageHeaderInitializer;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -73,6 +74,7 @@ import it.cnr.istc.psts.wikitel.db.WebRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiSuggestionEntity;
 import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationEntity;
+import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
 
@@ -102,6 +104,7 @@ public class MainController {
 	@Autowired
 	private LessonService lessonservice;
 	
+	
 	@Autowired
 	private FileService fileservice;
 	
@@ -111,11 +114,11 @@ public class MainController {
 	private ModelRepository  modelrepository;
 	
 	@Autowired
-	private RuleSuggestionRelationService relationservice;
+	private Sending send;
 	
-    @Autowired
-    private SimpMessagingTemplate webSocket;
-    
+	@Autowired
+	private RuleSuggestionRelationService relationservice;
+	 
 	private LessonEntity l;
 	
 	private ModelEntity m;
@@ -293,7 +296,7 @@ public class MainController {
 	}
 	
 	
-	@PostMapping("/Getmodel")
+	@PostMapping("/Argomento/Getmodel")
 	public ModelEntity getmodel(@RequestBody ObjectNode node){
 		return this.modelservice.getModel(node.get("ids").asLong());
 		
@@ -493,11 +496,10 @@ public class MainController {
     	nuovo.getTeaching_lessons().add(lesson);
     	userservice.saveUser(nuovo);
 		Response response = new Response("Ciao",lesson);
-		 final LessonManager lesson_manager = new LessonManager(lesson);
-		 System.out.println("goalID"+node.get("goals"));
+		send.notify("prova", UserController.ONLINE.get(nuovo.getId()));
+		 final LessonManager lesson_manager = new LessonManager(lesson,send);
 		LESSONS.put(lesson.getId(),lesson_manager);
 		lesson_manager.Solve();
-		 System.out.println(node.get("goals"));
 		return response;
 		
 	}
@@ -547,10 +549,29 @@ public class MainController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
     	List<LessonEntity> l = nuovo.getFollowing_lessons();
-		Response response = new Response("Done",l);		
+		Response response = new Response("Done");		
+		for(Long u : UserController.ONLINE.keySet()) {
+			System.out.println("ID: "+u);
+			send.notify("prova", UserController.ONLINE.get(u));
+		}
 		return response;
 		
 	}
+	
+	@PostMapping("/provamessaggio")
+	public String Prova43() {
+		for(Long u : UserController.ONLINE.keySet()) {
+			System.out.println("ID: "+u);
+			send.notify("prova", UserController.ONLINE.get(u));
+		}
+		return"funge";
+	}
+	 public static MessageHeaders createHeaders(String sessionId) {
+			SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+			headerAccessor.setSessionId(sessionId);
+			headerAccessor.setLeaveMutable(true);
+			return headerAccessor.getMessageHeaders();
+		}
 	
 	@GetMapping("/getstudents")
 	public List<UserEntity> Getstudents(){
@@ -573,6 +594,7 @@ public class MainController {
 		return response;
 		
 	}
+	
 	
 	@GetMapping("/lesson")
 	public Response getlesson(){	

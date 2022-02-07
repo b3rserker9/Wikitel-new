@@ -16,11 +16,6 @@ function ajaxGet2() {
 }
 
 function ajaxGet() {
-    console.log("PPPPP3");
-    // PREPARE FORM DATA
-
-    console.log("PPPPP4");
-    // DO POST
     $.ajax({
 
         type: "GET",

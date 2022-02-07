@@ -7,12 +7,15 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
+import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 
 
 public interface LessonsRepository extends CrudRepository<LessonEntity, Long>{
 	
 	public List<LessonEntity> findByTeacher(UserEntity teacher);
+	
+	public List<LessonEntity> findByModel(ModelEntity model);
 	
 	public Optional<LessonEntity> findById(Long id);
 	

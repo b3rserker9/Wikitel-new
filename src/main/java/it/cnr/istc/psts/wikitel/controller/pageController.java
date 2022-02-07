@@ -175,7 +175,8 @@ public class pageController {
 		model.addAttribute("students",userservice.getTeacher("STUDENT"));
 		model.addAttribute("arg",modelservice.getModel(id));
 		model.addAttribute("goal",modelservice.getModel(id).getRules());
-		
+		model.addAttribute("lesson",this.lessonservice.getlessonbymodel(this.modelservice.getModel(id)));
+		model.addAttribute("user",userentity);
 		
 		
 		return "teachers/Argomento";

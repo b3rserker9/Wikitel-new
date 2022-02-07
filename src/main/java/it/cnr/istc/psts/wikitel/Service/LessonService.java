@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import it.cnr.istc.psts.wikitel.Repository.LessonsRepository;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
+import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 
 
@@ -33,6 +34,12 @@ public class LessonService {
 	@Transactional
 	public List<LessonEntity> all() {
 		return (List<LessonEntity>) lessonsrepository.findAll();
+	}
+	
+	@Transactional
+	public List<LessonEntity> getlessonbymodel(ModelEntity m) {
+		List<LessonEntity> result = this.lessonsrepository.findByModel(m);
+		return result;
 	}
 	
 	@Transactional

@@ -72,15 +72,15 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
         		// authorization paragraph: qui definiamo chi può accedere a cosa
                 .authorizeRequests()
                 // chiunque (autenticato o no) può accedere alle pagine index, login, register, ai css e alle immagini
-                .antMatchers(HttpMethod.GET, "/", "/index", "/css/**","/js/**", "/images/**","/json","/lessons","/prova2").permitAll()
+                .antMatchers(HttpMethod.GET, "/", "/index", "/css/**","/js/**", "/images/**","/json","/lessons").permitAll()
                 // chiunque (autenticato o no) può mandare richieste POST al punto di accesso per login e register 
-                .antMatchers(HttpMethod.POST,  "/register", "/getEmail", "/prova2").permitAll()
+                .antMatchers(HttpMethod.POST,  "/register", "/getEmail").permitAll()
                 // solo gli utenti autenticati con ruolo ADMIN possono accedere a risorse con path /admin/**
                 .antMatchers(HttpMethod.GET, "/admin/**").hasAnyAuthority(STUDENT_ROLE)
                 .antMatchers(HttpMethod.POST, "/admin/**").hasAnyAuthority(STUDENT_ROLE)
                 
-                .antMatchers(HttpMethod.GET, "/teachers/**").hasAnyAuthority(TEACHER_ROLE)
-                .antMatchers(HttpMethod.POST, "/teachers/**").hasAnyAuthority(TEACHER_ROLE)
+                .antMatchers(HttpMethod.GET, "/teachers/**","/NewLesson").hasAnyAuthority(TEACHER_ROLE)
+                .antMatchers(HttpMethod.POST, "/teachers/**","/NewLesson","/provamessaggio").hasAnyAuthority(TEACHER_ROLE)
                 // tutti gli utenti autenticati possono accere alle pagine rimanenti 
                 .anyRequest().authenticated().and().formLogin()
                 .loginPage("/index").usernameParameter("email") .failureUrl("/failure").
