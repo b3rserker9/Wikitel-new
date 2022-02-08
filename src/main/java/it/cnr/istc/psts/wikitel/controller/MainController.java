@@ -145,16 +145,6 @@ public class MainController {
 		current_user = nuovo;
 		userrepository.save(nuovo);
 		System.out.println("Done");
-		String eventFormatted = new JSONObject()
-        .put ("title", "prova")
-        .put ("text", "pippo").toString();
-		for ( SseEmitter emitter : emitters) {
-		    try {
-		        emitter.send(SseEmitter.event().name("latestNews").data(eventFormatted));
-		     } catch (IOException e) {
-		        emitters.remove(emitter);
-		     }
-		}
 		return response;
 		
 	}

@@ -17,7 +17,8 @@ let all = [];
 var nodesDataset;
 var edgesDataset;
 var prova;
-
+var rule_selected;
+var rule_effects;
 function update_add() {
     var select = document.getElementById('graph_rilevanza');
     var option = select.options[select.selectedIndex];
@@ -113,7 +114,7 @@ function start(){
         rule.label = l.name;
         rule.id = l.name;
         let prova = getRandomColor();
-        rule.group = l.name;
+        rule.group = l.id;
         current_rule.push(rule);
         nodes.push(rule);
         let m;
@@ -132,7 +133,7 @@ function start(){
 
             pippo.label = s.suggestion.page
             pippo.id = pippo.label;
-            pippo.group = l.name;
+            pippo.group = l.id;
             pippo.color = prova;
             pippo.title = s.score2;
             edges.push({
@@ -298,6 +299,9 @@ function redrawAll() {
     
     network.on("click", function(params) {
         if ((params.nodes.length) > 0) {
+	console.log( nodesDataset.get(params.nodes).group);
+	rule_effects=nodesDataset.get(params.nodes)[0].group;
+	rule_selected=nodesDataset.get(params.nodes)[0].label
             params.event = "[original event]";
             select = params.nodes[0]
             selected = params.nodes[0].replaceAll(' ', '_');
@@ -329,6 +333,39 @@ function redrawAll() {
         myModal.show()
     });
 }*/
+
+function esplora(){
+	   var precondition = {
+                model_id: window.location.pathname.split('/')[2],
+                rule_id: rule_effects,
+                rule_name: rule_selected,
+            }
+	
+	 $.ajax({
+
+                type: "POST",
+                contentType: "application/json",
+                url: "/NewPrecondition",
+                data: JSON.stringify(precondition),
+                dataType: "json",
+                success: function(data) {
+                    console.log("SUCCESS : ", data);
+                    document.getElementById("notification").innerHTML += '<div class="toast show" role="alert" aria-live="assertive" id="' + item.name + '" aria-atomic="true">' +
+                        '<div class="toast-header">' +
+                        '<strong class="me-auto">Nuovo obiettivo trovato</strong>' +
+                        '<small class="text-muted">just now</small>' +
+                        '<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button></div>' +
+                        '<div class="toast-body"> ' + item.name + ' è stato trovato </div></div>'
+                    time(item.name);
+                    ajaxGet();
+
+                },
+                error: function(e) {
+                    alert("Error!")
+                    console.log("ERROR: ", e);
+                }
+            });
+}
 
   function aggiorna(){
 	nodes = []

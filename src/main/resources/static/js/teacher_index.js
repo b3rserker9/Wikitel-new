@@ -658,7 +658,7 @@ function setup_ws(msg) {
             case 'lesson-state-update':
                console.log("lessonupdate")
                 break;
-            case 'text-stimulus':
+            case 'text-stimulus'://lato studente creazione timeline
             case 'question-stimulus':
             case 'url-stimulus':
                console.log("stimulus");
