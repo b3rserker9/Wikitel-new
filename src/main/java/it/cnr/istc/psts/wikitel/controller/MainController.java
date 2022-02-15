@@ -74,6 +74,7 @@ import it.cnr.istc.psts.wikitel.db.WebRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
 import it.cnr.istc.psts.wikitel.db.WikiSuggestionEntity;
 import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationEntity;
+import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
@@ -126,7 +127,7 @@ public class MainController {
 	private UserEntity current_user;
 	
 	static final Map<Long, LessonManager> LESSONS = new HashMap<>();
-	public  List<SseEmitter> emitters = new CopyOnWriteArrayList<>();
+	
 	
 	@PostMapping("/register")
 	public Response register(@RequestBody  ObjectNode node) throws JsonGenerationException, JsonMappingException, IOException{
@@ -149,9 +150,15 @@ public class MainController {
 		
 	}
 	@MessageMapping("/register")
-	public void prova(@Payload pippo pippo, SimpMessageHeaderAccessor headerAccessor ) {
+	public void prova(@Payload pippo pippo, SimpMessageHeaderAccessor headerAccessor ) throws JsonProcessingException {
 		UserController.ONLINE.put(pippo.getUser_id(), pippo.getSession());
+		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(pippo.getUser_id()));
+		for(LessonEntity l : lesson) { 
+			 LessonManager manager = LESSONS.get(l.getId());
+		send.notify(WikitelNewApplication.mapper.writeValueAsString( new LessonManager.Timelines(l.getId(), manager.getSolver().getTimelines())), pippo.getSession());
+		send.notify(WikitelNewApplication.mapper.writeValueAsString(new LessonManager.Tick(l.getId(), manager.getCurrentTime())), pippo.getSession());
 		System.out.println("sessionID" + pippo.getSession());
+		}
 	}
 	 
 	
@@ -284,6 +291,40 @@ public class MainController {
 		return response;
 		
 	}
+	
+	@PostMapping("/play")
+	public Response PlayLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
+    	System.out.println(node.get("id").asLong());
+    	System.out.println(LESSONS);
+    	LESSONS.get(node.get("id").asLong()).play();
+    	Response response = new Response("Done");
+		return response;
+		
+	}
+	@PostMapping("/pause")
+	public Response pauseLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
+    	System.out.println(node.get("id").asLong());
+    	System.out.println(LESSONS);
+   LESSONS.get(node.get("id").asLong()).pause();
+   
+  
+    	Response response = new Response("Done");
+		return response;
+		
+	}
+	
+	@PostMapping("/stop")
+	public Response stopLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
+    	System.out.println(node.get("id").asLong());
+    	System.out.println(LESSONS);
+   LESSONS.get(node.get("id").asLong()).stop();
+
+    
+    	Response response = new Response("Done");
+		return response;
+		
+	}
+	
 	
 	
 	@PostMapping("/Argomento/Getmodel")
@@ -464,8 +505,8 @@ public class MainController {
     	lesson.setModel(modelservice.getModel(node.get("models").asLong()));
     	
     	ObjectMapper mapper = new ObjectMapper();
-    	List<Integer> map = mapper.readValue(node.get("students").asText(), List.class);
-    	for(int id : map) {
+    	long[] map = WikitelNewApplication.mapper.readValue(node.get("students").asText(), long[].class);
+    	for(long id : map) {
     		UserEntity student = this.userservice.getUserId(Long.valueOf(id));
     		lesson.addStudent(student);
     		student.getFollowing_lessons().add(lesson);
@@ -487,7 +528,7 @@ public class MainController {
     	userservice.saveUser(nuovo);
 		Response response = new Response("Ciao",lesson);
 		send.notify("prova", UserController.ONLINE.get(nuovo.getId()));
-		 final LessonManager lesson_manager = new LessonManager(lesson,send);
+		 final LessonManager lesson_manager = new LessonManager(lesson,send,this.modelservice,this.userservice);
 		LESSONS.put(lesson.getId(),lesson_manager);
 		lesson_manager.Solve();
 		return response;

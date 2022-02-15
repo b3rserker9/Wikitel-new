@@ -1,6 +1,35 @@
+import * as hello from "./lesson.js";
+import * as timeline from "./timeline.js";
+
+
+$(document).ready(
+    function() {
+	
+	var current_user = document.getElementById("nameid").getAttribute('value');
+	console.log(current_user);
+        // defined a connection to a new socket endpoint
+        var socket = new SockJS('/comunication');
+        var stompClient = Stomp.over(socket);
+        stompClient.connect({ }, function(frame) {
+	var url = socket._transport.url.split('/');
+	var index = url.length -2;
+	var session = url[index];
+	
+            // subscribe to the /topic/message endpoint
+            stompClient.subscribe("/queue/notify-user"+session, function(data) {
+                var message = data.body;
+                console.log(message)
+                setup_ws(message);
+            });
+          
+  var message={"session":session,"user_id":current_user};
+            stompClient.send("/app/register",{},JSON.stringify(message))
+        });
+          });
+
 function setup_ws(msg) {
 
-        const c_msg = JSON.parse(msg.data);
+        const c_msg = JSON.parse(msg);
         switch (c_msg.type) {
             case 'online':
              console.log("online");
@@ -59,10 +88,16 @@ function setup_ws(msg) {
                console.log("FlawCostChanged7");
                 break;
             case 'Timelines':
-             console.log("FlawCostChanged8")
-                break;
+            console.log(c_msg.timelines[0].horizon + "horizon");
+            localStorage.setItem("horizon",c_msg.timelines[0].horizon);
+             hello.horizon(c_msg.timelines[0].horizon);
+             timeline.timeline(c_msg.timelines[0].values)
+       break;
             case 'Tick':
-               console.log("FlawCostChanged9")
+            console.log(msg);
+            console.log(localStorage.getItem("horizon"));
+            	hello.horizon(localStorage.getItem("horizon"));
+               hello.loading(c_msg.current_time.num);
                 break;
             case 'StartingAtoms':
                 console.log("StartingAtoms")

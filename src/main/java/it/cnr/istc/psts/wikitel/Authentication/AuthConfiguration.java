@@ -90,7 +90,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
 					@Override
 					public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 							Authentication authentication) throws IOException, ServletException {
-						
+						System.out.println("prova253");
 					response.sendRedirect("/default");
 						
 					}

@@ -12,6 +12,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.springframework.web.bind.annotation.MatrixVariable;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -34,7 +36,7 @@ public class LessonEntity {
     @ManyToMany
     @JsonManagedReference
     private final Collection<UserEntity> followed_by = new ArrayList<>();
-    @OneToMany
+    @ManyToMany
     private final Collection<RuleEntity> goals = new ArrayList<>();
     
 

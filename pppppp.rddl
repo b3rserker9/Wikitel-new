@@ -52,13 +52,13 @@ class Lesson {
   }
 }
 
-Lesson l_33 = new Lesson();
+Lesson l_47 = new Lesson();
 User u_2 = new User(2, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
 
 User u;
 
 {
-  goal st4 = new l_33.St_4(u:u);
+  goal st4 = new l_47.St_4(u:u);
 } or {
   !u.c_chimica;
   !u.c_architettura;

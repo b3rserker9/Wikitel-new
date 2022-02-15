@@ -79,9 +79,7 @@ button.accordion:hover, button.accordion.is-open {
   transition: max-height 0.2s ease-in-out;
 }
 </style>
-<script type="module" language="javascript" src="/js/teacher_index.js">
-   ajaxGet()
-</script>
+
 <script>
 function openNav() {
 	if(document.getElementById("mySidebar").style.width == "250px"){
@@ -95,7 +93,7 @@ function openNav() {
 
 
 </script>
-<body onload="ajaxGet()">
+<body>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;">
 	<span style="font-size:25px;cursor:pointer;margin-right: 2%;" onclick="openNav()"><i class="fas fa-bars"></i></span>
@@ -137,7 +135,7 @@ function openNav() {
     My course
   </a>
   <div class="collapse" id="collapse">
- 
+ <div th:each="l : ${user.following_lessons}" class="card card-body" id="side-bar"><a style="font-size: 19px;" th:href="@{'/lezione/' +${l.id}} " th:text="${l.name}"></a></div>
 </div>
 </div>
        

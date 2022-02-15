@@ -36,7 +36,7 @@
 	<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 	<script src="https://kit.fontawesome.com/ced3f913ea.js" crossorigin="anonymous"></script>
 	<script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
-	
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 	<script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
 	<script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
 	<script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
@@ -44,7 +44,7 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 		<script type="text/javascript" src="/js/Argomento.js"></script>
 		<script type="text/javascript" src="/js/graph.js"></script>
-		
+		<script type="module" src="/js/ws_setup.js"></script>
 		<link th:href="@{/css/teacher_index.css}" rel="stylesheet">
 		<link th:href="@{/css/hello.css}" rel="stylesheet">
 		<link th:href="@{/css/argomento.css}" rel="stylesheet">
@@ -168,6 +168,9 @@ function openNav() {
 <div class="collapse" id="collapseExample">
   <div class="card card-body">
    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#table_modal">Table</button>
+   <label for="customRange1" class="form-label">Example range</label>
+   <span id="range_input"></span>
+<input type="range" onchange="slider(this.value)" class="form-range" id="customRange1">
     <div id="mynetwork"></div> </div>
 </div>
 <!-- Modal Table -->

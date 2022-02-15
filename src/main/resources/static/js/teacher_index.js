@@ -21,7 +21,7 @@ let rules = [];
 let close = false;
 
 function active(name) {
-    var span = document.getElementById(name);
+    var span = document.getElementById(name +"s");
     span.style.display="none";
 
 }
@@ -110,7 +110,7 @@ function New_rule() {
                     cache: false,
                     success: function(res) {
                         console.log("SUCCESS : ", data);
-                        active(data);
+                        active(data.data7.id);
                     },
                     error: function(err) {
                         console.error(err);
@@ -338,7 +338,7 @@ function add(model) {
         document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/' + model.id + '">' + model.name + '</a></div>'
     } else {
 
-        document.getElementById("rows").innerHTML += '<div class="columns animate__animated animate__bounce" id="' + model.id + '"><div class="cards" id="' + model.id + 'c">  <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion(' + model.id + ')"><i class="fas fa-cog"></i></button><a id="' + model.name + 'a" href="/Argomento/' + model.id + '" class="disabled"> <h3 >' + model.name + '</h3></a> <span id="' + model.name + 's" class="spinner-border"></span> </div></div>'
+        document.getElementById("rows").innerHTML += '<div class="columns animate__animated animate__bounce" id="' + model.id + '"><div class="cards" id="' + model.id + 'c">  <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion(' + model.id + ')"><i class="fas fa-cog"></i></button><a id="' + model.name + 'a" href="/Argomento/' + model.id + '" class="disabled"> <h3 >' + model.name + '</h3></a> <span id="' + model.id + 's" class="spinner-border"></span> </div></div>'
         document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/' + model.id + '">' + model.name + '</a></div>'
     }
     a.push(model);

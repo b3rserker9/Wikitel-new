@@ -14,11 +14,14 @@ let tables = [];
 let c = null;
 let raw = [];
 let all = [];
+const map1 = new Map();
 var nodesDataset;
 var edgesDataset;
 var prova;
 var rule_selected;
 var rule_effects;
+
+
 function update_add() {
     var select = document.getElementById('graph_rilevanza');
     var option = select.options[select.selectedIndex];
@@ -32,6 +35,49 @@ function update_add() {
             break;
     }
 
+}
+
+function slider(value){
+	nodes =[];
+	document.getElementById("range_input").innerHTML=value + "%";
+	let max=0;
+	
+		 rules.forEach(function(l) {
+        const rule = new Object();
+        rule.label = l.name;
+        rule.id = l.name;
+        let prova = getRandomColor();
+         rule.color="#1e90ff";
+        rule.group = "rule";
+        current_rule.push(rule);
+        nodes.push(rule);
+        max=map1.get(l.name)[0]
+        console.log(max);
+      
+        l.suggestions.forEach(function(s) {
+            raw = ["", s.suggestion.page, s.score, s.score2];
+            if (s.score2 == 0) {
+                s.score2 = 0.01
+            }
+            if((s.score2>=((max*value)/100)) && !rules.some(obj => obj.name === s.suggestion.page) && !nodes.some(obj => obj.label === s.suggestion.page)){
+            const pippo = new Object();
+		    pippo.label = s.suggestion.page
+            pippo.id = pippo.label;
+        	pippo.group = "precondition";
+            pippo.color = prova;
+            pippo.title = s.score2;
+            nodes.push(pippo);
+            tables.push(raw);
+            console.log(s.suggestion.page + " " + s.score2 + " " + l.name);
+}
+        })
+
+    })
+    console.log(nodes);
+    
+		
+	 nodesDataset = new vis.DataSet(nodes);
+    redrawAll()
 }
 
 function update() {
@@ -102,9 +148,7 @@ function order() {
         order.sort(function(a, b) {
             return b - a
         });
-        order.unshift(l.name);
-   
-        all.push(order);
+   		map1.set(l.name,order);
     })
 }
 
@@ -114,61 +158,50 @@ function start(){
         rule.label = l.name;
         rule.id = l.name;
         let prova = getRandomColor();
-        rule.group = l.id;
+         rule.color="#1e90ff";
+         
         current_rule.push(rule);
         nodes.push(rule);
-        let m;
-        for (let i = 0; i < all.length; i++) {
-            if (all[i][0] == l.name) {
-                m = all[i][1];
-            }
-        }
+         let max=map1.get(l.name)[0]
+        
         l.suggestions.forEach(function(s) {
+	const pippo = new Object();
+	pippo.id =s.suggestion.page;
             raw = ["", s.suggestion.page, s.score, s.score2];
             if (s.score2 == 0) {
                 s.score2 = 0.05
             }
-            const pippo = new Object();
-
-
+            if(!rules.some(obj => obj.name === s.suggestion.page)){
+	let colors = prova
+		if(s.score2<0.1){
+			 colors = "rgba(200,200,200,0.5)";
+			}
+            
             pippo.label = s.suggestion.page
-            pippo.id = pippo.label;
-            pippo.group = l.id;
-            pippo.color = prova;
+            pippo.id = pippo.label;          
+             pippo.group = "precondition";
+            pippo.color = colors;
             pippo.title = s.score2;
-            edges.push({
-                from: l.name,
-                to: pippo.id,
-                color: {
-                    opacity: s.score2 / m
-                },
-                width: 4
-            });
-
+            edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
             nodes.push(pippo);
             tables.push(raw);
+            
+            }
+            else{
+	 edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
+}
 
         })
 
     })
     
-    for (let i = 0; i < nodes.length; i++) {
-        if (rules.some(e => e.name === nodes[i].label) && nodes[i].group == 6) {
-            nodes.splice(i, 1);
-
-        }
-
-    }
+ 
     nodes = nodes.filter((value, index, self) =>
         index === self.findIndex((t) => (
             t.id === value.id
         ))
     )
-    for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].title < 0.1) {
-            nodes[i].color = "rgba(200,200,200,0.5)";
-        }
-    }
+    
     table = document.getElementById("example");
     for (var i = 0; i < tables.length; i++) {
         // create a new row

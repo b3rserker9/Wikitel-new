@@ -46,20 +46,20 @@ class User {
 
 class Lesson {
 
-  predicate St_4(User u) : Interval {
-    duration >= 385.0;
+  predicate St_244(User u) : Interval {
+    duration >= 573.0;
     fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
   }
 }
 
-Lesson l_33 = new Lesson();
+Lesson l_293 = new Lesson();
 User u_2 = new User(2, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
 
 User u;
 
 {
-  goal st4 = new l_33.St_4(u:u);
+  goal st244 = new l_293.St_244(u:u);
 } or {
-  !u.c_chimica;
+  !u.c_arte;
   !u.c_architettura;
 }

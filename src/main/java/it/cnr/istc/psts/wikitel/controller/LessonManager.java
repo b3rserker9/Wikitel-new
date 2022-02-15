@@ -26,6 +26,7 @@ import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.MessageHeaderInitializer;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -57,6 +58,7 @@ import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
 import it.cnr.psts.wikitel.API.Lesson.LessonState;
 import it.cnr.psts.wikitel.API.Message;
 import it.cnr.psts.wikitel.API.Message.Stimulus;
+import net.bytebuddy.asm.Advice.This;
 import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
@@ -92,9 +94,11 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	    private Resolver current_resolver = null;
 	    
 	    
-	    public LessonManager(final LessonEntity lesson, final Sending send) {
+	    public LessonManager(final LessonEntity lesson, final Sending send, final ModelService modelservice, final UserService userservice ) {
 	        this.lesson = lesson;
 	        this.send=send;
+	        this.modelservice = modelservice;
+	        this.userservice = userservice;
 	        for (final UserEntity student : lesson.getFollowed_by())
 	            stimuli.put(student.getId(), new ArrayList<>());
 	 
@@ -107,7 +111,8 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	    public void Solve() {
 	    	final StringBuilder sb = new StringBuilder();
 	    	System.out.println(lesson.getName());
-	    	System.out.println("prova: "+lesson.getFollowed_by().size());
+	    	send.notify("solve", UserController.ONLINE.get(lesson.getTeacher().getId()));
+	    	System.out.println("prova: "+ lesson.getFollowed_by().size());
 	        to_string(sb, lesson);
 	        
 	        final File lesson_file = new File(lesson.getName() + ".rddl");
@@ -137,6 +142,10 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	            LOG.error("cannot solve the given problem..", e);
 	        }
 	        setState(LessonState.Stopped);
+	    }
+	    
+	    public Solver getSolver() {
+	        return solver;
 	    }
 	    
 	    public void play() {
@@ -177,7 +186,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	            for (final UserEntity student : lesson.getFollowed_by()) {
 	                final String student_wsc = UserController.ONLINE.get(student.getId());
 	                if (student_wsc != null) {
-	                	send.notify(WikitelNewApplication.mapper.writeValueAsString(new Message.LessonStateUpdate(lesson.getId(), state)), wsc);
+	                	send.notify(WikitelNewApplication.mapper.writeValueAsString(new Message.LessonStateUpdate(lesson.getId(), state)), student_wsc);
 	                }
 	            }
 	        } catch (final JsonProcessingException e) {
@@ -201,7 +210,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	            if (atom.getType().getName().equals("Use"))
 	                continue;
 	            final long rule_id = Long.parseLong(atom.getType().getName().substring(3));
-	            final RuleEntity rule_entity = this.modelservice.getRule(rule_id);
+	            final RuleEntity rule_entity = modelservice.getRule(rule_id);
 
 	            try {
 	                final long student_id = atom.get("u").getName().equals("u")
@@ -272,7 +281,15 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 
 		   @Override
 		    public void tick(final Rational time) {
+			   
 		        current_time = time;
+		        for(Timeline<?> t : solver.getTimelines())
+					try {
+						System.out.println(WikitelNewApplication.mapper.writeValueAsString(t));
+					} catch (JsonProcessingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 		        final String wsc = UserController.ONLINE.get(lesson.getTeacher().getId());
 		        if (wsc != null)
 		            try {
@@ -466,7 +483,13 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		    @Override
 		    public void solutionFound() {
 		        LOG.info("Lesson \"{}\" planning problem solution found..", lesson.getName());
-
+		        for(Timeline<?> t : solver.getTimelines())
+					try {
+						System.out.println(WikitelNewApplication.mapper.writeValueAsString(t));
+					} catch (JsonProcessingException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 		        c_atoms.clear();
 
 		        for (final Type t : solver.getTypes().values())
@@ -474,6 +497,17 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		                p.getInstances().stream().map(atm -> (Atom) atm)
 		                        .filter(atm -> (atm.getState() == Atom.AtomState.Active))
 		                        .forEach(atm -> c_atoms.put(atm.getSigma(), atm));
+		        
+	
+		        try {
+		        	
+		        	send.notify(WikitelNewApplication.mapper.writeValueAsString( new LessonManager.Timelines(lesson.getId(), this.solver.getTimelines())), UserController.ONLINE.get(this.lesson.getTeacher().getId()));
+					send.notify(WikitelNewApplication.mapper.writeValueAsString(new LessonManager.Tick(lesson.getId(), this.getCurrentTime())), UserController.ONLINE.get(this.lesson.getTeacher().getId()));
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+				}
+		        
+		        
 		    }
 
 		
@@ -567,6 +601,15 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 				headerAccessor.setLeaveMutable(true);
 				return headerAccessor.getMessageHeaders();
 			}
+		 
+		  public Resolver getCurrentResolver() {
+		        return current_resolver;
+		    }
+
+		    public Rational getCurrentTime() {
+		        return current_time;
+		    }
+
 		 
 		  /**
 		     * @return the topics

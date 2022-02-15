@@ -73,7 +73,7 @@ public class pageController {
 
 
 
-	@RequestMapping(value = "/", method = RequestMethod.GET)
+	@RequestMapping(value = {"/","/index"}, method = RequestMethod.GET)
 	public String index(Model model) throws NoSuchFieldException, SolverException {
 		RestTemplate restTemplate = new RestTemplate();
 		//Prova prova = restTemplate.getForObject("http://192.168.1.79:5015/wiki?page=Palombaro_lungo", Prova.class);
@@ -151,6 +151,8 @@ public class pageController {
 	public String det_ordine(@PathVariable("id")Long id , Model model) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
+    	model.addAttribute("user",userentity);
+    	model.addAttribute("role",userentity.getRole());
 		LessonEntity lezione = lessonservice.lezionePerId(id);
 		model.addAttribute("lezione",lezione);
 		DateFormat df = new SimpleDateFormat("yy"); // Just the year, with 2 digits
