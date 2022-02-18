@@ -5,11 +5,15 @@ import java.util.Collection;
 import java.util.Collections;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -31,7 +35,8 @@ public class ModelEntity {
     
     @JsonBackReference
     private final Collection<UserEntity> teachers = new ArrayList<>();
-    @OneToMany(orphanRemoval = true)
+    @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference
     private final Collection<RuleEntity> rules = new ArrayList<>();
 

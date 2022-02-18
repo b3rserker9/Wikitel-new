@@ -1,4 +1,8 @@
+
 var n, nome;
+
+
+
 
 function pippo(name, id) {
     console.log(id);
@@ -44,23 +48,6 @@ function ajaxGet() {
 $(document).ready(
     function() {
 	var current_user = document.getElementById("nameid").getAttribute('value');
-	      var socket = new SockJS('/comunication');
-        var stompClient = Stomp.over(socket);
-        stompClient.connect({ }, function(frame) {
-	var url = socket._transport.url.split('/');
-	var index = url.length -2;
-	var session = url[index];
-            // subscribe to the /topic/message endpoint
-            stompClient.subscribe("/queue/notify-user"+session, function(data) {
-                var message = data.body;
-                console.log(message.body)
-            
-            });
-            var message={"session":session,"user_id":current_user};
-            stompClient.send("/app/register",{},JSON.stringify(message))
-
-        });
-
         var accordions = document.getElementsByClassName("accordion");
 
         for (var i = 0; i < accordions.length; i++) {

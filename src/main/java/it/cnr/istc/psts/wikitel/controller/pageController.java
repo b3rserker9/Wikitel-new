@@ -39,6 +39,7 @@ import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
+import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
@@ -187,7 +188,7 @@ public class pageController {
 	@GetMapping(value = "/profile/{id}")
 	public String det_profilo(@PathVariable(required = false) Long id, Model model) {
 		UserEntity user = userservice.getUserId(id);
-		for (final JsonNode interest : WikitelNewApplication.USER_MODEL.get("interests"))
+		for (final JsonNode interest : Starter.USER_MODEL.get("interests"))
 			System.out.println(interest.asText());
     
     	model.addAttribute("user",user);

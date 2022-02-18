@@ -85,6 +85,7 @@ import it.cnr.istc.psts.wikitel.Service.FileService;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.RuleSuggestionRelationService;
+import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 
@@ -126,7 +127,7 @@ public class MainController {
 	
 	private UserEntity current_user;
 	
-	static final Map<Long, LessonManager> LESSONS = new HashMap<>();
+	public static final Map<Long, LessonManager> LESSONS = new HashMap<>();
 	
 	
 	@PostMapping("/register")
@@ -155,8 +156,8 @@ public class MainController {
 		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(pippo.getUser_id()));
 		for(LessonEntity l : lesson) { 
 			 LessonManager manager = LESSONS.get(l.getId());
-		send.notify(WikitelNewApplication.mapper.writeValueAsString( new LessonManager.Timelines(l.getId(), manager.getSolver().getTimelines())), pippo.getSession());
-		send.notify(WikitelNewApplication.mapper.writeValueAsString(new LessonManager.Tick(l.getId(), manager.getCurrentTime())), pippo.getSession());
+		send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(l.getId(), manager.getSolver().getTimelines())), pippo.getSession());
+		send.notify(Starter.mapper.writeValueAsString(new LessonManager.Tick(l.getId(), manager.getCurrentTime())), pippo.getSession());
 		System.out.println("sessionID" + pippo.getSession());
 		}
 	}
@@ -505,7 +506,7 @@ public class MainController {
     	lesson.setModel(modelservice.getModel(node.get("models").asLong()));
     	
     	ObjectMapper mapper = new ObjectMapper();
-    	long[] map = WikitelNewApplication.mapper.readValue(node.get("students").asText(), long[].class);
+    	long[] map = Starter.mapper.readValue(node.get("students").asText(), long[].class);
     	for(long id : map) {
     		UserEntity student = this.userservice.getUserId(Long.valueOf(id));
     		lesson.addStudent(student);

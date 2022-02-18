@@ -58,10 +58,9 @@ import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
 import it.cnr.psts.wikitel.API.Lesson.LessonState;
 import it.cnr.psts.wikitel.API.Message;
 import it.cnr.psts.wikitel.API.Message.Stimulus;
-import net.bytebuddy.asm.Advice.This;
-import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
+import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 
@@ -111,7 +110,6 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	    public void Solve() {
 	    	final StringBuilder sb = new StringBuilder();
 	    	System.out.println(lesson.getName());
-	    	send.notify("solve", UserController.ONLINE.get(lesson.getTeacher().getId()));
 	    	System.out.println("prova: "+ lesson.getFollowed_by().size());
 	        to_string(sb, lesson);
 	        
@@ -149,7 +147,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	    }
 	    
 	    public void play() {
-	    	scheduled_feature = WikitelNewApplication.EXECUTOR.scheduleAtFixedRate(() -> {
+	    	scheduled_feature = Starter.EXECUTOR.scheduleAtFixedRate(() -> {
 	            try {
 	                executor.tick();
 	            } catch (ExecutorException e) {
@@ -179,14 +177,14 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	        this.state = state;
 	        try {
 	            final String wsc = UserController.ONLINE.get(lesson.getTeacher().getId());
-	            System.out.println(wsc);
+	       
 	            if (wsc != null) {
-	            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new Message.LessonStateUpdate(lesson.getId(), state)), wsc);
+	            	send.notify(Starter.mapper.writeValueAsString(new Message.LessonStateUpdate(lesson.getId(), state)), wsc);
 	            }
 	            for (final UserEntity student : lesson.getFollowed_by()) {
 	                final String student_wsc = UserController.ONLINE.get(student.getId());
 	                if (student_wsc != null) {
-	                	send.notify(WikitelNewApplication.mapper.writeValueAsString(new Message.LessonStateUpdate(lesson.getId(), state)), student_wsc);
+	                	send.notify(Starter.mapper.writeValueAsString(new Message.LessonStateUpdate(lesson.getId(), state)), student_wsc);
 	                }
 	            }
 	        } catch (final JsonProcessingException e) {
@@ -260,7 +258,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 
 	               final String wsc = UserController.ONLINE.get(student_id);
 	                if (wsc != null) {
-	                	send.notify(WikitelNewApplication.mapper.writeValueAsString(st), wsc);
+	                	send.notify(Starter.mapper.writeValueAsString(st), wsc);
 	                }
 	                
 	            } catch (NumberFormatException | NoSuchFieldException e) {
@@ -283,17 +281,12 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		    public void tick(final Rational time) {
 			   
 		        current_time = time;
-		        for(Timeline<?> t : solver.getTimelines())
-					try {
-						System.out.println(WikitelNewApplication.mapper.writeValueAsString(t));
-					} catch (JsonProcessingException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+		 
+				
 		        final String wsc = UserController.ONLINE.get(lesson.getTeacher().getId());
 		        if (wsc != null)
 		            try {
-		            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new Tick(lesson.getId(), current_time)), wsc);
+		            	send.notify(Starter.mapper.writeValueAsString(new Tick(lesson.getId(), current_time)), wsc);
 		            } catch (final JsonProcessingException e) {
 		                LOG.error("Cannot write tick message..", e);
 		            }
@@ -313,7 +306,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
 		            if (ws != null) {
-		            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new CausalLinkAdded(lesson.getId(), flaw, resolver)), ws);
+		            	send.notify(Starter.mapper.writeValueAsString(new CausalLinkAdded(lesson.getId(), flaw, resolver)), ws);
 		            }
 				       
 		        } catch (final JsonProcessingException e) {
@@ -330,7 +323,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        current_flaw.current = true;
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
-		            send.notify(WikitelNewApplication.mapper.writeValueAsString(new CurrentFlaw(lesson.getId(), id)), ws);
+		            send.notify(Starter.mapper.writeValueAsString(new CurrentFlaw(lesson.getId(), id)), ws);
 		        } catch (final JsonProcessingException e) {
 		            LOG.error("Cannot serialize", e);
 		        }
@@ -346,7 +339,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
 		            if (ws != null) {
-		            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new CurrentResolver(lesson.getId(), id)), ws);
+		            	send.notify(Starter.mapper.writeValueAsString(new CurrentResolver(lesson.getId(), id)), ws);
 		            }
 				       
 		        } catch (final JsonProcessingException e) {
@@ -361,7 +354,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
 		            if (ws != null) {
-		            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new FlawCostChanged(lesson.getId(), id, cost)), ws);
+		            	send.notify(Starter.mapper.writeValueAsString(new FlawCostChanged(lesson.getId(), id, cost)), ws);
 		            }
 		        } catch (final JsonProcessingException e) {
 		            LOG.error("Cannot serialize", e);
@@ -375,9 +368,9 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        flaw.position = position;
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
-		            System.out.println(ws);
+		
 		            if (ws != null) {
-		            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new FlawPositionChanged(lesson.getId(), id, position)), ws);
+		            	send.notify(Starter.mapper.writeValueAsString(new FlawPositionChanged(lesson.getId(), id, position)), ws);
 		            }
 		        } catch (final JsonProcessingException e) {
 		            LOG.error("Cannot serialize", e);
@@ -395,7 +388,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	        try {
 	            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
 	            if (ws != null)	      {
-	            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new FlawCreated(lesson.getId(), id, causes, label, (byte) state.ordinal(), position)), ws);
+	            	send.notify(Starter.mapper.writeValueAsString(new FlawCreated(lesson.getId(), id, causes, label, (byte) state.ordinal(), position)), ws);
 	            }
 	            } catch (final JsonProcessingException e) {
 	            LOG.error("Cannot serialize", e);
@@ -410,7 +403,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
 		            if (ws != null) {
-		            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new FlawStateChanged(lesson.getId(), id, (byte) state.ordinal())), ws);
+		            	send.notify(Starter.mapper.writeValueAsString(new FlawStateChanged(lesson.getId(), id, (byte) state.ordinal())), ws);
 		            }
 		        } catch (final JsonProcessingException e) {
 		            LOG.error("Cannot serialize", e);
@@ -425,7 +418,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
 		            if (ws != null) {
-		            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new ResolverCreated(lesson.getId(), id, effect, cost, label, (byte) state.ordinal())), ws);	
+		            	send.notify(Starter.mapper.writeValueAsString(new ResolverCreated(lesson.getId(), id, effect, cost, label, (byte) state.ordinal())), ws);	
 		            }
 		        } catch (final JsonProcessingException e) {
 		            LOG.error("Cannot serialize", e);
@@ -438,9 +431,9 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        resolver.state = state;
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
-		            System.out.println(ws);
+		   
 		            if (ws != null) {
-		            	send.notify(WikitelNewApplication.mapper.writeValueAsString(new ResolverStateChanged(lesson.getId(), id, (byte) state.ordinal())), ws);
+		            	send.notify(Starter.mapper.writeValueAsString(new ResolverStateChanged(lesson.getId(), id, (byte) state.ordinal())), ws);
 		            }
 				       
 		        } catch (final JsonProcessingException e) {
@@ -483,13 +476,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		    @Override
 		    public void solutionFound() {
 		        LOG.info("Lesson \"{}\" planning problem solution found..", lesson.getName());
-		        for(Timeline<?> t : solver.getTimelines())
-					try {
-						System.out.println(WikitelNewApplication.mapper.writeValueAsString(t));
-					} catch (JsonProcessingException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+		    
 		        c_atoms.clear();
 
 		        for (final Type t : solver.getTypes().values())
@@ -499,13 +486,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		                        .forEach(atm -> c_atoms.put(atm.getSigma(), atm));
 		        
 	
-		        try {
-		        	
-		        	send.notify(WikitelNewApplication.mapper.writeValueAsString( new LessonManager.Timelines(lesson.getId(), this.solver.getTimelines())), UserController.ONLINE.get(this.lesson.getTeacher().getId()));
-					send.notify(WikitelNewApplication.mapper.writeValueAsString(new LessonManager.Tick(lesson.getId(), this.getCurrentTime())), UserController.ONLINE.get(this.lesson.getTeacher().getId()));
-				} catch (JsonProcessingException e) {
-					e.printStackTrace();
-				}
+		    
 		        
 		        
 		    }
@@ -552,14 +533,14 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		 private static void to_string(final StringBuilder sb, final ModelEntity model_entity) {
 		        sb.append("class User {\n\n");
 		        sb.append("  int id;\n");
-		        for (final JsonNode interest : WikitelNewApplication.USER_MODEL.get("interests"))
+		        for (final JsonNode interest : Starter.USER_MODEL.get("interests"))
 		            sb.append("  bool ").append(to_id(interest.get("id").asText())).append(";\n");
 		        sb.append("  ReusableResource busy_time = new ReusableResource(1.0);\n\n");
 		        sb.append("  User(int id");
-		        for (final JsonNode interest : WikitelNewApplication.USER_MODEL.get("interests"))
+		        for (final JsonNode interest : Starter.USER_MODEL.get("interests"))
 		            sb.append(", bool ").append(to_id(interest.get("id").asText()));
 		        sb.append(") : id(id)");
-		        for (final JsonNode interest : WikitelNewApplication.USER_MODEL.get("interests"))
+		        for (final JsonNode interest : Starter.USER_MODEL.get("interests"))
 		            sb.append(", ").append(to_id(interest.get("id").asText())).append('(')
 		                    .append(to_id(interest.get("id").asText())).append(')');
 		        sb.append(" {}\n");

@@ -53,7 +53,7 @@ function add(id) {
         let chips = document.getElementById("chips");
         chips.appendChild(div);
         div.appendChild(img);
-        toastr.success('Utente ' + user.first_name + ' ' + user.last_name + ' inserito correttamente alla lista')
+        toastr.success('Utente ' + user.first_name + ' ' + user.last_name + 'è stato inserito correttamente alla lista')
 
     } else {
         alert("already added");

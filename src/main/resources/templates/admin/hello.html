@@ -12,6 +12,8 @@
 	<link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" />
 	 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+	 	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -29,6 +31,7 @@
 		<link th:href="@{/css/hello.css}" rel="stylesheet">
 		
 		<script  language="javascript" src="/js/hello.js"></script>
+		<script type="module" src="/js/ws_setup.js"></script>
 		
 		    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap" rel="stylesheet">
 
@@ -78,6 +81,12 @@ button.accordion:hover, button.accordion.is-open {
   overflow: hidden;
   transition: max-height 0.2s ease-in-out;
 }
+.message{
+	text-align: center;
+    width: 100%;
+    border-radius: 16px;
+    border: solid 0.2px black;}
+
 </style>
 
 <script>
@@ -114,6 +123,16 @@ function openNav() {
 </ul>
    
   </div>
+  <ul class="nav nav-item" style="width: 70px;">
+  <button class="btn btn-primary position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+
+  <i class="fas fa-comment-alt"></i>
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    99+
+    <span class="visually-hidden">unread messages</span>
+  </span>
+</button>
+  </ul>
   <ul class="nav navbar-nav navbar-right">
      <div class="btn-group">
   <button type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -142,6 +161,7 @@ function openNav() {
  <div id="main">
 <div class="tab-content" id="pills-tabContent">
   <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"><h1>Welcome <span th:text="${user.first_name}"></span></h1>
+
   	<div class="container">
     <h1>Lezioni</h1>
 <div th:each="t : ${Teachers}">
@@ -216,6 +236,18 @@ function openNav() {
       </div>
     </div>
   </form>
+  </div>
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Messaggi</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body" id="messages">
+    <div class="message">
+      Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images, lists, etc.
+    </div>
+   
   </div>
 </div>
 </body>

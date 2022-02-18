@@ -1,5 +1,5 @@
 import * as hello from "./lesson.js";
-import * as timeline from "./timeline.js";
+import {timeline} from "./timeline.js";
 
 
 $(document).ready(
@@ -46,7 +46,29 @@ function setup_ws(msg) {
             case 'text-stimulus':
             case 'question-stimulus':
             case 'url-stimulus':
-               console.log("stimulus");
+               toastr.options = {
+  "closeButton": false,
+  "debug": true,
+  "newestOnTop": false,
+  "progressBar": true,
+  "positionClass": "toast-top-right",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "20000",
+  "hideDuration": "30000",
+  "timeOut": "30000",
+  "extendedTimeOut": "30000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
+ toastr.info("Ha avuto un nuovo stimolo da una lezione");
+ let parent =document.getElementById("messages");
+ let div = document.createElement("div");
+ div.className="message"
+ div.innerHTML=c_msg.name;
+ parent.appendChild(div);
                 break;
             case 'Graph':
               console.log("Graph");
@@ -88,10 +110,11 @@ function setup_ws(msg) {
                console.log("FlawCostChanged7");
                 break;
             case 'Timelines':
+            
             console.log(c_msg.timelines[0].horizon + "horizon");
             localStorage.setItem("horizon",c_msg.timelines[0].horizon);
              hello.horizon(c_msg.timelines[0].horizon);
-             timeline.timeline(c_msg.timelines[0].values)
+             timeline(c_msg.timelines[0].values)
        break;
             case 'Tick':
             console.log(msg);

@@ -14,6 +14,9 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -30,15 +33,19 @@ public class RuleEntity {
     private String name;
     private boolean top_down = true;
     @ElementCollection
+    @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<String> topics = new HashSet<>();
     private Long length;
     @ManyToMany(mappedBy = "effects")
     @JsonBackReference
+    @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<RuleEntity> preconditions = new HashSet<>();
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<RuleEntity> effects = new HashSet<>();
     @OneToMany(orphanRemoval = true)
     @JsonManagedReference
+    @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<RuleSuggestionRelationEntity> suggestions = new HashSet<>();
 
     public Long getId() {
