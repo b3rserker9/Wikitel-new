@@ -30,12 +30,7 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import it.cnr.istc.psts.wikitel.db.FileEntity;
-import it.cnr.istc.psts.wikitel.db.LessonEntity;
-import it.cnr.istc.psts.wikitel.db.Model;
-import it.cnr.istc.psts.wikitel.db.ModelEntity;
-import it.cnr.istc.psts.wikitel.db.Prova;
-import it.cnr.istc.psts.wikitel.db.RuleEntity;
+import it.cnr.istc.psts.wikitel.db.*;
 
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -68,12 +63,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import it.cnr.istc.psts.wikitel.db.TextRuleEntity;
-import it.cnr.istc.psts.wikitel.db.User;
-import it.cnr.istc.psts.wikitel.db.WebRuleEntity;
-import it.cnr.istc.psts.wikitel.db.WikiRuleEntity;
-import it.cnr.istc.psts.wikitel.db.WikiSuggestionEntity;
-import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationEntity;
+import it.cnr.istc.psts.wikitel.db.*;
 import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
@@ -81,7 +71,6 @@ import it.cnr.istc.psts.wikitel.Repository.Response;
 
 import it.cnr.istc.psts.wikitel.Repository.UserRepository;
 
-import it.cnr.istc.psts.wikitel.Service.FileService;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.RuleSuggestionRelationService;
@@ -108,9 +97,6 @@ public class MainController {
 	
 	
 	@Autowired
-	private FileService fileservice;
-	
-	@Autowired
 	private ModelService  modelservice;
 	@Autowired
 	private ModelRepository  modelrepository;
@@ -125,7 +111,6 @@ public class MainController {
 	
 	private ModelEntity m;
 	
-	private UserEntity current_user;
 	
 	public static final Map<Long, LessonManager> LESSONS = new HashMap<>();
 	
@@ -144,22 +129,21 @@ public class MainController {
 		nuovo.setSrc(node.get("src").asText());
 		nuovo.setRole(node.get("role").asText());
 		nuovo.setQuestionario(node.get("one").asText());
-		current_user = nuovo;
 		userrepository.save(nuovo);
 		System.out.println("Done");
 		return response;
 		
 	}
 	@MessageMapping("/register")
-	public void prova(@Payload pippo pippo, SimpMessageHeaderAccessor headerAccessor ) throws JsonProcessingException {
-		UserController.ONLINE.put(pippo.getUser_id(), pippo.getSession());
-		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(pippo.getUser_id()));
-		for(LessonEntity l : lesson) { 
-			 LessonManager manager = LESSONS.get(l.getId());
-		send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(l.getId(), manager.getSolver().getTimelines())), pippo.getSession());
-		send.notify(Starter.mapper.writeValueAsString(new LessonManager.Tick(l.getId(), manager.getCurrentTime())), pippo.getSession());
-		System.out.println("sessionID" + pippo.getSession());
-		}
+	public void prova(@Payload Session session, SimpMessageHeaderAccessor headerAccessor ) throws JsonProcessingException {
+		UserController.ONLINE.put(session.getUser_id(), session.getSession());
+		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(session.getUser_id()));
+		LessonManager manager = MainController.LESSONS.get(session.getLesson_id());
+		send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(session.getLesson_id(), manager.getSolver().getTimelines())), session.getSession());
+		send.notify(Starter.mapper.writeValueAsString(new LessonManager.Tick(session.getLesson_id(), manager.getCurrentTime())), session.getSession());
+		
+		
+		
 	}
 	 
 	
@@ -216,70 +200,7 @@ public class MainController {
 		
 	}
 	
-	@PostMapping("/uploadFile_profile")
-	public Response uploadfileprofile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		String file1 =  uploadfile.getOriginalFilename();
-    	System.out.println(file1);
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
-    	System.out.println(nuovo.getFirst_name());
-    	String baseDir=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\";
-    	uploadfile.transferTo(new File(baseDir + nuovo.getId() +".jpg"));
-    	nuovo.setSrc("\\images\\" + nuovo.getId() + ".jpg");
-    	this.userservice.saveUser(nuovo);
-    	Response response = new Response("Done");
-		return response;
-		
-	}
-	
-	@PostMapping("/uploadFileText_profile")
-	public Response uploadfiletextprofile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
-    	nuovo.getFile().add(fileservice.save(uploadfile));
-    	System.out.println(uploadfile);
-    	Response response = new Response("Done");
-		return response;
-		
-	}
-	
-	@PostMapping("/uploadFile")
-	public Response uploadfile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
 
-		String file1 =  uploadfile.getOriginalFilename();
-    	System.out.println(file1);
-    	System.out.println(current_user.getFirst_name());
-    	String baseDir=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\";
-    	uploadfile.transferTo(new File(baseDir + current_user.getId() +".jpg"));
-    	current_user.setSrc("\\images\\" + current_user.getId() + ".jpg");
-    	this.userservice.saveUser(current_user);
-    	Response response = new Response("Done");
-		return response;
-		
-	}
-	
-	@PostMapping("/uploadFileText")
-	public ModelEntity uploadfiletext(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
-    	nuovo.getFile().add(fileservice.save(uploadfile));
-    	System.out.println(uploadfile);
-
-		return this.m;
-		
-	}
-	
-	@GetMapping("/downloadFile/{fileid}")
-	public ResponseEntity<ByteArrayResource> getmodel(@PathVariable Long fileid){
-		System.out.println(fileid);
-		FileEntity file = this.fileservice.getfile(fileid);
-		System.out.println(file.getName());
-		return ResponseEntity.ok()
-        .contentType(MediaType.parseMediaType(file.getType()))
-        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
-        .body(new ByteArrayResource(file.getContent()));
-		
-	}
 	
 	@PostMapping("/uploadFileString")
 	public Response uploadFileString(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
@@ -293,10 +214,45 @@ public class MainController {
 		
 	}
 	
+	@PostMapping("/uploadFileRule")
+	public Long uploadfilerule(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
+		
+		String file1 =  uploadfile.getOriginalFilename();
+    	System.out.println(file1);
+    	String baseDir=System.getProperty("user.dir")+"\\FileRule\\";
+    	System.out.println(baseDir);
+    	uploadfile.transferTo(new File(baseDir + file1));
+    	RuleEntity rule = new FileRuleEntity();   	
+     	((FileRuleEntity) rule).setSrc(baseDir +file1);
+     	rule.setName(m.getName());
+     	this.modelservice.saverule(rule);
+     	this.m.addRule(rule);
+     	this.modelservice.save(m);
+    	
+		return m.getId();
+		
+	}
+	
+	@PostMapping("/uploadFile")
+	public Response uploadfile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+		String file1 =  uploadfile.getOriginalFilename();
+    	System.out.println(file1);
+    	String baseDir=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\";
+    	uploadfile.transferTo(new File(baseDir + nuovo.getId() +".jpg"));
+    	nuovo.setSrc("\\images\\" + nuovo.getId() + ".jpg");
+    	this.userservice.saveUser(nuovo);
+    	Response response = new Response("Done");
+		return response;
+		
+	}
+	
+
+	
+	
 	@PostMapping("/play")
 	public Response PlayLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
-    	System.out.println(node.get("id").asLong());
-    	System.out.println(LESSONS);
     	LESSONS.get(node.get("id").asLong()).play();
     	Response response = new Response("Done");
 		return response;
@@ -304,9 +260,7 @@ public class MainController {
 	}
 	@PostMapping("/pause")
 	public Response pauseLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
-    	System.out.println(node.get("id").asLong());
-    	System.out.println(LESSONS);
-   LESSONS.get(node.get("id").asLong()).pause();
+    	LESSONS.get(node.get("id").asLong()).pause();
    
   
     	Response response = new Response("Done");
@@ -316,9 +270,8 @@ public class MainController {
 	
 	@PostMapping("/stop")
 	public Response stopLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
-    	System.out.println(node.get("id").asLong());
-    	System.out.println(LESSONS);
-   LESSONS.get(node.get("id").asLong()).stop();
+
+		LESSONS.get(node.get("id").asLong()).stop();
 
     
     	Response response = new Response("Done");
@@ -416,7 +369,7 @@ public class MainController {
 }
 	
 	@RequestMapping(value = "/Newrule",  method = RequestMethod.POST)
-	public Long NewModel(@RequestBody ObjectNode node) throws JsonProcessingException, RestClientException, UnknownHostException{	
+	public Long NewModel(@RequestBody ObjectNode node,@RequestBody MultipartFile uploadfile) throws RestClientException, IllegalStateException, IOException{	
 		RestTemplate restTemplate = new RestTemplate();
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
@@ -427,17 +380,19 @@ public class MainController {
     	 case "Testo":
              rule = new TextRuleEntity();
              ((TextRuleEntity) rule).setText(node.get("rule_text").asText());
-            
+             this.modelservice.saverule(rule);
              break;
          case "Pagina Web":
              rule = new WebRuleEntity();
              ((WebRuleEntity) rule).setUrl(node.get("rule_url").asText());
+             this.modelservice.saverule(rule);
              break;
          case "Pagina Wikipedia":
              rule = new WikiRuleEntity();
              this.modelservice.saverule(rule);
-             
-             Prova prova = restTemplate.getForObject("http://" + InetAddress.getLocalHost().getHostAddress() + ":5015/wiki?page="+ node.get("model_name").asText(), Prova.class);
+             String name= node.get("rule_name").asText();
+             name = name.replace(' ','_');
+             Prova prova = restTemplate.getForObject("http://" + InetAddress.getLocalHost().getHostAddress() + ":5015/wiki?page=" + name, Prova.class);
              ((WikiRuleEntity) rule).setUrl(prova.getUrl());
              System.out.println(prova.getPreconditions());
              rule.getTopics().addAll(prova.getCategories());
@@ -474,8 +429,16 @@ public class MainController {
 			    
 			    
 			  
-			 break;
-            
+			 break;     
+         case "File":
+        	 rule = new FileRuleEntity();
+        	 String file1 =  uploadfile.getOriginalFilename();
+         	System.out.println(file1);
+         	String baseDir=System.getProperty("user.dir")+"\\FileRule";
+         	uploadfile.transferTo(new File(baseDir + file1));
+         	((FileRuleEntity) rule).setSrc(baseDir +file1);
+         	this.modelservice.saverule(rule);
+        	 break;
     	}
     /*	if(node.get("effect_id").asLong() == -1) {
     		final RuleEntity effect_entity = this.modelservice.getRule(node.get("effect_id").asLong());

@@ -10,6 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -30,6 +31,7 @@ import it.cnr.istc.psts.wikitel.db.LessonEntity;
 
 @Service
 @Configurable
+@Transactional
 public class Starter{
 
 	@Autowired
@@ -52,6 +54,7 @@ public class Starter{
 	public static final UserController userController = new UserController();
 
 	@PostConstruct
+	
 	public void start() throws IOException {
 		 USER_MODEL = mapper.readTree(Starter.class.getClassLoader().getResourceAsStream("\\json\\user_model.json"));
 			

@@ -83,7 +83,7 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/teachers/**","/NewLesson","/provamessaggio").hasAnyAuthority(TEACHER_ROLE)
                 // tutti gli utenti autenticati possono accere alle pagine rimanenti 
                 .anyRequest().authenticated().and().formLogin()
-                .loginPage("/index").usernameParameter("email") .failureUrl("/failure").
+                .loginPage("/index").usernameParameter("email").failureUrl("/failure").
                 defaultSuccessUrl("/default")
                 .successHandler(new AuthenticationSuccessHandler() {
 					

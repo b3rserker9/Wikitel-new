@@ -52,35 +52,23 @@ export function stop() {
     });
 
 }
+export function lesson_id(){
+	console.log(document.getElementById("lesson_id").getAttribute("value"));
+	return document.getElementById("lesson_id").getAttribute("value");
+}
 export function horizon(horizon){
 	max=horizon;
 }
 
 export function loading(v){
-	value =Math.round( (v*100)/max); 
-		console.log(value);
-    var left = document.getElementById("left");
-    var right = document.getElementById("right");
-	 document.getElementById("num").innerHTML = value;
-    if (value > 0) {
-   
-      if (value <= 50) {
-	right.style.transform='rotate(' + percentageToDegrees(value) + 'deg)';
-        
-      } else {
-	right.style.transform='rotate(180deg)';
-        left.style.transform='rotate(' + percentageToDegrees(value - 50) + 'deg)';
-        
-      }
-     
-    }
-    
-     function percentageToDegrees(percentage) {
-
-    return percentage / 100 * 360
-
-  }
+	value = parseFloat(((v*100)/max).toFixed(1)); 
 	
+		console.log(value);
+		document.getElementById("progressbar").style.width= value +"%";
+		document.getElementById("progressbar").innerText=value+"%";
+
+    
+
 }
 
 

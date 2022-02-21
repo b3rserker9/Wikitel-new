@@ -35,16 +35,19 @@
 
 .page {
     display: flex;
+    width: 95%;
+    margin: auto;
+    flex-direction: row;
     height: auto;
 }
 
 .section1 {
  
-    flex: 75%;
+    width: 100%;
 }
 .section2 {
     
-    flex: 10%;
+    width: 30%;
 }
 
 .config{

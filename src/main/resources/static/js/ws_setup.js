@@ -6,7 +6,7 @@ $(document).ready(
     function() {
 	
 	var current_user = document.getElementById("nameid").getAttribute('value');
-	console.log(current_user);
+	console.log(hello.lesson_id());
         // defined a connection to a new socket endpoint
         var socket = new SockJS('/comunication');
         var stompClient = Stomp.over(socket);
@@ -22,7 +22,7 @@ $(document).ready(
                 setup_ws(message);
             });
           
-  var message={"session":session,"user_id":current_user};
+  var message={"session":session,"user_id":current_user ,"lesson_id": hello.lesson_id()};
             stompClient.send("/app/register",{},JSON.stringify(message))
         });
           });
@@ -46,29 +46,7 @@ function setup_ws(msg) {
             case 'text-stimulus':
             case 'question-stimulus':
             case 'url-stimulus':
-               toastr.options = {
-  "closeButton": false,
-  "debug": true,
-  "newestOnTop": false,
-  "progressBar": true,
-  "positionClass": "toast-top-right",
-  "preventDuplicates": false,
-  "onclick": null,
-  "showDuration": "20000",
-  "hideDuration": "30000",
-  "timeOut": "30000",
-  "extendedTimeOut": "30000",
-  "showEasing": "swing",
-  "hideEasing": "linear",
-  "showMethod": "fadeIn",
-  "hideMethod": "fadeOut"
-}
- toastr.info("Ha avuto un nuovo stimolo da una lezione");
- let parent =document.getElementById("messages");
- let div = document.createElement("div");
- div.className="message"
- div.innerHTML=c_msg.name;
- parent.appendChild(div);
+				messages(c_msg);
                 break;
             case 'Graph':
               console.log("Graph");
@@ -132,4 +110,34 @@ function setup_ws(msg) {
                 console.log(msg);
                 break;
         }
+}
+
+function messages(c_msg){
+	               toastr.options = {
+  "closeButton": false,
+  "debug": true,
+  "newestOnTop": false,
+  "progressBar": true,
+  "positionClass": "toast-top-right",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "20000",
+  "hideDuration": "30000",
+  "timeOut": "30000",
+  "extendedTimeOut": "30000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+}
+ toastr.info("Ha avuto un nuovo stimolo dalla lezione " + c_msg.name);
+ 
+ document.getElementById("timeline-container").innerHTML += '<div class="uk-timeline-item">'+
+            '<div class="uk-timeline-icon"><span class="uk-badge"><span uk-icon="check"></span></span></div>'+
+            '<div class="uk-timeline-content">'+
+            '<div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">'+
+            '<div class="uk-card-header">'+
+            '<div class="uk-grid-small uk-flex-middle" uk-grid><h3 class="uk-card-title"><time datetime="2020-07-08" style="font-size: 15px;"> Data </time></h3> <span class="uk-label uk-label-success uk-margin-auto-left">Info</span></div></div>'+
+            '<div class="uk-card-body"><p class="uk-text-success">"Ha avuto un nuovo stimolo dalla lezione di nome <a href="/lezione/"'+c_msg.lesson_id +'> '+ c_msg.name +'</a>"</p> </div> </div> </div> </div> ';
+            console.log("add")
 }

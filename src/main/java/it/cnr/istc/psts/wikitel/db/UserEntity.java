@@ -52,20 +52,22 @@ public class UserEntity {
     @Column(columnDefinition="text")
     private String Questionario;
     
-    @OneToMany
-    private final Collection<FileEntity> file = new ArrayList<>();
+
     
     @Column(nullable = false)
 	private String role;
     @OneToMany
     private final Collection<RuleEntity> learnt_topics = new ArrayList<>();
-    @JsonManagedReference
-    @ManyToMany(mappedBy = "teachers")
     
+    @JsonManagedReference
+    @ManyToMany(mappedBy = "teachers") 
     private final Collection<ModelEntity> models = new ArrayList<>();
+    
+    
     @ManyToMany(mappedBy = "followed_by") 
     @JsonBackReference
     private final List<LessonEntity> following_lessons = new ArrayList<>();
+    
     @OneToMany(mappedBy = "teacher", orphanRemoval = true)
     @JsonManagedReference
     private final List<LessonEntity> teaching_lessons = new ArrayList<>();

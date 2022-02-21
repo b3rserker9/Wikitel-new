@@ -250,12 +250,6 @@ $(document).ready(
     function() {
         prep_modal();
         questions();
-        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-        var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl)
-        })
-
-
     })
 
 function prep_modal() {
@@ -265,7 +259,6 @@ function prep_modal() {
 
         var element = this;
         var pages = $(this).find('.modal-split');
-        console.log(pages);
         if (pages.length != 0) {
             pages.hide();
             pages.eq(0).show();
@@ -356,11 +349,9 @@ function prep_modal() {
 }
 
 function questions() {
-    console.log("prova");
     let id = 0;
     //ROOT
     let div = document.getElementById("question");
-    console.log(question.length);
     for (let i = 0; i < question.length; i++) {
         // LINK
         let al = document.createElement('a');

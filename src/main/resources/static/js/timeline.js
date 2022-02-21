@@ -28,7 +28,7 @@ $(window).on('load', function () {
 
       var options = {
         timeline: { showRowLabels: false },
-        avoidOverlappingGridLines: false
+        avoidOverlappingGridLines: false,
       };
 
       chart.draw(dataTable, options);

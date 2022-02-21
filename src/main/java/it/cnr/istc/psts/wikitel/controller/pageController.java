@@ -35,6 +35,7 @@ import it.cnr.istc.pst.oratio.Item.ArithItem;
 import it.cnr.istc.pst.oratio.Solver;
 import it.cnr.istc.pst.oratio.SolverException;
 import it.cnr.istc.psts.WikitelNewApplication;
+import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
@@ -46,7 +47,7 @@ import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.Prova;
 import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
-import it.cnr.istc.psts.wikitell.LessonManager;
+import static it.cnr.istc.psts.wikitel.db.UserEntity.STUDENT_ROLE;
 
 
 
@@ -66,6 +67,9 @@ public class pageController {
 	
 	@Autowired
 	private ModelRepository modelrepository;
+	
+	@Autowired
+	private Sending send;
 	
 	@Autowired
 	private ModelService modelservice;
@@ -107,6 +111,7 @@ public class pageController {
     	//se e' admin
     	if (userentity.getRole().equals(UserEntity.STUDENT_ROLE)) {
     		System.out.println("username:PIPPO");
+    		
             return "admin/hello";
         }
     	//se non lo e'
@@ -149,9 +154,10 @@ public class pageController {
 	}
 	
 	@GetMapping(value = "/lezione/{id}")
-	public String det_ordine(@PathVariable("id")Long id , Model model) {
+	public String det_ordine(@PathVariable("id")Long id , Model model) throws JsonProcessingException {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
+  
     	model.addAttribute("user",userentity);
     	model.addAttribute("role",userentity.getRole());
 		LessonEntity lezione = lessonservice.lezionePerId(id);
@@ -162,6 +168,11 @@ public class pageController {
 		System.out.println(formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("students",lezione.getFollowed_by());
+		if(userentity.getRole().equals(STUDENT_ROLE)) {
+		model.addAttribute("messages",MainController.LESSONS.get(id).getStimuli(userentity.getId()));
+		System.out.println("MESSAGGESSSS " + MainController.LESSONS.get(id).getStimuli(userentity.getId()).size());
+		}
+	
 		
 		return "teachers/lezione";
 	}

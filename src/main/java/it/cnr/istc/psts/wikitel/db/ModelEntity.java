@@ -31,10 +31,10 @@ public class ModelEntity {
     private String name;
     
     @ManyToMany
-    
-    
     @JsonBackReference
     private final Collection<UserEntity> teachers = new ArrayList<>();
+    
+    
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JsonManagedReference

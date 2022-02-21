@@ -8,6 +8,7 @@
     <script src="https://kit.fontawesome.com/ced3f913ea.js" crossorigin="anonymous"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://cdn.jsdelivr.net/npm/uikit@3.4.2/dist/css/uikit.min.css" rel="stylesheet" >
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap" rel="stylesheet">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -17,8 +18,6 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-	<script	src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/0.6.1/progressbar.js"></script>
-	<script	src="https://cdnjs.cloudflare.com/ajax/libs/progressbar.js/0.6.1/progressbar.min.js"></script>
 			<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 		<script src="/webjars/stomp-websocket/stomp.min.js"></script>
 <script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -37,7 +36,6 @@
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 				
 		<link th:href="@{/css/teacher_index.css}" rel="stylesheet">
-		<link th:href="@{/css/loading_bar.css}" rel="stylesheet">
 		<link th:href="@{/css/hello.css}" rel="stylesheet">
 		  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 		
@@ -137,6 +135,26 @@ justify-content: center;
       font-family: sans-serif;
       font-size: 20px;
     }
+    
+    .message{
+	text-align: center;
+    width: 100%;
+    border-radius: 16px;
+    border: solid 0.2px black;}
+.uk-flex-middle{
+	display: flex;
+}
+@media (min-width: 1200px){
+.uk-card-body {
+    padding: 5px 20px;
+}
+}
+@media (min-width: 1200px){
+.uk-padding {
+    padding: 0px;
+}
+}
+
 </style>
 <script>
 function openNav() {
@@ -173,6 +191,16 @@ function openNav() {
 </ul>
    
   </div>
+  <ul class="nav nav-item" style="width: 70px;">
+  <button class="btn btn-primary position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+
+  <i class="fas fa-comment-alt"></i>
+    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+    99+
+    <span class="visually-hidden">unread messages</span>
+  </span>
+</button>
+  </ul>
   <ul class="nav navbar-nav navbar-right">
      <div class="btn-group">
   <button type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -257,20 +285,14 @@ function openNav() {
             </div>
         </div>
     </div>
- <div class="progress mx-auto" id="valore" data-value='80'>
-          <span class="progress-left">
-                        <span id="right" class="progress-bar border-primary"></span>
-          </span>
-          <span class="progress-right">
-                        <span id="left" class="progress-bar border-primary"></span>
-          </span>
-          <div class="progress-value w-100 h-100 rounded-circle d-flex align-items-center justify-content-center">
-            <div class="h2 font-weight-bold"><span id="num"></span><sup class="small">%</sup></div>
-          </div>
-        </div>
+
+   
         
   <div>
     <h3>A simple timeline</h3>
+         <div class="progress">
+  <div class="progress-bar" id="progressbar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+</div>
    <div id="timeline" style="height: 180px;"></div>
   </div>
 
@@ -361,6 +383,60 @@ function openNav() {
         <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Messaggi</h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body" id="messages">
+   <div class="uk-container uk-padding">
+    <div class="uk-timeline" id="timeline-container">
+        <div th:each="m : ${messages}" class="uk-timeline-item">
+            <div class="uk-timeline-icon">
+                <span class="uk-badge"><span uk-icon="check"></span></span>
+            </div>
+            <div class="uk-timeline-content">
+                <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
+                    <div class="uk-card-header">
+                        <div class="uk-grid-small uk-flex-middle" uk-grid>
+                            <h3 class="uk-card-title"><time datetime="2020-07-08" style="font-size: 15px;">July 8</time></h3>
+                            <span class="uk-label uk-label-success uk-margin-auto-left">Info</span>
+                        </div>
+                    </div>
+                    <div class="uk-card-body">
+											<p class="uk-text-success">"Ha avuto un nuovo stimolo dalla lezione di nome <a th:href="'/lezione/' + ${m.lesson_id}" th:text="${m.name}"></a>"</p>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+				<div class="uk-timeline-item">
+            <div class="uk-timeline-icon">
+                <span class="uk-badge"><span uk-icon="check"></span></span>
+            </div>
+            <div class="uk-timeline-content">
+                <div class="uk-card uk-card-default uk-margin-medium-bottom uk-overflow-auto">
+                    <div class="uk-card-header">
+                        <div class="uk-grid-small uk-flex-middle" uk-grid>
+                            <h3 class="uk-card-title"><time datetime="2020-07-06" style="font-size: 1em;">July 6</time></h3>
+                            <span class="uk-label uk-label-danger uk-margin-auto-left">Fix</span>
+                        </div>
+                    </div>
+                    <div class="uk-card-body">
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt.
+                        </p>
+                    </div>
+                </div>
+								<a href="#"><span class="uk-margin-small-right" uk-icon="triangle-down"></span>Load more</a>
+            </div>
+        </div>
+    </div>
+</div>
+   
   </div>
 </div>
 </body>

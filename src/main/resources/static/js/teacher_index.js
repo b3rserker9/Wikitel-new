@@ -21,7 +21,8 @@ let rules = [];
 let close = false;
 
 function active(name) {
-    var span = document.getElementById(name +"s");
+	console.log(name)
+    var span = document.getElementById(name);
     span.style.display="none";
 
 }
@@ -62,6 +63,28 @@ function update() {
 
 }
 
+function New_rule_file(){
+	    var form = $("#formFile")[0].files[0];
+    var data = new FormData();
+    data.append("uploadfile", form);
+      $.ajax({
+                    url: "/uploadFileRule",
+                    type: "POST",
+                    data: data,
+                    DataType: 'json',
+                    processData: false,
+                    contentType: false,
+                    cache: false,
+                    success: function(res) {
+                        console.log("SUCCESS : ", res);
+                        active(res+"s");
+                    },
+                    error: function(err) {
+                        console.error(err);
+                    }
+                });
+}
+
 
 
 function New_rule() {
@@ -75,11 +98,7 @@ function New_rule() {
         rule_text: $("#rule_Textarea").val()
 
     }
-    var form = $("#formFile")[0].files[0];
-    console.log(form);
-    var data = new FormData();
-    data.append("uploadfile", form);
-    console.log("PPPPP4");
+
     // DO POST
     $.ajax({
 
@@ -91,33 +110,8 @@ function New_rule() {
 
 
         success: function(data) {
-            active($("#new-model-name").val()+'s');
+            active(data+'s');
             console.log("SUCCESS : ", data);
-
-            if (text == "File") {
-                var form = $("#formFile")[0].files[0];
-                console.log(form);
-                var data = new FormData();
-                data.append("uploadfile", form);
-                console.log(data);
-                $.ajax({
-                    url: "/uploadFileText",
-                    type: "POST",
-                    data: data,
-                    DataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    cache: false,
-                    success: function(res) {
-                        console.log("SUCCESS : ", data);
-                        active(data.data7.id);
-                    },
-                    error: function(err) {
-                        console.error(err);
-                    }
-                });
-            }
-
         },
         error: function(e) {
             alert("Error!")
@@ -148,7 +142,11 @@ function Create_model() {
         success: function(data) {
 
             add(data.data7)
-            New_rule()
+            if(text=="File"){
+            New_rule_file()}
+            else{
+	New_rule()
+}
             resetformat();
             console.log("SUCCESS : ", data);
 
@@ -379,27 +377,10 @@ function resetformat() {
 
 $(document).ready(
     function() {
-	var current_user = document.getElementById("nameid").getAttribute('value');
-	console.log(current_user);
-      
-        
+   
           clone = document.getElementById("clone").cloneNode(true);
-        console.log(text);
         questions();
         prep_modal();
-
-        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-        var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {
-            return new bootstrap.Popover(popoverTriggerEl)
-        })
-
-        $("#pip").click(function() {
-
-
-            console.log(Prova);
-
-        });
-
 
         $("#new_precondition").submit(function() {
             event.preventDefault();
@@ -626,80 +607,3 @@ function prep_modal() {
     });
 }
 
-function setup_ws(msg) {
-
-        const c_msg = JSON.parse(msg);
-        switch (c_msg.type) {
-            case 'online':
-             console.log("online");
-                break;
-            case 'follower':
-            console.log("follower");
-                break;
-            case 'profile-update':
-                console.log("profileUpdate");
-                break;
-            case 'lesson-state-update':
-               console.log("lessonupdate")
-                break;
-            case 'text-stimulus'://lato studente creazione timeline
-            case 'question-stimulus':
-            case 'url-stimulus':
-               console.log("stimulus");
-                break;
-            case 'Graph':
-              console.log("Graph");
-                break;
-            case 'StartedSolving':
-                console.log("solving the problem..");
-                break;
-            case 'SolutionFound':
-                console.log("hurray!! we have found a solution..");
-                break;
-            case 'InconsistentProblem':
-                console.log("unsolvable problem..");
-                break;
-            case 'FlawCreated':
-             console.log("FlawCreated");
-                break;
-            case 'FlawStateChanged':
-               console.log("FlawStateChanged");
-                break;
-            case 'FlawCostChanged':
-               console.log("FlawCostChanged")
-                break;
-            case 'FlawPositionChanged':
-              console.log("FlawCostChanged2")
-                break;
-            case 'CurrentFlaw':
-            console.log("FlawCostChanged3")
-                break;
-            case 'ResolverCreated':
-                console.log("FlawCostChanged4")
-                break;
-            case 'ResolverStateChanged':
-              console.log("FlawCostChanged5")
-                break;
-            case 'CurrentResolver':
-              console.log("FlawCostChanged6")
-                break;
-            case 'CausalLinkAdded':
-               console.log("FlawCostChanged7");
-                break;
-            case 'Timelines':
-             console.log("FlawCostChanged8")
-                break;
-            case 'Tick':
-               console.log("FlawCostChanged9")
-                break;
-            case 'StartingAtoms':
-                console.log("StartingAtoms")
-                break;
-            case 'EndingAtoms':
-               console.log("EndingAtoms")
-                break;
-            default:
-                console.log(msg);
-                break;
-        }
-}
