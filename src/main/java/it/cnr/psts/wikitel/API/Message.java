@@ -17,6 +17,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({ @Type(value = Message.Online.class, name = "online"),
         @Type(value = Message.Follower.class, name = "follower"),
+        @Type(value = Message.Subscribe.class, name = "Subscribe") ,
         @Type(value = Message.ProfileUpdate.class, name = "profile-update"),
         @Type(value = Message.FollowLesson.class, name = "follow-lesson"),
         @Type(value = Message.UnfollowLesson.class, name = "unfollow-lesson"),
@@ -53,6 +54,37 @@ public abstract class Message {
          */
         public boolean isOnline() {
             return online;
+        }
+    }
+    
+    /**
+     * This message is used for communicating that a user is now online/offline.
+     */
+    public static class Subscribe extends Message {
+
+        private final long lesson_id;
+        private final String lesson;
+
+        @JsonCreator
+        public Subscribe( @JsonProperty("lesson_id") final long lesson_id,  @JsonProperty("lesson") final String lesson) {
+            this.lesson_id = lesson_id;
+            this.lesson = lesson;
+        }
+
+   
+
+        /**
+         * @return the connected state.
+         */
+        public long getLessonId() {
+            return lesson_id;
+        }
+        
+        /**
+         * @return the connected state.
+         */
+        public String getLesson() {
+            return lesson;
         }
     }
 

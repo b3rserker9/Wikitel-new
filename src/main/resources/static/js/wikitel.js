@@ -86,7 +86,7 @@ function ajaxPost() {
         }
     });
     $("#ok").click(function() {
-        $("#modal1").modal('toggle');
+        $("#modal1").modal('show');
         $('#modal3').modal('hide');
     });
 
@@ -130,7 +130,7 @@ function showPreview() {
     document.getElementById('photo-upload-button').click()
     const chooseFile = document.getElementById("photo-upload-button");
     const imgPreview = document.getElementById("file-ip-1-preview");
-    console.log(imgPreview.src);
+  
     chooseFile.addEventListener("change", function() {
         const files = chooseFile.files[0];
 
@@ -143,7 +143,7 @@ function showPreview() {
                 imgPreview.src = this.result;
                 file = files;
                 document.getElementById("myImg").src = this.result;
-                console.log(imgPreview.src);
+               
             });
         }
     });
@@ -181,17 +181,17 @@ function validateForm(i) {
             } else {
                 if (e.name == "email_r") {
                     if (!(e.value.match(mailformat))) {
-                        console.log("dsds");
+                     
                         document.getElementById("error").innerHTML = "Wrong Format";
                     } else {
-                        console.log("PPPPP8");
+                       
                         // PREPARE FORM DATA
                         var email = {
 
                             email: $("#email_r").val(),
 
                         }
-                        console.log("PPPPP9");
+                       
                         // DO POST
                         $.ajax({
 
@@ -210,7 +210,7 @@ function validateForm(i) {
                                     valid = false;
                                 }
                                 document.getElementById("error").innerHTML = "Email already in use";
-                                console.log(valid);
+                              
 
 
                             },
@@ -227,9 +227,9 @@ function validateForm(i) {
 
             break;
         case 2:
-            console.log("nope");
+
             if ($('input[name=roles]:checked').val()) {
-                console.log("try");
+               
                 valid = false;
             } else {
                 valid = true;
@@ -250,6 +250,10 @@ $(document).ready(
     function() {
         prep_modal();
         questions();
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)
+})
     })
 
 function prep_modal() {
@@ -356,11 +360,12 @@ function questions() {
         // LINK
         let al = document.createElement('a');
         al.className = "link text-decoration-none";
-        al.setAttribute("data-toggle", "collapse");
+        al.setAttribute("data-bs-toggle", "collapse");
         al.setAttribute("href", "#collapseExample" + i);
         al.setAttribute("role", "button");
         al.setAttribute("style", "margin-top:2%;");
         al.setAttribute("aria-controls", "collapseExample");
+        al.setAttribute("aria-expanded", "false");
         al.textContent = question[i][0] + " o " + question[i][1];
         let span = document.createElement('span');
         al.appendChild(span);

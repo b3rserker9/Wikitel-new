@@ -46,19 +46,44 @@ class User {
 
 class Lesson {
 
-  predicate St_6(User u) : Interval {
+  predicate St_3(User u) : Interval {
     duration >= 385.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+
+    {
+      goal st25 = new St_25(u:u);
+      st25.start >= end;
+    } or {
+      !u.c_arte;
+    }
+
+    {
+      goal st24 = new St_24(u:u);
+      st24.start >= end;
+    } or {
+      !u.c_arte;
+      !u.c_architettura;
+    }
+  }
+
+  predicate St_25(User u) : Interval {
+    duration >= 99.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+  }
+
+  predicate St_24(User u) : Interval {
+    duration >= 573.0;
     fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
   }
 }
 
-Lesson l_31 = new Lesson();
-User u_1 = new User(1, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
+Lesson l_102 = new Lesson();
+User u_99 = new User(99, true, true, false, true, true, true, true, true, true, true, true, true, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true);
 
 User u;
 
 {
-  goal st6 = new l_31.St_6(u:u);
+  goal st3 = new l_102.St_3(u:u);
 } or {
   !u.c_chimica;
   !u.c_architettura;

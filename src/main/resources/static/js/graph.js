@@ -37,7 +37,18 @@ function update_add() {
 
 }
 
+function filter_rule(){
+	if(document.getElementById("only_rule").checked){
+		nodesDataset = new vis.DataSet(current_rule);
+		console.log(nodesDataset);
+	}else{
+		nodesDataset = new vis.DataSet(nodes);
+	}
+	redrawAll();
+}
+
 function slider(value){
+	console.log(value);
 	nodes =[];
 	document.getElementById("range_input").innerHTML=value + "%";
 	let max=0;
@@ -49,10 +60,9 @@ function slider(value){
         let prova = getRandomColor();
          rule.color="#1e90ff";
         rule.group = "rule";
-        current_rule.push(rule);
         nodes.push(rule);
         max=map1.get(l.name)[0]
-        console.log(max);
+       
       
         l.suggestions.forEach(function(s) {
             raw = ["", s.suggestion.page, s.score, s.score2];
@@ -63,17 +73,16 @@ function slider(value){
             const pippo = new Object();
 		    pippo.label = s.suggestion.page
             pippo.id = pippo.label;
-        	pippo.group = "precondition";
+        	pippo.group = l.id;
             pippo.color = prova;
             pippo.title = s.score2;
             nodes.push(pippo);
             tables.push(raw);
-            console.log(s.suggestion.page + " " + s.score2 + " " + l.name);
+
 }
         })
 
     })
-    console.log(nodes);
     
 		
 	 nodesDataset = new vis.DataSet(nodes);
@@ -179,7 +188,7 @@ function start(){
             
             pippo.label = s.suggestion.page
             pippo.id = pippo.label;          
-             pippo.group = "precondition";
+             pippo.group = l.id;
             pippo.color = colors;
             pippo.title = s.score2;
             edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
@@ -304,10 +313,10 @@ function redrawAll() {
         },
         physics: {
             // Even though it's disabled the options still apply to network.stabilize().
-            enabled: true,
+        
             solver: "repulsion",
             repulsion: {
-                nodeDistance: 300 // Put more distance between the nodes.
+                nodeDistance: 900 // Put more distance between the nodes.
             }
         }
     };
@@ -373,6 +382,7 @@ function esplora(){
                 rule_id: rule_effects,
                 rule_name: rule_selected,
             }
+            console.log(precondition);
 	
 	 $.ajax({
 
@@ -404,7 +414,7 @@ function esplora(){
 	nodes = []
         nodesDataset = [];
         nodes.push(...current_rule);
-        console.log(current_rule);
+    
         for (let i = 0; i < prova.rows({
                 selected: true
             }).count(); i++) {

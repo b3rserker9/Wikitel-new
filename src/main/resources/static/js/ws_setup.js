@@ -1,4 +1,4 @@
-import * as hello from "./lesson.js";
+import * as lesson from "./lesson.js";
 import {timeline} from "./timeline.js";
 
 
@@ -6,7 +6,8 @@ $(document).ready(
     function() {
 	
 	var current_user = document.getElementById("nameid").getAttribute('value');
-	console.log(hello.lesson_id());
+	
+	
         // defined a connection to a new socket endpoint
         var socket = new SockJS('/comunication');
         var stompClient = Stomp.over(socket);
@@ -22,7 +23,7 @@ $(document).ready(
                 setup_ws(message);
             });
           
-  var message={"session":session,"user_id":current_user ,"lesson_id": hello.lesson_id()};
+  var message={"session":session,"user_id":current_user ,"lesson_id": lesson.lesson_id()};
             stompClient.send("/app/register",{},JSON.stringify(message))
         });
           });
@@ -35,17 +36,23 @@ function setup_ws(msg) {
              console.log("online");
                 break;
             case 'follower':
-            console.log("follower");
+            toastr.info("sei stato aggiunto " + c_msg.state);
+                break;
+                   case 'Subscribe':
+            toastr.info("sei stato aggiunto alla lezione " + c_msg.lesson);
+            addlesson(c_msg)
                 break;
             case 'profile-update':
                 console.log("profileUpdate");
                 break;
             case 'lesson-state-update':
-               console.log("lessonupdate")
+               toastr.info("lesson-state-update " + c_msg.state);
                 break;
             case 'text-stimulus':
             case 'question-stimulus':
             case 'url-stimulus':
+				
+				lesson.new_stimuli(c_msg.url)
 				messages(c_msg);
                 break;
             case 'Graph':
@@ -91,14 +98,14 @@ function setup_ws(msg) {
             
             console.log(c_msg.timelines[0].horizon + "horizon");
             localStorage.setItem("horizon",c_msg.timelines[0].horizon);
-             hello.horizon(c_msg.timelines[0].horizon);
+             lesson.horizon(c_msg.timelines[0].horizon);
              timeline(c_msg.timelines[0].values)
        break;
             case 'Tick':
             console.log(msg);
             console.log(localStorage.getItem("horizon"));
-            	hello.horizon(localStorage.getItem("horizon"));
-               hello.loading(c_msg.current_time.num);
+            	lesson.horizon(localStorage.getItem("horizon"));
+               lesson.loading(c_msg.current_time.num);
                 break;
             case 'StartingAtoms':
                 console.log("StartingAtoms")
@@ -140,4 +147,7 @@ function messages(c_msg){
             '<div class="uk-grid-small uk-flex-middle" uk-grid><h3 class="uk-card-title"><time datetime="2020-07-08" style="font-size: 15px;"> Data </time></h3> <span class="uk-label uk-label-success uk-margin-auto-left">Info</span></div></div>'+
             '<div class="uk-card-body"><p class="uk-text-success">"Ha avuto un nuovo stimolo dalla lezione di nome <a href="/lezione/"'+c_msg.lesson_id +'> '+ c_msg.name +'</a>"</p> </div> </div> </div> </div> ';
             console.log("add")
+}
+function addlesson(c_msg){
+	document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/lezione/' + c_msg.lessonId + '">' + c_msg.lesson + '</a></div>'
 }

@@ -48,13 +48,15 @@ h1 a{color:#131313; font-weight:bold;}
     transform: translateY(-50%);
 }
 .profile_card{
+	width: 100%;
 	overflow-y: auto;
 	overflow-x: hidden;
-	max-height: 670px;
-	 padding: 10px;
-	display: grid;
-	grid-template-columns: auto auto auto;
-	grid-gap: 50px 100px;
+	max-height: 90%;
+display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 50px;
+
 }
 
 

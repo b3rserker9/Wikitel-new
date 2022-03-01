@@ -28,7 +28,6 @@ function active(name) {
 }
 
 function update() {
-    $('#new_lesson1').modal('hide');
     var select = document.getElementById('new-rule-type');
     var option = select.options[select.selectedIndex];
     text = option.text;
@@ -145,7 +144,8 @@ function Create_model() {
             if(text=="File"){
             New_rule_file()}
             else{
-	New_rule()
+			New_rule()
+			
 }
             resetformat();
             console.log("SUCCESS : ", data);
@@ -343,28 +343,6 @@ function add(model) {
 
 }
 
-function prova(){
-	event.preventDefault();
-	
-	 $.ajax({
-
-        type: "POST",
-        url: "/provamessaggio",
-
-        success: function(data) {
-
-            console.log("SUCCESS : ", data);
-
-
-
-        },
-        error: function(e) {
-            alert("Error!")
-            console.log("ERROR: ", e);
-        }
-    });
-	
-}
 
 function resetformat() {
 
@@ -381,7 +359,10 @@ $(document).ready(
           clone = document.getElementById("clone").cloneNode(true);
         questions();
         prep_modal();
-
+ var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+  return new bootstrap.Popover(popoverTriggerEl)
+})
         $("#new_precondition").submit(function() {
             event.preventDefault();
 
@@ -399,16 +380,16 @@ function questions() {
     let id = 0;
     //ROOT
     let div = document.getElementById("question");
-    console.log(question.length);
     for (let i = 0; i < question.length; i++) {
         // LINK
         let al = document.createElement('a');
         al.className = "link text-decoration-none";
-        al.setAttribute("data-toggle", "collapse");
+         al.setAttribute("data-bs-toggle", "collapse");
         al.setAttribute("href", "#collapseExample" + i);
         al.setAttribute("role", "button");
         al.setAttribute("style", "margin-top:2%;");
         al.setAttribute("aria-controls", "collapseExample");
+        al.setAttribute("aria-expanded", "false");
         al.textContent = question[i][0] + " o " + question[i][1];
         let span = document.createElement('span');
         al.appendChild(span);
@@ -508,12 +489,11 @@ function questions() {
 }
 
 function prep_modal() {
-    $(".modal").each(function() {
+    $(".new_model").each(function() {
         var element = this;
         var pages = $(this).find('.modal-split');
-
+console.log(pages.length);
         if (pages.length != 0) {
-            console.log("ddsd");
             pages.hide();
             pages.eq(0).show();
             var b_button = document.createElement("button");
@@ -533,7 +513,7 @@ function prep_modal() {
             var page_track = 0;
 
             $(n_button).click(function() {
-                console.log("click");
+                console.log();
                 if (document.getElementById("new-model-name").value.length == 0) {
                     document.getElementById("new-model-name").setAttribute("class", "form-control is-invalid")
 
@@ -543,8 +523,6 @@ function prep_modal() {
 
                     if (page_track == 0) {
                         $(b_button).show();
-
-                        $('#new_lesson1').modal('hide');
                     }
 
                     if (page_track == pages.length - 2) {
@@ -557,16 +535,13 @@ function prep_modal() {
                     if (page_track == pages.length - 1) {
                         n_button.setAttribute("type", "submit");
                         $("#new_models").submit(function() {
-
-                            console.log("PPPPP2");
-                            console.log(a);
                             // Prevent the form from submitting via the browser.
                             event.preventDefault();
                             if (a.some(a => a.name === $("#new-model-name").val())) {
                                 alert("Argomento gia esistente");
                             } else {
                                 Create_model();
-                                $('#new_lesson1').modal('hide');
+                               
                             }
 
                         });

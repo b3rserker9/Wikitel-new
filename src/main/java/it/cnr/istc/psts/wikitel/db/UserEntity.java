@@ -52,7 +52,7 @@ public class UserEntity {
     @Column(columnDefinition="text")
     private String Questionario;
     
-
+  
     
     @Column(nullable = false)
 	private String role;

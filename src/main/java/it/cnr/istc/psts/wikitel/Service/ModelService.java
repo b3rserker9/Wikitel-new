@@ -72,4 +72,10 @@ public class ModelService {
 		Optional<RuleEntity> result = this.rulerepository.findById(id);
 		return result.orElse(null);
 	}
+	
+	@Transactional
+	public String getRuleName(Long id) {
+		
+		return this.rulerepository.findNameById(id);
+	}
 }

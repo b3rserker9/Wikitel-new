@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -49,12 +50,14 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 import org.springframework.core.io.ByteArrayResource;
-
-
+import org.springframework.core.io.InputStreamResource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -63,6 +66,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import it.cnr.istc.psts.wikitel.db.*;
 import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.Websocket.Sending;
@@ -70,13 +76,14 @@ import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
 
 import it.cnr.istc.psts.wikitel.Repository.UserRepository;
-
+import it.cnr.istc.psts.wikitel.Service.FilesService;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.RuleSuggestionRelationService;
 import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
+import it.cnr.psts.wikitel.API.Message;
 
 @RestController
 public class MainController {
@@ -94,6 +101,9 @@ public class MainController {
 		
 	@Autowired
 	private LessonService lessonservice;
+	
+	@Autowired
+	private FilesService fileservice;
 	
 	
 	@Autowired
@@ -138,25 +148,31 @@ public class MainController {
 	public void prova(@Payload Session session, SimpMessageHeaderAccessor headerAccessor ) throws JsonProcessingException {
 		UserController.ONLINE.put(session.getUser_id(), session.getSession());
 		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(session.getUser_id()));
+		if(session.getLesson_id()!=null) {
 		LessonManager manager = MainController.LESSONS.get(session.getLesson_id());
 		send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(session.getLesson_id(), manager.getSolver().getTimelines())), session.getSession());
 		send.notify(Starter.mapper.writeValueAsString(new LessonManager.Tick(session.getLesson_id(), manager.getCurrentTime())), session.getSession());
-		
+		if(manager.st!=null) {
+		send.notify(Starter.mapper.writeValueAsString(MainController.LESSONS.get(session.getLesson_id()).st), UserController.ONLINE.get(session.getUser_id()));	
+		}
+		}
 		
 		
 	}
 	 
 	
+	@PostMapping("/getstimulus")
+	public String stimulus(@RequestBody ObjectNode node) {
+		
+		
+		return"Done";
+	}
 	
-	
-	@GetMapping("/getprofile")
-	public Response getProfile() throws JsonMappingException, JsonProcessingException {
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+	@PostMapping("/getprofile")
+	public Response getProfile(@RequestBody ObjectNode node) throws JsonMappingException, JsonProcessingException {
+		UserEntity nuovo =  userservice.getUserId(node.get("id").asLong());
 		Response response = new Response( nuovo.getProfile());
-		ObjectMapper mapper = new ObjectMapper();
-		Json_reader interests = pageController.json("/json/user_model.json",true);
-    	System.out.println("ciao " +interests.getInterests().get(0).getId());
+		System.out.println();
 		return response;
 	}
 	
@@ -232,6 +248,46 @@ public class MainController {
 		return m.getId();
 		
 	}
+	
+	@PostMapping("/uploadFileLesson/{id}")
+	public Files uploadfilelesson(@RequestBody MultipartFile uploadfile, @PathVariable("id") Long id ) throws IllegalStateException, IOException{
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+		String file1 =  uploadfile.getOriginalFilename();
+    	String baseDir=System.getProperty("user.dir")+"\\MaterialeDidattico\\";
+    	Files f= new Files(file1);
+    	this.fileservice.save(f);
+    	uploadfile.transferTo(new File(baseDir + file1));
+    	f.setSrc(baseDir + file1);
+    	this.fileservice.save(f);
+    	System.out.println("LESSOn ID: " + id);
+    	LessonEntity lession = this.lessonservice.lezionePerId(id);
+    	lession.getFiles().add(f);
+    	this.lessonservice.save(lession);
+    	
+		return f;
+		
+	}
+	
+	
+	@RequestMapping("/file/{id}")
+		  public ResponseEntity<InputStreamResource> downloadFile1(
+				  @PathVariable("id") Long id) throws IOException {
+
+				
+		        File file = new File(this.fileservice.filePerId(id).getSrc());
+		        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+		        return ResponseEntity.ok()
+		                // Content-Disposition
+		                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+		           
+		                // Contet-Length
+		                .contentLength(file.length()) //
+		                .body(resource);
+		    }
+	
+	
 	
 	@PostMapping("/uploadFile")
 	public Response uploadfile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
@@ -495,6 +551,9 @@ public class MainController {
 		 final LessonManager lesson_manager = new LessonManager(lesson,send,this.modelservice,this.userservice);
 		LESSONS.put(lesson.getId(),lesson_manager);
 		lesson_manager.Solve();
+		for(UserEntity u : lesson.getFollowed_by()) {
+			send.notify(Starter.mapper.writeValueAsString(new Message.Subscribe(lesson.getId(), lesson.getName())), UserController.ONLINE.get(u.getId()));
+		}
 		return response;
 		
 	}
@@ -586,6 +645,14 @@ public class MainController {
 
 		
 		Response response = new Response("Done",l);			
+		return response;
+		
+	}
+	
+	@PostMapping("/getname")
+	public Response getName(@RequestBody ObjectNode node) {
+		
+		Response response = new Response(this.modelservice.getRuleName(node.get("id").asLong()));	
 		return response;
 		
 	}

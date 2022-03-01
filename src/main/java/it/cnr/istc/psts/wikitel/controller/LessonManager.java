@@ -49,6 +49,7 @@ import it.cnr.istc.pst.oratio.timelines.Timeline;
 import it.cnr.istc.pst.oratio.timelines.TimelinesExecutor;
 import it.cnr.istc.pst.oratio.utils.Flaw;
 import it.cnr.istc.pst.oratio.utils.Resolver;
+import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.RuleEntity;
 import it.cnr.istc.psts.wikitel.db.TextRuleEntity;
@@ -59,10 +60,7 @@ import it.cnr.psts.wikitel.API.Lesson.LessonState;
 import it.cnr.psts.wikitel.API.Message;
 import it.cnr.psts.wikitel.API.Message.Stimulus;
 import it.cnr.istc.psts.Websocket.Sending;
-import it.cnr.istc.psts.wikitel.Service.ModelService;
-import it.cnr.istc.psts.wikitel.Service.Starter;
-import it.cnr.istc.psts.wikitel.Service.UserService;
-import it.cnr.istc.psts.wikitel.db.LessonEntity;
+import it.cnr.istc.psts.wikitel.Service.*;
 
 
 public class LessonManager implements StateListener, GraphListener, ExecutorListener  {
@@ -91,6 +89,8 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	    private Flaw current_flaw = null;
 	    private final Map<Long, Resolver> resolvers = new HashMap<>();
 	    private Resolver current_resolver = null;
+	    Stimulus st = null;
+	    
 	    
 	    
 	    public LessonManager(final LessonEntity lesson, final Sending send, final ModelService modelservice, final UserService userservice ) {
@@ -238,7 +238,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	            final long rule_id = Long.parseLong(atom.getType().getName().substring(3));
 	            final RuleEntity rule_entity = this.modelservice.getRule(rule_id);
 
-	            Stimulus st = null;
+	            
 	            if (rule_entity instanceof TextRuleEntity)
 	                st = new Message.Stimulus.TextStimulus(lesson.getId(), rule_id, current_time, false,
 	                        rule_entity.getName());
@@ -323,7 +323,9 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        current_flaw.current = true;
 		        try {
 		            final String ws = UserController.ONLINE.get(lesson.getTeacher().getId());
+		            if (ws != null) {
 		            send.notify(Starter.mapper.writeValueAsString(new CurrentFlaw(lesson.getId(), id)), ws);
+		            }
 		        } catch (final JsonProcessingException e) {
 		            LOG.error("Cannot serialize", e);
 		        }

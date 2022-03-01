@@ -36,7 +36,7 @@ public class ModelEntity {
     
     
     @OneToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+   
     @JsonManagedReference
     private final Collection<RuleEntity> rules = new ArrayList<>();
 

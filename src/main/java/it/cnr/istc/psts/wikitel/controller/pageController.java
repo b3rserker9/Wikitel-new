@@ -1,6 +1,7 @@
 package it.cnr.istc.psts.wikitel.controller;
 
 
+import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -160,7 +161,9 @@ public class pageController {
   
     	model.addAttribute("user",userentity);
     	model.addAttribute("role",userentity.getRole());
+    	
 		LessonEntity lezione = lessonservice.lezionePerId(id);
+		model.addAttribute("files",lezione.getFiles());
 		model.addAttribute("lezione",lezione);
 		DateFormat df = new SimpleDateFormat("yy"); // Just the year, with 2 digits
 		String formattedDate = df.format(Calendar.getInstance().getTime());
@@ -168,9 +171,9 @@ public class pageController {
 		System.out.println(formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("students",lezione.getFollowed_by());
-		if(userentity.getRole().equals(STUDENT_ROLE)) {
+		if(userentity.getRole().equals(STUDENT_ROLE)) { 
 		model.addAttribute("messages",MainController.LESSONS.get(id).getStimuli(userentity.getId()));
-		System.out.println("MESSAGGESSSS " + MainController.LESSONS.get(id).getStimuli(userentity.getId()).size());
+		//send.notify(Starter.mapper.writeValueAsString(MainController.LESSONS.get(id).st), UserController.ONLINE.get(userentity.getId()));	
 		}
 	
 		
@@ -198,10 +201,7 @@ public class pageController {
 	
 	@GetMapping(value = "/profile/{id}")
 	public String det_profilo(@PathVariable(required = false) Long id, Model model) {
-		UserEntity user = userservice.getUserId(id);
-		for (final JsonNode interest : Starter.USER_MODEL.get("interests"))
-			System.out.println(interest.asText());
-    
+		UserEntity user = userservice.getUserId(id);   
     	model.addAttribute("user",user);
     	model.addAttribute("teacher",false);
 		return "admin/profilo";

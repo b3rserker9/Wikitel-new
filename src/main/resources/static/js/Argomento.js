@@ -164,6 +164,9 @@ function Create_new_lesson() {
     }
     // PREPARE FORM DATA
     console.log(getData());
+    if(students_id.length == 0){
+	document.getElementById("error_student").innerText="Please insert at least one student"
+}else{
     var lesson = {
 
         name: $("#new-lesson-name").val(),
@@ -194,6 +197,8 @@ function Create_new_lesson() {
                    
         
             students_id = [];
+              document.getElementById("chips").innerHTML = '';
+  				
 
         },
         error: function(e) {
@@ -203,16 +208,12 @@ function Create_new_lesson() {
     });
 
 
-
+}
 
 }
 
 $(document).ready(
     function() {
-	
-	
-	console.log(document.getElementById("modelid").getAttribute('value'));
-
         $("#students").autocomplete({
             source: students
         });

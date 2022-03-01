@@ -58,6 +58,7 @@ function uploadFile(e) {
                 },
                 error: function(err) {
                     console.error(err);
+                    toastr.error("Errore durante l'upload dell'immagine");
                 }
             });
         } else {
@@ -92,13 +93,13 @@ function ajaxGet() {
     // DO POST
     $.ajax({
 
-        type: "GET",
+        type: "POST",
         contentType: "application/json",
-        url: "getprofile",
+        url: "/getprofile",
+        data: JSON.stringify({id :document.getElementById("nameid").getAttribute('value') }),
         dataType: "json",
 
         success: function(data) {
-            let interest = [];
             console.log("SUCCESS : ", JSON.parse(data.status));
             JSON.parse(data.status).forEach(function(element) {
                 console.log(element.slice(10));

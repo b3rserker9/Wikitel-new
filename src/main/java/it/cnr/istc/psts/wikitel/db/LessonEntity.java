@@ -3,6 +3,7 @@ package it.cnr.istc.psts.wikitel.db;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,15 +38,16 @@ public class LessonEntity {
     @JsonBackReference
     private UserEntity teacher;
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+    
     @JsonManagedReference
     private final Collection<UserEntity> followed_by = new ArrayList<>();
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
+
     private final Collection<RuleEntity> goals = new ArrayList<>();
     
 
-    
+    @ManyToMany
+    private List<Files> files = new ArrayList<>();
 
     public void addStudent(final UserEntity student) {
         followed_by.add(student);
