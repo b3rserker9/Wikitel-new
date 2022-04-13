@@ -50,11 +50,12 @@ public class WikitelNewApplication {
 		
 		ProcessBuilder builder = new ProcessBuilder("python",  System.getProperty("user.dir")+"/wcb/wikitel.py");
 		System.out.println(InetAddress.getLocalHost().getHostAddress());
+		System.out.println(System.getProperty("user.dir"));
 		Process process = builder.start();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		String lines=null;
 		
-		System.out.println("Python Server is working: " + builder);
+		System.out.println("Python Server is working: " + process);
 		while((lines = reader.readLine())!=null) {
 			System.out.println("python:  " + lines);
 		}
