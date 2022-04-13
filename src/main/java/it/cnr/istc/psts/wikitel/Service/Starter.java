@@ -56,7 +56,7 @@ public class Starter implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("prova: "+Starter.class.getClassLoader().getResourceAsStream("\\json\\user_model.json"));
+		System.out.println("prova: "+Starter.class.getClassLoader().getResourceAsStream("/json/user_model.json"));
 		USER_MODEL = mapper.readTree(Starter.class.getClassLoader().getResourceAsStream("\\json\\user_model.json"));
 		List<LessonEntity> lesson = lessonservice.all();
 		for(LessonEntity l : lesson) {
