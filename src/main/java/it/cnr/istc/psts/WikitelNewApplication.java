@@ -48,9 +48,9 @@ public class WikitelNewApplication {
 		
 		SpringApplication.run(WikitelNewApplication.class, args);
 		
-		ProcessBuilder builder = new ProcessBuilder("python",  System.getProperty("user.dir")+"\\wcb\\wikitel.py");
+		ProcessBuilder builder = new ProcessBuilder("python",  System.getProperty("user.dir")+"/wcb/wikitel.py");
 		System.out.println(InetAddress.getLocalHost().getHostAddress());
-		System.out.println(System.getProperty("user.dir") +"\\wcb\\wikitel.py");
+		System.out.println(System.getProperty("user.dir") +"/wcb/wikitel.py");
 		Process process = builder.start();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		String lines=null;
