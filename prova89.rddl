@@ -51,18 +51,18 @@ class Lesson {
     fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
 
     {
-      goal st25 = new St_25(u:u);
-      st25.start >= end;
-    } or {
-      !u.c_arte;
-    }
-
-    {
       goal st24 = new St_24(u:u);
       st24.start >= end;
     } or {
       !u.c_arte;
       !u.c_architettura;
+    }
+
+    {
+      goal st25 = new St_25(u:u);
+      st25.start >= end;
+    } or {
+      !u.c_arte;
     }
 
     {
@@ -120,7 +120,7 @@ class Lesson {
 }
 
 Lesson l_285 = new Lesson();
-User u_99 = new User(99, true, true, false, true, false, false, false, true, true, true, true, true, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true);
+User u_99 = new User(99, true, true, false, true, false, false, true, false, false, true, false, false, false, false, false, true, false, true, false, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true);
 
 User u;
 

@@ -58,9 +58,28 @@ class Lesson {
     }
 
     {
+      goal st103 = new St_103(u:u);
+      st103.start >= end;
+    } or {
+      !u.c_scienza;
+      !u.c_storia;
+      !u.c_economia;
+    }
+
+    {
       goal st24 = new St_24(u:u);
       st24.start >= end;
     } or {
+      !u.c_arte;
+      !u.c_architettura;
+    }
+
+    {
+      goal st104 = new St_104(u:u);
+      st104.start >= end;
+    } or {
+      !u.c_geografia;
+      !u.c_geologia;
       !u.c_arte;
       !u.c_architettura;
     }
@@ -74,11 +93,34 @@ class Lesson {
   predicate St_24(User u) : Interval {
     duration >= 573.0;
     fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+
+    {
+      goal st218 = new St_218(u:u);
+      st218.start >= end;
+    } or {
+      !u.c_arte;
+      !u.c_architettura;
+    }
+  }
+
+  predicate St_103(User u) : Interval {
+    duration >= 155.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+  }
+
+  predicate St_104(User u) : Interval {
+    duration >= 968.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+  }
+
+  predicate St_218(User u) : Interval {
+    duration >= 1529.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
   }
 }
 
 Lesson l_101 = new Lesson();
-User u_99 = new User(99, true, true, false, true, true, true, true, true, true, true, true, true, false, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, true, true, true, true, true, true, true, true);
+User u_99 = new User(99, true, true, false, true, false, false, true, false, false, true, false, false, false, false, false, true, false, true, false, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true);
 
 User u;
 
