@@ -54,7 +54,7 @@ public class WikitelNewApplication {
 		Process process = builder.start();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		String lines=null;
-		
+		System.out.println("1: " +reader.readLine());
 		System.out.println("Python Server is working: " + process);
 		while((lines = reader.readLine())!=null) {
 			System.out.println("python:  " + lines);
