@@ -87,6 +87,8 @@ button:hover {
 .questions {
     display: flex;
     flex-direction: column;
+        justify-content: center;
+    text-align: center;
 }
 .popover{
 	max-width: 500px;

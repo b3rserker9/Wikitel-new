@@ -162,7 +162,7 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
   </div>
   <ul class="nav navbar-nav navbar-right">
 	<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" style="background-color:#1266f1" aria-expanded="false">
     <i class="fas fa-user"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
@@ -263,34 +263,30 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
    <div class="modal-dialog" role="document" id="clone">
       <div class="modal-content">
          <form id="new_models">
-            <div class="modal-header">
-               <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            <div class="modal-header" style="border-bottom: 0px solid!important">
                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" >
                <div class="modal-split">
                   <div class="titolo" style="text-align: center;">
-                     <h1>Argomento</h1>
+                     <h1>Cosa vuoi cercare?</h1>
                   </div>
                   
                   <label for="new-model-name" style="margin-top: 2%;">Nome</label>
                   <input type="text" class="form-control" id="new-model-name" placeholder="Nome" required>
                    <div class="invalid-feedback">
-           Please insert a name for your modal.
+           Please insert a name for your model.
       
                   </div>
                </div>
                <div class="modal-split">
-                  <div class="titolo" style="text-align: center;">
-                     <h1>Nuovo obiettivo</h1>
-                  </div>
-                  <label for="new-rule-name">Nome</label>
-                  <input type="text" class="form-control" id="new-rule-name" placeholder="Nome">
-                  <div class="invalid-feedback">
-          Please insert a name for your rule.
-      
-                  </div>
-                  <label for="new-rule-type">Tipo</label>
+                 
+               <div style="text-align: center;padding-bottom: 5px;">
+               <h2 style="font-size:28px ;">Stai per creare un nuovo modello su</h2>
+               <h1><span id="model_rule_name"></span></h1>
+               
+               </div>
+                  <label for="new-rule-type">modalità di creazione</label>
                   <select class="form-select" id="new-rule-type" aria-label="Tipo di obiettivo" onChange="update()">
                      <option value="1">Testo</option>
                      <option value="4">File</option>
@@ -317,7 +313,7 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
 </div>
                </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="border-top: 0px solid!important">
                
             </div>
          </form>

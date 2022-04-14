@@ -151,6 +151,68 @@ body{
     display: none;
 }
 
+#progressbar {
+  margin-bottom: 30px;
+  overflow: hidden;
+  text-align: center;
+}
+  #progressbar li {
+  list-style-type: none;
+  color: #99a2a8;
+  font-size: 9px;
+  width: calc(100% / 5);
+  float: left;
+  position: relative;
+  font: 500 13px/1 "Roboto", sans-serif;
+  z-index: 1;
+}
+  #progressbar li:nth-child(2):before {
+	font-family: "Font Awesome 5 Free";
+  content: "\f084";
+  font-weight: 900;
+}
+  #progressbar li:nth-child(3):before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f507";
+  font-weight: 900;
+}
+  #progressbar li:nth-child(4):before {
+  font-family: "Material Icons";
+  content: "\e7c8";
+  font-weight: 900;
+}
+  #progressbar li:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f681";
+  font-weight: 900;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  display: block;
+  background: #eaf0f4;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+}
+  #progressbar li:after {
+  content: "";
+  width: 100%;
+  height: 10px;
+  background: #eaf0f4;
+  position: absolute;
+  left: -38%;
+  top: 21px;
+  z-index: -1;
+}
+  #progressbar li:last-child:after {
+  width: 150%;
+}
+  #progressbar li.active {
+  color: #5cb85c;
+}
+  #progressbar li.active:before,   #progressbar li.active:after {
+  background: #5cb85c;
+  color: white;
+}
 </style>
 <body>
 
@@ -161,6 +223,9 @@ body{
                 <img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
                 WikiTEL
             </a>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal4">
+  Launch demo modal
+</button>
             <ul class="navbar-nav ms-auto navbar-right" id="navbar-connect">
                 <li class="nav-item">
                 <button type="button" class="btn btn-success btn-sm uno" style="width: 100%;" data-bs-toggle="modal" data-bs-target="#modal1">Accedi</button>
@@ -280,15 +345,20 @@ body{
    <div class="modal-dialog" style="max-width: 50%;">
       <div class="modal-content">
           <form id="register_form">
-            <div class="modal-header">
-               <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+            <div class="modal-header" style="border-bottom: 0px solid!important;align-items: initial!important; flex-direction: column-reverse!important;">
+                <ul id="progressbar">
+    				  <li class="active">Dati</li>  
+      					<li>Credenziali</li> 
+      					<li>Ruolo</li>
+      					<li>Interessi</li>
+      					<li>Questionario</li>
+ 				   </ul>
+               <h4 class="modal-title" id="myModalLabel"></h4>
                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" >
                <div class="modal-split">
-                  <div class="titolo" style="text-align: center;">
-                     <h1>Dati Profilo</h1>
-                  </div>
+               
                     <div class="image-upload s">
         <img  id="myImg" src="https://getstamped.co.uk/wp-content/uploads/WebsiteAssets/Placeholder.jpg"  alt="Admin" class="rounded-circle" width="150">
    
@@ -309,9 +379,7 @@ body{
                   </div>
                </div>
                <div class="modal-split">
-                  <div class="titolo" style="text-align: center;">
-                     <h1>Registrazione</h1>
-                  </div>
+                 
                   <label for="email" class="col-form-label">Email:</label>
             <input type="text" class="form-control" id="email_r" name="email_r">
             <p id="error"></p>
@@ -319,31 +387,28 @@ body{
             <input type="password" class="form-control" id="password_r" name="password_r" autocomplete="on">
                </div>
                <div class="modal-split">
-                  <div class="titolo" style="text-align: center;">
-                     <h1>Autorità</h1>
-                  </div>
+                 
                   <div class="role">
+                  <div class="role_default">
               <div class="mr">
   <input type="radio" id="default" name="roles" class="input-hidden" value="STUDENT"  >
   <label for="default" style="font-size: 10em;"><i class="fas fa-user"></i>
   </label>
 </div>
-
+<div class="role_nom"><h1>Admin</h1></div>
+                  </div>
+<div class="role_admin">
 <div class="mr">
   <input type="radio" id="admin" name="roles" class="input-hidden" value="TEACHER"  >
   <label for="admin" style="font-size: 10em;"><i class="fas fa-user-plus"></i></label>
 </div>
-
+<div class="role_nom"><h1>Default</h1></div>
                   </div>
-                  <div class="role_name" style="margin-right:50px ;">
-                  <h1>Default</h1>
-					<h1>Admin</h1>
                   </div>
+                  
                </div>
                  <div class="modal-split" style="height: 350px; overflow: auto;">
-                  <div class="titolo" style="text-align: center;">
-                     <h1>Interessi</h1>
-                  </div>
+                 
                   <div class="Interest" id="interests">
    <div th:each="i : ${interests}">
                             <div class="form-check form-switch col">
@@ -354,14 +419,10 @@ body{
   </div>
                </div>
                <div class="modal-split">
-                  <div class="titolo" style="text-align: center;">
-                     <h1>Questionario</h1>
-                  </div>
+                  
    <div class="questions" id="question" >
-  <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-    Button with data-bs-target
-  </button>
-</p>
+  
+
 <div class="collapse" id="collapseExample">
   <div class="card card-body">
     Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
@@ -371,7 +432,7 @@ body{
 
                </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" style="border-top: 0px solid!important">
                
             </div>
          </form>
@@ -379,13 +440,13 @@ body{
    </div>
 </div>
  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-option">
+  <div class="modal-dialog  modal-option">
     <div class="modal-content cont">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+      <div class="modal-header" style="border-bottom: 0 !important">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">
+      <div class="modal-body" style="display: flex !important;justify-content: center;">
       <div class="images">
       
       
@@ -439,13 +500,35 @@ body{
 
       </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" data-dismiss="modal" class="btn btn-primary" onclick="image()">Save changes</button>
+      <div class="modal-footer" style="border-top: 0 !important">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color:red">Close</button>
+        <button type="button" data-dismiss="modal" class="btn btn-primary" data-bs-dismiss="modal" onclick="image()">Save changes</button>
       </div>
     </div>
   </div>
 </div>
+  
+  
+  
+  
+  <div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 0px solid!important">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer" style="border-top: 0 !important">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
   
 </body>
 </html>

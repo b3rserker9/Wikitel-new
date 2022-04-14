@@ -91,7 +91,7 @@ function New_rule() {
     var model = {
 
         model_name: $("#new-model-name").val(),
-        rule_name: $("#new-rule-name").val(),
+        rule_name: $("#new-model-name").val(),
         rule_type: text,
         rule_url: $("#new-rule-url").val(),
         rule_text: $("#rule_Textarea").val()
@@ -147,6 +147,7 @@ function Create_model() {
 			New_rule()
 			
 }
+			$('#new_lesson1').modal('hide');
             resetformat();
             console.log("SUCCESS : ", data);
 
@@ -549,7 +550,7 @@ console.log(pages.length);
 
                     if (page_track < pages.length - 1) {
                         page_track++;
-
+						document.getElementById("model_rule_name").innerText=$("#new-model-name").val();
                         pages.hide();
                         pages.eq(page_track).show();
                     }
