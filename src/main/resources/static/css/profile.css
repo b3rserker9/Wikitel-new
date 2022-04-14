@@ -83,18 +83,18 @@
 }
 
 .images{
-	    display: flex;
+	display: flex;
     flex-wrap: wrap;
     max-height: 650px;
-    justify-content: flex-start;
-    max-width: max-content;
+    max-width: 100%;
+    justify-content: center;
+    padding: 10px;
     overflow-y: auto;
     overflow-x: hidden;
 }
 
 .mr{
-	margin-right: 1%;
-	margin-bottom: 1%;
+	padding: 7px;
 }
 
 .photo-upload{

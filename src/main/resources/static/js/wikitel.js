@@ -321,6 +321,8 @@ function prep_modal() {
                     if (page_track < pages.length - 1) {
 
                         page_track++;
+                        console.log(page_track);
+                        $( "#progressbar li:nth-child("+ (page_track + 1)+ ")" ).addClass("active");
                         pages.hide();
                         pages.eq(page_track).show();
                     }
@@ -339,7 +341,11 @@ function prep_modal() {
                 }
 
                 if (page_track > 0) {
+	$( "#progressbar li:nth-child("+ (page_track +1)+ ")" ).removeClass("active");
                     page_track--;
+                    
+                    console.log(page_track);
+                    
                     pages.hide();
                     pages.eq(page_track).show();
                 }

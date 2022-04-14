@@ -140,18 +140,15 @@ function openNav() {
 </ul>
    
   </div>
-  <ul class="nav nav-item" style="width: 70px;">
- 
-  <ul class="nav navbar-nav navbar-right">
-     <div class="btn-group">
-  <button type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span style="font-size: 18px;"><i class="fas fa-user"></i></span>
+ <ul class="nav navbar-nav navbar-right">
+	<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:#1266f1">
+    <i class="fas fa-user"></i>
   </button>
-  <div class="dropdown-menu dropdown-menu-right">
-    <a class="dropdown-item" th:href="@{profile}">Profile</a></li>
-    <button class="dropdown-item" type="button">Another action</button>
-    <a th:href="@{logout}" class="dropdown-item" type="button"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
-  </div>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" th:href="@{profile}">Profile</a></li>
+    <li> <a class="dropdown-item" type="button" th:href="@{logout}"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+  </ul>
 </div>
     </ul>
 </nav>

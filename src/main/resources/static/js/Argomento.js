@@ -2,8 +2,23 @@ let students_id = [];
 let students = [];
 let student = [];
 let ids = [];
+let dd;
 let result = [];
 
+
+function remove(id){
+	for( var i = 0; i < students_id.length; i++){ 
+                                   
+        if ( students_id[i] === id) { 
+	console.log(students_id[i]);
+            students_id.splice(i, 1); 
+            
+            i--; 
+        }
+    }
+document.getElementById(id).style.display='none';
+console.log(students_id)
+}
 
 function ajaxGet2() {
 	
@@ -42,14 +57,12 @@ function add(id) {
     students_id.push(id);
     let user = ids[id];
     console.log(user.first_name + ' ' + user.last_name);
-    if (!result.includes(user.first_name + ' ' + user.last_name)) {
+    if (!students_id.includes(id)) {
         let div = document.createElement('div');
         let img = document.createElement('img');
         img.src = user.src;
         div.className = 'chip';
         div.innerHTML = `${user.first_name}  ${user.last_name}`;
-        result.push(`${user.first_name}  ${user.last_name}`);
-        console.log(result);
         let chips = document.getElementById("chips");
         chips.appendChild(div);
         div.appendChild(img);
@@ -93,10 +106,12 @@ function GetStudent() {
 
             console.log("SUCCESS : ", data);
             for (let i = 0; i < data.length; i++) {
+	dd=JSON.stringify(data);
                 students[i] = data[i].first_name + ' ' + data[i].last_name;
                 ids[data[i].id] = data[i];
                 student[students[i]] = data[i];
                 create_card_profile(data[i]);
+                console.log("stud: "+ dd);
             }
 
 
@@ -146,6 +161,7 @@ function create_card_profile(student) {
     small.appendChild(text_s);
     profile_card.appendChild(prova);
     root.appendChild(profile_card);
+   
 }
 
 
@@ -193,7 +209,7 @@ function Create_new_lesson() {
             $('#new-lesson-modal').modal('hide');
             console.log("SUCCESS : ", data);
                        
-                    document.getElementById("rows").innerHTML += '<div class="columns animate__animated animate__bounce"><div class="cards"> <a href="/lezione/' + data.data4.id + '"> <h3 >' + data.data4.name + '</h3> <span class="spinner-border spinner-border-sm"></span></a> </div></div>'
+                    document.getElementById("rows").innerHTML += '<div class="columns animate__animated animate__bounce"><div class="cards"> <a href="/lezione/' + data.data4.id + '"> <h3 >' + data.data4.name + '</h3></a> </div></div>'
                    
         
             students_id = [];
@@ -232,21 +248,26 @@ $(document).ready(
 
         $("#add").click(function() {
 
-            if (!result.includes($("#students").val())) {
+            if (!students_id.includes(student[$("#students").val()].id)) {
                 if (students.includes($("#students").val())) {
                     students_id.push(student[$("#students").val()].id);
                     let div = document.createElement('div');
                     let img = document.createElement('img');
                     console.log(student[$("#students").val()])
+                    console.log("array: "+ students_id);
                     img.src = student[$("#students").val()].src;
                     div.className = 'chip';
+                    div.setAttribute("id",student[$("#students").val()].id);
                     console.log($("#students").val());
                     div.innerHTML = $("#students").val();
-                    result.push($("#students").val());
-                    console.log(result);
                     let chips = document.getElementById("chips");
                     chips.appendChild(div);
                     div.appendChild(img);
+                     let span = document.createElement('span');
+    span.setAttribute("onclick",'remove('+ student[$("#students").val()].id +')')
+    span.className ="closebtn";
+    span.innerHTML="&times;"
+    div.appendChild(span);
                 } else {
                     alert("No match found ");
                 }

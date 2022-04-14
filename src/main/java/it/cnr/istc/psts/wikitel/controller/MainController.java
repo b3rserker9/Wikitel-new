@@ -70,7 +70,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import it.cnr.istc.psts.wikitel.db.*;
-import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
@@ -552,6 +551,7 @@ public class MainController {
 		LESSONS.put(lesson.getId(),lesson_manager);
 		lesson_manager.Solve();
 		for(UserEntity u : lesson.getFollowed_by()) {
+			if(UserController.ONLINE.get(u.getId())!=null)
 			send.notify(Starter.mapper.writeValueAsString(new Message.Subscribe(lesson.getId(), lesson.getName())), UserController.ONLINE.get(u.getId()));
 		}
 		return response;
