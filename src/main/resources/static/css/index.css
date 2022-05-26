@@ -85,10 +85,14 @@ button:hover {
 	text-decoration: none;
 }
 .questions {
-    display: flex;
+  display: flex;
     flex-direction: column;
-        justify-content: center;
+    /* justify-content: center; */
     text-align: center;
+    overflow: auto;
+    /* height: 44%; */
+    max-height: 300px;
+    padding: 14px;
 }
 .popover{
 	max-width: 500px;

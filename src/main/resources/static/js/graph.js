@@ -341,7 +341,6 @@ function redrawAll() {
     
     network.on("click", function(params) {
         if ((params.nodes.length) > 0) {
-	console.log( nodesDataset.get(params.nodes).group);
 	rule_effects=nodesDataset.get(params.nodes)[0].group;
 	rule_selected=nodesDataset.get(params.nodes)[0].label
             params.event = "[original event]";
@@ -377,6 +376,7 @@ function redrawAll() {
 }*/
 
 function esplora(){
+	 toastr.info("Avviata la ricerca su " + rule_selected);
 	   var precondition = {
                 model_id: window.location.pathname.split('/')[2],
                 rule_id: rule_effects,
@@ -393,15 +393,9 @@ function esplora(){
                 dataType: "json",
                 success: function(data) {
                     console.log("SUCCESS : ", data);
-                    document.getElementById("notification").innerHTML += '<div class="toast show" role="alert" aria-live="assertive" id="' + item.name + '" aria-atomic="true">' +
-                        '<div class="toast-header">' +
-                        '<strong class="me-auto">Nuovo obiettivo trovato</strong>' +
-                        '<small class="text-muted">just now</small>' +
-                        '<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button></div>' +
-                        '<div class="toast-body"> ' + item.name + ' è stato trovato </div></div>'
-                    time(item.name);
+                    toastr.info("La ricerca su " + rule_selected + "è stata completata");
                     ajaxGet();
-
+					
                 },
                 error: function(e) {
                     alert("Error!")

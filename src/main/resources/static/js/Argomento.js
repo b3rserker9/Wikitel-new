@@ -54,7 +54,7 @@ function ajaxGet2() {
 
 function add(id) {
     console.log(id);
-    students_id.push(id);
+    
     let user = ids[id];
     console.log(user.first_name + ' ' + user.last_name);
     if (!students_id.includes(id)) {
@@ -66,7 +66,14 @@ function add(id) {
         let chips = document.getElementById("chips");
         chips.appendChild(div);
         div.appendChild(img);
+         let span = document.createElement('span');
+    span.setAttribute("onclick",'remove('+ student[$("#students").val()].id +')')
+    span.className ="closebtn";
+    span.innerHTML="&times;"
+    div.appendChild(span);
         toastr.success('Utente ' + user.first_name + ' ' + user.last_name + 'è stato inserito correttamente alla lista')
+        students_id.push(id);
+        
 
     } else {
         alert("already added");

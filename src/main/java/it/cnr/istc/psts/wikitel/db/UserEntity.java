@@ -29,7 +29,7 @@ import it.cnr.istc.psts.wikitel.controller.Json_reader;
 import lombok.Data;
 @Data
 @Entity
-@Table(indexes = { @Index(name = "email_index", columnList = "email", unique = true) })
+@Table
 public class UserEntity {
 	
 	public static final String TEACHER_ROLE = "TEACHER";
@@ -38,10 +38,8 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(nullable = false)
-    private String email;
-    @Column(nullable = false)
-    private String password;
+    
+ 
     private String first_name;
     private String last_name;
     @Column(columnDefinition="text")
@@ -53,9 +51,6 @@ public class UserEntity {
     private String Questionario;
     
   
-    
-    @Column(nullable = false)
-	private String role;
     @OneToMany
     private final Collection<RuleEntity> learnt_topics = new ArrayList<>();
     

@@ -214,7 +214,7 @@ function openNav() {
 <div id="lesson_id" th:value="${lezione.id}" hidden></div>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;">
 	<span style="font-size:25px;cursor:pointer;margin-right: 2%;" onclick="openNav()"><i class="fas fa-bars"></i></span>
-  <a class="navbar-brand" href="#"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+  <a class="navbar-brand" href="/default"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
                 WikiTEL</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -445,7 +445,6 @@ function openNav() {
     <tr>
       <th scope="col">#</th>
       <th scope="col">First name/Surname</th>
-      <th scope="col">Roles</th>
     </tr>
   </thead>
   <tbody>
@@ -453,7 +452,6 @@ function openNav() {
     <tr>
       <th scope="row" th:text="${sStat.index}"></th>
       <td ><a  th:href="'/profile/' + ${s.id}"><span th:text="${s.last_name} + ' ' + ${s.first_name}"></span></a></td>
-      <td th:text="${s.role}"></td>
     </tr>
     </div>
   </tbody>
@@ -471,7 +469,6 @@ function openNav() {
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">

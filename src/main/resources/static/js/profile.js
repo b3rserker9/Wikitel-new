@@ -100,9 +100,7 @@ function ajaxGet() {
         dataType: "json",
 
         success: function(data) {
-            console.log("SUCCESS : ", JSON.parse(data.status));
             JSON.parse(data.status).forEach(function(element) {
-                console.log(element.slice(10));
                 document.getElementById("int").innerHTML += '<span class="badge badge-primary" style="margin-right:1.5%;" > ' + element.slice(10) + ' </span>'
                 arr.push(element.slice(10))
             });

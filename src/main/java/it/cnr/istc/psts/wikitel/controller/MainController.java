@@ -75,6 +75,7 @@ import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
 
 import it.cnr.istc.psts.wikitel.Repository.UserRepository;
+import it.cnr.istc.psts.wikitel.Service.CredentialService;
 import it.cnr.istc.psts.wikitel.Service.FilesService;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
@@ -97,6 +98,9 @@ public class MainController {
 	
 	@Autowired
 	private UserService userservice;
+	
+	@Autowired
+	private CredentialService credentialservice;
 		
 	@Autowired
 	private LessonService lessonservice;
@@ -126,20 +130,22 @@ public class MainController {
 	
 	@PostMapping("/register")
 	public Response register(@RequestBody  ObjectNode node) throws JsonGenerationException, JsonMappingException, IOException{
-		System.out.println("entratoodòjfkòjòfdaeHJLFJ");
 		Json_reader interests=new Json_reader();
 		Response response = new Response("Done");
 		UserEntity nuovo = new UserEntity();
-		nuovo.setEmail(node.get("email").asText());
+		Credentials newCred = new Credentials();
+		newCred.setEmail(node.get("email").asText());
+		newCred.setPassword(this.passwordEncoder.encode(node.get("password").asText()));
+		newCred.setRole(node.get("role").asText());
 		nuovo.setFirst_name(node.get("first_name").asText());
 		nuovo.setLast_name(node.get("last_name").asText());
-		nuovo.setPassword(this.passwordEncoder.encode(node.get("password").asText()));
+		
 		nuovo.setProfile(node.get("profile").asText());
 		nuovo.setSrc(node.get("src").asText());
-		nuovo.setRole(node.get("role").asText());
+		
 		nuovo.setQuestionario(node.get("one").asText());
-		userrepository.save(nuovo);
-		System.out.println("Done");
+		newCred.setUser(nuovo);
+		credentialservice.save(newCred);
 		return response;
 		
 	}
@@ -188,14 +194,12 @@ public class MainController {
 	public Response edit(@RequestBody User user){
 		Response response = new Response("Done", user);
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	System.out.println("username2:PIPPO");
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
-		nuovo.setEmail(user.getEmail());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
+		credentials.setEmail(user.getEmail());
 		nuovo.setFirst_name(user.getFirst_name());
 		nuovo.setLast_name(user.getLast_name());
-		userrepository.save(nuovo);
-		
-		System.out.println(nuovo.getPassword());
+		credentialservice.save(credentials);
 		
 		return response;
 		
@@ -204,7 +208,8 @@ public class MainController {
 	@PostMapping("/edit_interests")
 	public Response edit_interests(@RequestBody User user) throws JsonGenerationException, JsonMappingException, IOException{
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	nuovo.setProfile(user.getProfile());
     	userservice.saveUser(nuovo);
     	Response response = new Response("Done", nuovo);
@@ -220,7 +225,8 @@ public class MainController {
 	@PostMapping("/uploadFileString")
 	public Response uploadFileString(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	System.out.println(node.get("src").asText());
     	nuovo.setSrc(node.get("src").asText());
     	this.userservice.saveUser(nuovo);
@@ -251,7 +257,8 @@ public class MainController {
 	@PostMapping("/uploadFileLesson/{id}")
 	public Files uploadfilelesson(@RequestBody MultipartFile uploadfile, @PathVariable("id") Long id ) throws IllegalStateException, IOException{
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
 		String file1 =  uploadfile.getOriginalFilename();
     	String baseDir=System.getProperty("user.dir")+"\\MaterialeDidattico\\";
     	Files f= new Files(file1);
@@ -291,7 +298,8 @@ public class MainController {
 	@PostMapping("/uploadFile")
 	public Response uploadfile(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
 		String file1 =  uploadfile.getOriginalFilename();
     	System.out.println(file1);
     	String baseDir=System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\";
@@ -344,11 +352,9 @@ public class MainController {
 	
 	@PostMapping("/NewModel")
 	public Response NewModel(@RequestBody String Model) {
-		
-		
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	System.out.println("username2:PIPPO");
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	ModelEntity model = new ModelEntity();
     	model.setName(Model);
     	model.addTeacher(nuovo);
@@ -365,7 +371,8 @@ public class MainController {
 	public Long NewPrecondition(@RequestBody ObjectNode node) throws JsonProcessingException, RestClientException, UnknownHostException{	
 		RestTemplate restTemplate = new RestTemplate();
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	ModelEntity model = this.modelservice.getModel(node.get("model_id").asLong());
     	RuleEntity rule = null;
              rule = new WikiRuleEntity();
@@ -427,7 +434,8 @@ public class MainController {
 	public Long NewModel(@RequestBody ObjectNode node,@RequestBody MultipartFile uploadfile) throws RestClientException, IllegalStateException, IOException{	
 		RestTemplate restTemplate = new RestTemplate();
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	ModelEntity model = this.m;
     	RuleEntity rule = null;
     	System.out.println(node.get("model_name").asText());
@@ -516,7 +524,8 @@ public class MainController {
 	@RequestMapping(value = "/NewLesson",  method = RequestMethod.POST)
 	public Response Newlesson(@RequestBody ObjectNode node) throws JsonMappingException, JsonProcessingException{	
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	LessonEntity lesson = new LessonEntity();
     
     	
@@ -562,7 +571,8 @@ public class MainController {
 	public Response iscrizione(@RequestBody Long id){
 		Response response = new Response("Done");
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	LessonEntity l = lessonservice.lezionePerId(id);
     	if(nuovo.getFollowing_lessons().contains(l)) {
     		response.setStatus("exist");
@@ -582,7 +592,8 @@ public class MainController {
 	@GetMapping("/Getlessons")
 	public List<Model> getAllModel(){
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	List<Model> m = this.modelrepository.findByTeachersonly(nuovo.getId());
 		return m;
 		
@@ -601,7 +612,8 @@ public class MainController {
 	@GetMapping("/Getlessons_student")
 	public Response Getlessons_student(){
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
     	List<LessonEntity> l = nuovo.getFollowing_lessons();
 		Response response = new Response("Done");		
 		for(Long u : UserController.ONLINE.keySet()) {
@@ -637,7 +649,8 @@ public class MainController {
 	@GetMapping("lezione/lessons")
 	public Response getlessons2(){
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity nuovo =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
 		LessonEntity n= new LessonEntity();
 		n.setName("pippo");
 		List<LessonEntity> l = new ArrayList<LessonEntity>();
@@ -669,7 +682,7 @@ public class MainController {
 	public Response email(@RequestBody ObjectNode node){
 		Response response = new Response("Done");
 		System.out.println("prova");
-		if(userservice.getUser(node.get("email").asText()) == null) {
+		if(credentialservice.getUser(node.get("email").asText()) == null) {
 			response.setStatus("Done");
 		}else {
 			response.setStatus("No");

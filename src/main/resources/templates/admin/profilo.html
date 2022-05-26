@@ -156,7 +156,7 @@ body{
                     
                     <div class="mt-3">
                       <h4 th:text="${user.first_name}"></h4>
-                      <p class="text-secondary mb-1" th:text="${user.role}"></p>
+                      <p class="text-secondary mb-1" th:text="${credentials.role}"></p>
                  
                     </div>
                   </div>
@@ -204,7 +204,7 @@ body{
                     </div>
                     <div class="col-sm-9 text-secondary">
                    
-                     <div class="name" th:text="${user.email}"></div>  
+                     <div class="name" th:text="${credentials.email}"></div>  
                     </div>
                   </div>
                  
@@ -245,7 +245,7 @@ body{
                       <h6 class="mb-0">Email</h6>
                     </div>
                     <div class="col-sm-9 text-secondary">
-                    <input type="text" class="form-control mod" id="email" name="email" th:value="${user.email}">
+                    <input type="text" class="form-control mod" id="email" name="email" th:value="${credentials.email}">
                    
                     </div>
                   </div>
@@ -268,25 +268,11 @@ body{
                   <div class="card h-100">
                     <div class="card-body">
                       <h6 class="d-flex align-items-center mb-3"><i class="material-icons text-info mr-2">Corsi</i>Seguiti</h6>
-                      <small>Web Design</small>
+                      <div th:each="m : ${manager}">
+                      <small th:text="${m.getlesson().getName()}"></small>
                       <div class="progress mb-3" style="height: 5px">
                         <div class="progress-bar bg-primary" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
-                      <small>Website Markup</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>One Page</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>Mobile Template</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                      <small>Backend API</small>
-                      <div class="progress mb-3" style="height: 5px">
-                        <div class="progress-bar bg-primary" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
                       </div>
                     </div>
                   </div>

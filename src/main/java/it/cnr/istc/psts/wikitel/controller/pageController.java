@@ -39,10 +39,12 @@ import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
+import it.cnr.istc.psts.wikitel.Service.CredentialService;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
+import it.cnr.istc.psts.wikitel.db.Credentials;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.Prova;
@@ -62,6 +64,9 @@ public class pageController {
 	
 	@Autowired
 	private UserService userservice;
+	
+	@Autowired
+	private CredentialService credentialservice;
 	
 	@Autowired
 	private LessonService lessonservice;
@@ -103,14 +108,15 @@ public class pageController {
     public String defaultAfterLogin(Model model) {
 		Json_reader interests = json("/json/user_model.json",true);
 		System.out.println("username1:PIPPO");
-    	UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity userentity = credentials.getUser();
     	model.addAttribute("model", this.modelrepository.findByTeachersonly(userentity.getId()));
     	model.addAttribute("interests", interests.getInterests());
     	model.addAttribute("user",userentity);
     	model.addAttribute("Teachers",userservice.getTeacher(userentity.TEACHER_ROLE));
     	//se e' admin
-    	if (userentity.getRole().equals(UserEntity.STUDENT_ROLE)) {
+    	if (credentials.getRole().equals(UserEntity.STUDENT_ROLE)) {
     		System.out.println("username:PIPPO");
     		
             return "admin/hello";
@@ -122,14 +128,23 @@ public class pageController {
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String profile(Model model) throws IOException {
 		 ObjectMapper mapper = new ObjectMapper();
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
+			UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+			UserEntity userentity = credentials.getUser();
     	String name = userentity.getFirst_name();
     	System.out.println(name.substring(name.length() - 1));
+    	List<LessonManager> m = new ArrayList<>();
     	Json_reader interests = json("/json/user_model.json",true);
     	model.addAttribute("gender",name.substring(name.length() - 1));
 		model.addAttribute("all_interests",interests.getInterests());
     	model.addAttribute("user",userentity);
+    	model.addAttribute("credentials",credentials);
+    	for(LessonEntity l : userentity.getFollowing_lessons()) {
+    		LessonManager manager = MainController.LESSONS.get(l.getId());
+    		m.add(manager);	
+    		System.out.println("MANAGER :"+manager.getCurrentTime());
+    	}
+    	model.addAttribute("manager",m);
     	model.addAttribute("teacher",true);
 			return "admin/profilo";
 	}
@@ -157,11 +172,11 @@ public class pageController {
 	@GetMapping(value = "/lezione/{id}")
 	public String det_ordine(@PathVariable("id")Long id , Model model) throws JsonProcessingException {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity userentity = credentials.getUser();
   
     	model.addAttribute("user",userentity);
-    	model.addAttribute("role",userentity.getRole());
-    	
+    	model.addAttribute("role",credentials.getRole());
 		LessonEntity lezione = lessonservice.lezionePerId(id);
 		model.addAttribute("files",lezione.getFiles());
 		model.addAttribute("lezione",lezione);
@@ -171,7 +186,7 @@ public class pageController {
 		System.out.println(formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("students",lezione.getFollowed_by());
-		if(userentity.getRole().equals(STUDENT_ROLE)) { 
+		if(credentials.getRole().equals(STUDENT_ROLE)) { 
 		model.addAttribute("messages",MainController.LESSONS.get(id).getStimuli(userentity.getId()));
 		//send.notify(Starter.mapper.writeValueAsString(MainController.LESSONS.get(id).st), UserController.ONLINE.get(userentity.getId()));	
 		}
@@ -183,13 +198,14 @@ public class pageController {
 	@GetMapping(value = "/Argomento/{id}")
 	public String det_Arg(@PathVariable("id")Long id , Model model) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	UserEntity userentity =  userservice.getUser(userDetails.getUsername());
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity userentity = credentials.getUser();
 		DateFormat df = new SimpleDateFormat("yy"); // Just the year, with 2 digits
 		String formattedDate = df.format(Calendar.getInstance().getTime());
 		DateFormat df2 = new SimpleDateFormat("yy"); // Just the year, with 2 digits
 		System.out.println(formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
-		model.addAttribute("students",userservice.getTeacher("STUDENT"));
+		model.addAttribute("students",credentialservice.getTeacher("STUDENT"));
 		model.addAttribute("arg",modelservice.getModel(id));
 		model.addAttribute("goal",modelservice.getModel(id).getRules());
 		model.addAttribute("lesson",this.lessonservice.getlessonbymodel(this.modelservice.getModel(id)));

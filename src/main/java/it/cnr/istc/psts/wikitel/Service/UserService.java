@@ -25,11 +25,7 @@ public class UserService {
         return this.userRepository.save(utente);
     }
 	
-	@Transactional
-	public UserEntity getUser(String email) {
-		Optional<UserEntity> result = this.userRepository.findByEmail(email); 
-		return result.orElse(null);
-	}
+
 	
 	@Transactional
 	public UserEntity getUserId(Long id) {
@@ -42,5 +38,7 @@ public class UserService {
 		List<UserEntity> result = this.userRepository.findByRole(role); 
 		return result;
 	}
+	
+
 	
 }

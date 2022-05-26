@@ -172,6 +172,9 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	        return state;
 	    }
 
+	    public LessonEntity getlesson() {
+	    	return lesson;
+	    }
 
 	    private void setState(final LessonState state) {
 	        this.state = state;

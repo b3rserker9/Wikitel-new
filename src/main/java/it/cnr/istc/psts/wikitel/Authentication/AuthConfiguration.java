@@ -120,8 +120,8 @@ public class AuthConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
     	auth.jdbcAuthentication()
         .dataSource(this.datasource)
-        .authoritiesByUsernameQuery("SELECT email, role FROM user_entity WHERE email=?")
-        .usersByUsernameQuery("SELECT email, password, 1 as enabled FROM user_entity WHERE email=?");
+        .authoritiesByUsernameQuery("SELECT email, role FROM credentials WHERE email=?")
+        .usersByUsernameQuery("SELECT email, password, 1 as enabled FROM credentials WHERE email=?");
 }
 
     /**

@@ -187,11 +187,11 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
 <div id="mySidebar" class="sidebar">
   <a href="#">Dashboard</a>
   <a href="#">Calendar</a>
-  <a  data-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
+  <a  data-bs-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
     My course
   </a>
   <div class="collapse" id="collapse">
-  <div class="card card-body" id="side-bar" th:each="m : ${model}"><a style="font-size: 19px;" th:text="${m.getName()}"th:href="'/Argomento/' + ${m.getID()} "></a></div>
+  <div class="card card-body" id="side-bar" th:each="m : ${lesson}"><a style="font-size: 19px;" th:text="${m.name}"th:href="'/lezione/' + ${m.id} "></a></div>
 </div>
 </div>
 

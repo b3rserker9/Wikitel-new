@@ -128,7 +128,7 @@ function openNav() {
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;padding: 15PX 15px;display:flex;justify-content: space-between;">
 	<span style="font-size:25px;cursor:pointer;margin-right: 2%;" onclick="openNav()"><i class="fas fa-bars"></i></span>
 	<div>
-  <a class="navbar-brand" href="#"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+  <a class="navbar-brand" href="/default"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
                 WikiTEL</a>
 	</div>
   <button class="btn btn-secondary dropdown-toggle" style="margin-top: auto;margin-bottom: auto; background-color:#1266f1;" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -144,9 +144,8 @@ function openNav() {
 <div id="mySidebar" class="sidebar">
   <a href="#">Dashboard</a>
   <a href="#">Calendar</a>
-  <a href="#" data-toggle="modal" data-target="#exampleModalCenter">Partecipanti</a>
   
-  <a  data-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
+   <a  data-bs-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
     My course
   </a>
   <div class="collapse" id="collapse">
@@ -247,7 +246,7 @@ function openNav() {
          <form id="new_lesson">
             <div class="modal-header">
                <h5 class="modal-title" id="new-lesson-modal-label">Nuova lezione</h5>
-               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+               <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body">
                <div class="form-floating my-1">
