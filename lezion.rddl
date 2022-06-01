@@ -1,0 +1,132 @@
+class User {
+
+  int id;
+  bool c_archeologia;
+  bool c_architettura;
+  bool c_arte;
+  bool c_geografia;
+  bool c_economia;
+  bool c_storia;
+  bool c_scienza;
+  bool c_biologia;
+  bool c_agricoltura;
+  bool c_antropologia;
+  bool c_astronomia;
+  bool c_botanica;
+  bool c_branche_della_fisica;
+  bool c_chiese_ditalia;
+  bool c_chimica;
+  bool c_cinema;
+  bool c_cultura;
+  bool c_elettronica;
+  bool c_farmaci;
+  bool c_geologia;
+  bool c_industria;
+  bool c_informatica;
+  bool c_ingegneria;
+  bool c_letteratura;
+  bool c_medicina;
+  bool c_musica;
+  bool c_natura;
+  bool c_opere_darte;
+  bool c_politica;
+  bool c_psichiatria;
+  bool c_psicologia;
+  bool c_filosofia;
+  bool c_religione;
+  bool c_societa;
+  bool c_sociologia;
+  bool c_software;
+  bool c_statistica;
+  bool c_tecnologia;
+  ReusableResource busy_time = new ReusableResource(1.0);
+
+  User(int id, bool c_archeologia, bool c_architettura, bool c_arte, bool c_geografia, bool c_economia, bool c_storia, bool c_scienza, bool c_biologia, bool c_agricoltura, bool c_antropologia, bool c_astronomia, bool c_botanica, bool c_branche_della_fisica, bool c_chiese_ditalia, bool c_chimica, bool c_cinema, bool c_cultura, bool c_elettronica, bool c_farmaci, bool c_geologia, bool c_industria, bool c_informatica, bool c_ingegneria, bool c_letteratura, bool c_medicina, bool c_musica, bool c_natura, bool c_opere_darte, bool c_politica, bool c_psichiatria, bool c_psicologia, bool c_filosofia, bool c_religione, bool c_societa, bool c_sociologia, bool c_software, bool c_statistica, bool c_tecnologia) : id(id), c_archeologia(c_archeologia), c_architettura(c_architettura), c_arte(c_arte), c_geografia(c_geografia), c_economia(c_economia), c_storia(c_storia), c_scienza(c_scienza), c_biologia(c_biologia), c_agricoltura(c_agricoltura), c_antropologia(c_antropologia), c_astronomia(c_astronomia), c_botanica(c_botanica), c_branche_della_fisica(c_branche_della_fisica), c_chiese_ditalia(c_chiese_ditalia), c_chimica(c_chimica), c_cinema(c_cinema), c_cultura(c_cultura), c_elettronica(c_elettronica), c_farmaci(c_farmaci), c_geologia(c_geologia), c_industria(c_industria), c_informatica(c_informatica), c_ingegneria(c_ingegneria), c_letteratura(c_letteratura), c_medicina(c_medicina), c_musica(c_musica), c_natura(c_natura), c_opere_darte(c_opere_darte), c_politica(c_politica), c_psichiatria(c_psichiatria), c_psicologia(c_psicologia), c_filosofia(c_filosofia), c_religione(c_religione), c_societa(c_societa), c_sociologia(c_sociologia), c_software(c_software), c_statistica(c_statistica), c_tecnologia(c_tecnologia) {}
+}
+
+class Lesson {
+
+  predicate St_3(User u) : Interval {
+    duration >= 385.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+
+    {
+      goal st25 = new St_25(u:u);
+      st25.start >= end;
+    } or {
+      !u.c_arte;
+    }
+
+    {
+      goal st103 = new St_103(u:u);
+      st103.start >= end;
+    } or {
+      !u.c_scienza;
+      !u.c_storia;
+      !u.c_economia;
+    }
+
+    {
+      goal st24 = new St_24(u:u);
+      st24.start >= end;
+    } or {
+      !u.c_arte;
+      !u.c_architettura;
+    }
+
+    {
+      goal st104 = new St_104(u:u);
+      st104.start >= end;
+    } or {
+      !u.c_geografia;
+      !u.c_geologia;
+      !u.c_arte;
+      !u.c_architettura;
+    }
+  }
+
+  predicate St_25(User u) : Interval {
+    duration >= 99.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+  }
+
+  predicate St_24(User u) : Interval {
+    duration >= 573.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+
+    {
+      goal st218 = new St_218(u:u);
+      st218.start >= end;
+    } or {
+      !u.c_arte;
+      !u.c_architettura;
+    }
+  }
+
+  predicate St_103(User u) : Interval {
+    duration >= 155.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+  }
+
+  predicate St_104(User u) : Interval {
+    duration >= 968.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+  }
+
+  predicate St_218(User u) : Interval {
+    duration >= 1529.0;
+    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
+  }
+}
+
+Lesson l_101 = new Lesson();
+User u_99 = new User(99, true, true, false, true, false, false, true, false, false, true, false, false, false, false, false, true, false, true, false, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true);
+
+User u;
+
+{
+  goal st3 = new l_101.St_3(u:u);
+} or {
+  !u.c_chimica;
+  !u.c_architettura;
+}
