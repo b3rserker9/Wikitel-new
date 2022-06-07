@@ -42,7 +42,6 @@ public class LessonEntity {
     @JsonManagedReference
     private final Collection<UserEntity> followed_by = new ArrayList<>();
     @ManyToMany
-
     private final Collection<RuleEntity> goals = new ArrayList<>();
     
 

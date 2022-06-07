@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,8 +36,7 @@ public class ModelEntity {
     private final Collection<UserEntity> teachers = new ArrayList<>();
     
     
-    @OneToMany
-   
+    @OneToMany(cascade = CascadeType.REMOVE)
     @JsonManagedReference
     private final Collection<RuleEntity> rules = new ArrayList<>();
 

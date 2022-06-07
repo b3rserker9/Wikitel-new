@@ -164,6 +164,27 @@ function Create_model() {
 
 }
 
+
+function deleteModal(modal){
+	 $.ajax({
+
+                type: "POST",
+                contentType: "application/json",
+                url: "NewPrecondition",
+                data: JSON.stringify(precondition),
+                dataType: "json",
+                success: function(data) {
+                    console.log("SUCCESS : ", data);
+                 
+
+                },
+                error: function(e) {
+                    alert("Error!")
+                    console.log("ERROR: ", e);
+                }
+            });
+}
+
 function Create_new_precondition() {
     console.log(current_rule);
     var itemForm = document.getElementById('suggested-preconditions-list');
@@ -232,7 +253,7 @@ function Postsuggetion(id) {
         success: function(data) {
             $("#suggested-preconditions-list").empty();
             console.log("SUCCESS : ", data);
-            precondition_setup(data);
+            precondition_setup(data,id);
             /*s.forEach(function(l){		
 							document.getElementById("suggested-preconditions-list").innerHTML+='<div class="form-check col-6">'+
  ' <input class="form-check-input" type="checkbox" name="'+l.suggestion.page+'" id="flexRadioDefault1">'
@@ -252,7 +273,7 @@ function Postsuggetion(id) {
 
 }
 
-function precondition_setup(data) {
+function precondition_setup(data,id) {
     rules = data;
     let rule = null;
     var x = document.getElementById("rule_list");
@@ -266,7 +287,8 @@ function precondition_setup(data) {
         x.add(option);
     }
     var x = document.getElementById("rule_list").options[0].value;
-
+    
+document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id );
     $('#rule_list').on('change', function(e) {
         $('#suggested-preconditions-list').empty();
         let i = this.value

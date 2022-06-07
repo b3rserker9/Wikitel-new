@@ -46,60 +46,20 @@ class User {
 
 class Lesson {
 
-  predicate St_4(User u) : Interval {
-    duration >= 384.0;
-    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
-
-    {
-      goal st30 = new St_30(u:u);
-      st30.start >= end;
-    } or {
-      !u.c_arte;
-      !u.c_architettura;
-    }
-
-    {
-      goal st101 = new St_101(u:u);
-      st101.start >= end;
-    } or {
-      !u.c_scienza;
-      !u.c_storia;
-      !u.c_economia;
-    }
-
-    {
-      goal st82 = new St_82(u:u);
-      st82.start >= end;
-    } or {
-      !u.c_arte;
-    }
-  }
-
-  predicate St_30(User u) : Interval {
+  predicate St_49(User u) : Interval {
     duration >= 573.0;
-    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
-  }
-
-  predicate St_82(User u) : Interval {
-    duration >= 99.0;
-    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
-  }
-
-  predicate St_101(User u) : Interval {
-    duration >= 155.0;
     fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);
   }
 }
 
-Lesson l_28 = new Lesson();
-User u_1 = new User(1, false, true, true, true, true, true, true, true, true, true, true, true, true, true, false, true, true, false, true, true, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
-User u_26 = new User(26, false, true, false, false, true, false, false, false, false, false, true, false, false, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false);
+Lesson l_103 = new Lesson();
+User u_4 = new User(4, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true);
 
 User u;
 
 {
-  goal st4 = new l_28.St_4(u:u);
+  goal st49 = new l_103.St_49(u:u);
 } or {
-  !u.c_chimica;
+  !u.c_arte;
   !u.c_architettura;
 }

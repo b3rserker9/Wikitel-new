@@ -21,6 +21,9 @@ import it.cnr.istc.psts.wikitel.db.UserEntity;
 		
 		@Query(value ="SELECT u.id,u.first_name, u. last_name FROM credentials c JOIN user_entity u ON (c.user = u.id) WHERE c.role = ?", nativeQuery = true)
 		public List<UserEntity> findByRoleSpec(String role);
+		
+		@Query(value ="SELECT * FROM credentials c WHERE c.user_id = ?", nativeQuery = true)
+		public Optional<Credentials> findByuser(Long id);
 
 	}
 	

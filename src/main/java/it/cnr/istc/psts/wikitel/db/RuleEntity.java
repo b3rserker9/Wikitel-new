@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -36,14 +37,14 @@ public class RuleEntity {
     @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<String> topics = new HashSet<>();
     private Long length;
-    @ManyToMany(mappedBy = "effects")
+    @ManyToMany(mappedBy = "effects", cascade = CascadeType.REMOVE)
     @JsonBackReference
     @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<RuleEntity> preconditions = new HashSet<>();
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<RuleEntity> effects = new HashSet<>();
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.REMOVE)
     @JsonManagedReference
     @LazyCollection(LazyCollectionOption.FALSE)
     private final Set<RuleSuggestionRelationEntity> suggestions = new HashSet<>();

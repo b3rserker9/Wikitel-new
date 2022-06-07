@@ -293,6 +293,23 @@ public class MainController {
 		                .body(resource);
 		    }
 	
+	@RequestMapping("/riddle/{id}")
+	  public ResponseEntity<InputStreamResource> downloadFileRiddle(
+			  @PathVariable("id") Long id) throws IOException {
+
+			
+	        File file = new File(System.getProperty("user.dir")+"\\riddle\\" + id + ".rddl");
+	        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+	        return ResponseEntity.ok()
+	                // Content-Disposition
+	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+	           
+	                // Contet-Length
+	                .contentLength(file.length()) //
+	                .body(resource);
+	    }
+	
 	
 	
 	@PostMapping("/uploadFile")
@@ -455,9 +472,8 @@ public class MainController {
              this.modelservice.saverule(rule);
              String name= node.get("rule_name").asText();
              name = name.replace(' ','_');
-             Prova prova = restTemplate.getForObject("http://" + InetAddress.getLocalHost().getHostAddress() + ":5015/wiki?page=" + name, Prova.class);
-             ((WikiRuleEntity) rule).setUrl(prova.getUrl());
-             System.out.println(prova.getPreconditions());
+             Prova prova = restTemplate.getForObject("http://"+ InetAddress.getLocalHost().getHostAddress()+"5015/wiki?page=" + name, Prova.class);
+             ((WikiRuleEntity) rule).setUrl(prova.getUrl()); 
              rule.getTopics().addAll(prova.getCategories());
 			 rule.setLength(prova.getLength());
 			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();

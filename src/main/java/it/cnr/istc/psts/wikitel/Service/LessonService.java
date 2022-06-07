@@ -26,6 +26,11 @@ public class LessonService {
     }
 	
 	@Transactional
+    public void delete(LessonEntity lesson) {
+        this.lessonsrepository.deleteById(lesson.getId());
+    }
+	
+	@Transactional
 	public List<LessonEntity> getlesson(UserEntity teacher) {
 		List<LessonEntity> result = this.lessonsrepository.findByTeacher(teacher);
 		return result;

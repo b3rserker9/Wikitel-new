@@ -281,7 +281,9 @@ function openNav() {
                 <div class="d-sm-flex align-items-center">
                     <div class="mr-auto">
                         <div class="page-context-header "><div class="page-header-headings "><h1 th:text="'AA'+${anno} + ' - '+ ${lezione.name} + ' - ' + ${lezione.id} + ' (' + ${lezione.teacher.first_name} + ' ' + ${lezione.teacher.last_name} + ')'"></h1></div></div>
-                    </div>                       
+                    </div>   
+                    <a class="down" th:href="@{'/riddle/' + ${lezione.id}}" id="download"><span><i class="fas fa-download"></i></span></a>   
+                                
                 </div>    
                   	<section th:if="${role}=='TEACHER'">
   	 <ul class="icon-list">

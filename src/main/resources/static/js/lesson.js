@@ -46,6 +46,23 @@ export function play() {
     });
 }
 
+export function download() {
+	
+   $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/download",
+        data:  JSON.stringify({id: document.getElementById('lesson_id').getAttribute('value')}) ,
+       success: function(data) {
+			console.log("SUCCESS : ", data);
+        },
+        error: function(e) {
+            alert("Error!")
+            console.log("ERROR: ", e);
+        }
+    });
+}
+
 export function pause() {
     $.ajax({
 

@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -125,6 +126,16 @@ public class pageController {
         return "teachers/index";
     }
 	
+	@RequestMapping(value =  "/deletemodel/{id}" , method = RequestMethod.GET)
+	 public String deletemodel(@PathVariable("id") Long id) {
+		 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+			UserEntity userentity = credentials.getUser();
+			this.modelservice.delete(id, userentity);
+			System.out.println("OKK");
+			return "redirect:/default";
+	 }
+	
 	@RequestMapping(value = "/profile", method = RequestMethod.GET)
 	public String profile(Model model) throws IOException {
 		 ObjectMapper mapper = new ObjectMapper();
@@ -217,9 +228,11 @@ public class pageController {
 	
 	@GetMapping(value = "/profile/{id}")
 	public String det_profilo(@PathVariable(required = false) Long id, Model model) {
-		UserEntity user = userservice.getUserId(id);   
+		UserEntity user = userservice.getUserId(id); 
+		Credentials c = credentialservice.getCredentialsUser(id);
     	model.addAttribute("user",user);
     	model.addAttribute("teacher",false);
+    	model.addAttribute("credentials",c);
 		return "admin/profilo";
 	}
 	

@@ -17,6 +17,7 @@ import it.cnr.istc.psts.wikitel.db.RuleEntity;
 import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationEntity;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 import it.cnr.istc.psts.wikitel.db.WikiSuggestionEntity;
+import net.bytebuddy.asm.Advice.OffsetMapping.ForOrigin.Renderer.ForReturnTypeName;
 
 @Service
 public class ModelService {
@@ -30,12 +31,34 @@ public class ModelService {
 	 @Autowired
 	 private RuleRepository rulerepository;
 	 
+	 @Autowired
+	 private LessonService lessonservice;
+	 
+	 @Autowired
+	 private UserService userservice;
+	 
 	
 	
 	@Transactional
     public ModelEntity save(ModelEntity model) {
         return this.modelRepository.save(model);
     }
+	
+	@Transactional
+    public void delete(Long id, UserEntity user) {
+		ModelEntity m = this.getModel(id);
+		m.getTeachers().stream().forEach(t -> t.getModels().remove(m)); 
+		for(LessonEntity l : user.getTeaching_lessons()) {
+			if(l.getModel().getId()==id) {
+				l.setModel(null);
+				this.lessonservice.delete(l);
+				
+			}
+		}
+		userservice.saveUser(user);
+         this.modelRepository.deleteById(id);
+    }
+	
 	
 	@Transactional
 	public List<ModelEntity> getModelTeacher(UserEntity teacher) {
@@ -64,9 +87,7 @@ public class ModelService {
     public RuleEntity saverule(RuleEntity rule) {
         return this.rulerepository.save(rule);
     }
-	
-	
-	
+
 	@Transactional
 	public RuleEntity getRule(Long id) {
 		Optional<RuleEntity> result = this.rulerepository.findById(id);

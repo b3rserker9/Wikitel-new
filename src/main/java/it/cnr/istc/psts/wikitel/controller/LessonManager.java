@@ -113,12 +113,12 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	    	System.out.println("prova: "+ lesson.getFollowed_by().size());
 	        to_string(sb, lesson);
 	        
-	        final File lesson_file = new File(lesson.getName() + ".rddl");
+	        final File lesson_file = new File(System.getProperty("user.dir")+"\\riddle\\" + lesson.getId() + ".rddl");
 	        try {
 	            if (lesson_file.createNewFile()) {
 	                System.out.println("File created: " + lesson_file.getName());
 	            } else {
-	                System.out.println("File already exists.");
+	                System.out.println("File already exists."); 
 	            }
 	            final FileWriter writer = new FileWriter(lesson_file, false);
 	            writer.append(sb);

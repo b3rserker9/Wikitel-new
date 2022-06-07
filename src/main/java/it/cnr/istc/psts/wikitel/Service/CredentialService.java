@@ -27,6 +27,12 @@ public class CredentialService {
 		Optional<Credentials> result = this.credentialsRepository.findById(id);
 		return result.orElse(null);
 	}
+	
+	@Transactional
+	public Credentials getCredentialsUser(Long id) {
+		Optional<Credentials> result = this.credentialsRepository.findByuser(id);
+		return result.orElse(null);
+	}
 
 	@Transactional
 	public Credentials getCredentials(String username) {

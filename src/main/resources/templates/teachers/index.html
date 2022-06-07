@@ -322,13 +322,29 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
 </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModals" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 0px solid!important">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Vuoi Cancellare il seguente modello <span id="deletename"></span>?
+      </div>
+      <div class="modal-footer" style="border-top: 0px solid!important">
+        <button type="button" style="background: #093d94" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-dismiss="modal">NO</button>
+        <a type="button" style="background: red"  onclick="deleteModal()" class="btn btn-primary">YES</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
    <div class="modal-dialog">
       <div class="modal-content">
          <form id="new_precondition">
             <div class="modal-header">
-               <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -378,8 +394,10 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
                </div>
             </div>
             <div class="modal-footer">
-               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-               <button type="button" onclick="Create_new_precondition()" class="btn btn-primary">Save changes</button>
+               <!-- Button trigger modal -->
+<a type="button" class="btn btn-primary" style="background: red" id="firstDelete"  > Delete</a>
+
+               <button type="button"  class="btn btn-primary">Save changes</button>
             </div>
          </form>
       </div>

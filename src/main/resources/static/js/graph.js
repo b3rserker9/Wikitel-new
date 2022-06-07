@@ -190,7 +190,7 @@ function start(){
             pippo.id = pippo.label;          
              pippo.group = l.id;
             pippo.color = colors;
-            pippo.title = s.score2;
+            pippo.title = "cliccami!";
             edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
             nodes.push(pippo);
             tables.push(raw);
