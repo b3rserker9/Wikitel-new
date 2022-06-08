@@ -472,7 +472,7 @@ public class MainController {
              this.modelservice.saverule(rule);
              String name= node.get("rule_name").asText();
              name = name.replace(' ','_');
-             Prova prova = restTemplate.getForObject("http://"+ InetAddress.getLocalHost().getHostAddress()+"5015/wiki?page=" + name, Prova.class);
+             Prova prova = restTemplate.getForObject("http://"+ InetAddress.getLocalHost().getHostAddress()+":5015/wiki?page=" + name, Prova.class);
              ((WikiRuleEntity) rule).setUrl(prova.getUrl()); 
              rule.getTopics().addAll(prova.getCategories());
 			 rule.setLength(prova.getLength());
