@@ -1,0 +1,82 @@
+
+.columns {
+  float: left;
+  width: 380px;
+  padding: 5px 10px;
+}
+
+/* Remove extra left and right margins, due to padding */
+.rows {width: auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: space-around;}
+
+/* Clear floats after the columns */
+.rows:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive columns */
+
+
+/* Style the counter cards */
+.cards {
+	margin-bottom: 2%;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  padding: 16px;
+  text-align: center;
+  background-color: #f1f1f1;
+}
+
+.page {
+    display: flex;
+    width: 95%;
+    margin: auto;
+    flex-direction: row;
+    height: auto;
+}
+
+.section1 {
+ 
+    width: 100%;
+}
+.section2 {
+    
+    width: 30%;
+}
+
+.config{
+	font-size: 1.3em;
+	  position: absolute;
+  top: 8px;
+  right: 16px;
+}
+i#conf:hover{
+	color: #736b6b;
+	
+}
+.yui3-button {
+    margin:10px 0px 10px 0px;
+    color: #fff;
+    background-color: #3476b7;
+}
+
+.link{
+	text-decoration: none;
+}
+.questions {
+    display: flex;
+    flex-direction: column;
+}
+.popover{
+	max-width: 500px;
+}
+.testo{
+	display: flex;
+	justify-content: space-between;
+}

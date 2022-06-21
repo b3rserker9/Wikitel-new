@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="shortcut icon" href="/images/wikitel.png" />
+<title>Wikitel</title>
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+		<link rel="stylesheet"	href="https://cdn.jsdelivr.net/combine/npm/radioslider@1.0.0-beta.1/dist/radioslider.min.css,npm/radioslider@1.0.0-beta.1/dist/radioslider.min.css" />
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+		
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+
+
+    	<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+	
+	<script src="https://kit.fontawesome.com/ced3f913ea.js" crossorigin="anonymous"></script>
+	
+	<script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
+	
+		<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+		<script src="/webjars/stomp-websocket/stomp.min.js"></script>
+		
+		
+		<script type="text/javascript" src="/js/teacher_index.js"></script>
+		<script type="module" src="/js/ws_setup.js"></script>
+		
+
+  <link
+  href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.2/mdb.min.css"
+  rel="stylesheet"
+/>
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/combine/npm/radioslider@1.0.0-beta.1/dist/jquery.radioslider.min.js,npm/radioslider@1.0.0-beta.1/dist/jquery.radioslider.min.js"></script>
+		<link th:href="@{/css/teacher_index.css}" rel="stylesheet">
+		<link th:href="@{/css/hello.css}" rel="stylesheet">
+		<link th:href="@{/css/multistep.css}" rel="stylesheet">
+		
+	
+			  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+		
+</head>
+<style>
+
+.radioslider__handle{
+	left:49.98%;
+}
+body{
+	font-family: 'Nunito', sans-serif;
+}
+
+.form-check{
+	padding-left: 1.5em;
+}
+.btn{
+	margin-bottom: 2%;
+}
+.precondition-list{
+	margin-top: 3%;
+}
+
+div#suggested-preconditions-list{
+	display: flex;
+	flex-wrap: wrap;
+	    flex-direction: row;
+	
+}
+.chip {
+  display: inline-block;
+  padding: 0 25px;
+  height: 50px;
+  font-size: 16px;
+  line-height: 50px;
+  border-radius: 25px;
+  background-color: #f1f1f1;
+      margin-bottom: 2%;
+    margin-right: 2%;
+}
+
+
+.load{
+	position: relative;
+}
+.spinner-border{
+	position: absolute;
+	top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -25px;
+}
+
+</style>
+<body>
+<div hidden="true" id="nameid" th:value="${user.id}"></div>
+<script>
+function openNav() {
+	if(document.getElementById("mySidebar").style.width == "250px"){
+   document.getElementById("mySidebar").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+  }else{
+	 document.getElementById("mySidebar").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+}
+}
+
+YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
+
+    // Create a new instance of calendar, placing it in
+    // #mycalendar container, setting its width to 340px,
+    // the flags for showing previous and next month's
+    // dates in available empty cells to true, and setting
+    // the date to today's date.
+    var calendar = new Y.Calendar({
+      contentBox: "#mycalendar",
+      width:'300px',
+      height:'300px',
+      showPrevMonth: true,
+      showNextMonth: true,
+      date: new Date()}).render();
+
+    // Get a reference to Y.DataType.Date
+    var dtdate = Y.DataType.Date;
+
+    // Listen to calendar's selectionChange event.
+ 
+
+
+    
+});
+
+</script>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;padding: 0 15px;">
+	<span style="font-size:25px;cursor:pointer;margin-right: 2%;" onclick="openNav()"><i class="fas fa-bars"></i></span>
+  <a class="navbar-brand" href="#"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+                WikiTEL</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse  justify-content-center" id="navbarNav">
+    <ul class="nav nav-pills" id="pills-tab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Lezioni</button>
+  </li>
+  
+</ul>
+   
+  </div>
+  <ul class="nav navbar-nav navbar-right">
+	<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" style="background-color:#1266f1" aria-expanded="false">
+    <i class="fas fa-user"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" th:href="@{profile}">Profile</a></li>
+    <li> <a class="dropdown-item" type="button" th:href="@{logout}"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+  </ul>
+</div>
+    </ul>
+</nav>
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+  <!-- Position it: -->
+  <!-- - `.toast-container` for spacing between toasts -->
+  <!-- - `.position-absolute`, `top-0` & `end-0` to position the toasts in the upper right corner -->
+  <!-- - `.p-3` to prevent the toasts from sticking to the edge of the container  -->
+  <div class="toast-container position-absolute top-0 end-0 p-3" id="notification">
+
+    <!-- Then put toasts within -->
+    
+  </div>
+</div>
+
+<div id="mySidebar" class="sidebar">
+  <a href="#">Dashboard</a>
+  <a href="#">Calendar</a>
+  <a  data-bs-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
+    My course
+  </a>
+  <div class="collapse" id="collapse">
+  <div class="card card-body" id="side-bar" th:each="m : ${lesson}"><a style="font-size: 19px;" th:text="${m.name}"th:href="'/lezione/' + ${m.id} "></a></div>
+</div>
+</div>
+
+ <div id="main">
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+  <div class="page">
+  	<div class="section1">
+  	<h1>Welcome Prof. <span th:text="${user.first_name}"></span></h1>
+  	
+  <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+  	</div>
+  	<div class="section2">
+  	    <div class="col-12 pt-3 pb-3">
+        <div class="card ">
+            <div class="card-body ">
+                <div class="d-sm-flex align-items-center">
+                    <div class="mr-auto">
+                        	<div class="calendar">
+  	<div id="demo" class="yui3-skin-sam yui3-g"> <!-- You need this skin class -->
+
+  <div id="leftcolumn" class="yui3-u">
+     <!-- Container for the calendar -->
+     <div id="mycalendar"></div>
+  </div>
+  <div id="rightcolumn" class="yui3-u">
+   <div id="links" style="padding-left:20px;">
+   </div>
+  </div>
+</div>
+  	</div></div>                       
+                </div>              
+            </div>
+        </div>
+    </div>
+   <div class="col-12 pt-3 pb-3">
+        <div class="card ">
+            <div class="card-body ">
+                <div class="d-sm-flex align-items-center">
+                    <div class="mr-auto">
+                        	<h5 class="card-title">Upcoming events</h5>
+      <p class="card-text">There are no upcoming events</p>
+       <a href="#" class="card-link">Go to calendar...</a>
+      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p></div>                       
+                </div>              
+            </div>
+        </div>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+  		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new_lesson1">Nuovo Argomento</button>
+  <div class="rows" id="rows">
+  <div class="columns animate__animated animate__bounce" th:each="m : ${model}" >
+   <div class="cards">
+      <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" th:attr="onclick=|Postsuggetion('${m.getID()}')|"  ><i class="fas fa-cog"></i></button>
+      <a th:id="${m.getID()} + 'a'" th:href="'/Argomento/' + ${m.getID()}">
+         <h3 th:text="${m.getName()}"></h3>
+      </a>
+   </div>
+</div>
+</div></div>
+</div>
+ </div>
+
+
+<div class="modal fade new_model" id="new_lesson1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog" role="document" id="clone">
+      <div class="modal-content">
+         <form id="new_models">
+            <div class="modal-header" style="border-bottom: 0px solid!important">
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" >
+               <div class="modal-split">
+                  <div class="titolo" style="text-align: center;">
+                     <h1>Cosa vuoi cercare?</h1>
+                  </div>
+                  
+                  <label for="new-model-name" style="margin-top: 2%;">Nome</label>
+                  <input type="text" class="form-control" id="new-model-name" placeholder="Nome" required>
+                   <div class="invalid-feedback">
+           Please insert a name for your model.
+      
+                  </div>
+               </div>
+               <div class="modal-split">
+                 
+               <div style="text-align: center;padding-bottom: 5px;">
+               <h2 style="font-size:28px ;">Stai per creare un nuovo modello su</h2>
+               <h1><span id="model_rule_name"></span></h1>
+               
+               </div>
+                  <label for="new-rule-type">modalità di creazione</label>
+                  <select class="form-select" id="new-rule-type" aria-label="Tipo di obiettivo" onChange="update()">
+                     <option value="1">Testo</option>
+                     <option value="4">File</option>
+                     <option value="2">Pagina Web</option>
+                     <option value="3">Pagina Wikipedia</option>
+                  </select>
+                  <div id="url" style="display: none;margin-top: 2%;">
+                     <label for="new-rule-url">URL</label>
+                     <input type="url" class="form-control" id="new-rule-url" placeholder="URL">
+                     <div class="invalid-feedback">
+           			Name your modal.
+      
+                  </div>
+                  </div>
+                   <div class="form-group" id="textarea" style="margin-top: 2%;">
+    <textarea class="form-control" id="rule_Textarea" rows="3"></textarea>
+  </div>
+  <div class="mb-3" id="file" style="display: none;">
+  <label for="formFile" class="form-label"></label>
+  <input class="form-control" type="file" id="formFile">
+</div>
+<div class="questions" id="question" style="display: none;">
+
+</div>
+               </div>
+            </div>
+            <div class="modal-footer" style="border-top: 0px solid!important">
+               
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModals" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog ">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 0px solid!important">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Vuoi Cancellare il seguente modello <span id="deletename"></span>?
+      </div>
+      <div class="modal-footer" style="border-top: 0px solid!important">
+        <button type="button" style="background: #093d94" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-dismiss="modal">NO</button>
+        <a type="button" style="background: red"  onclick="deleteModal()" class="btn btn-primary">YES</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <form id="new_precondition">
+            <div class="modal-header">
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            <div class="form-floating">
+                     <select class="form-select" id="rule_list" aria-label="Floating label select example">
+                
+                     </select>
+                     <label for="floatingSelect">Tipo</label>
+                  </div>
+                  <hr>
+               <div class="form-floating">
+                  <input type="number" class="form-control" id="rule-length" placeholder="Nome">
+                  <label for="rule-length">Durata (secondi)</label>
+               </div>
+               <hr>
+               <select class="col d-flex justify-content-start form-select" id="approach"
+                  aria-label="Approccio">
+                  <option value="1">Top-down</option>
+                  <option value="2">Bottom-up</option>
+               </select>
+               <hr>
+               <div class="row align-items-center">
+                  <h6>Argomenti correlati:</h6>
+                  <div class="form-floating">
+                     <select class="form-select" id="new-precondition-type" aria-label="Floating label select example">
+                        <option value="1">Suggeriti</option>
+                        <option value="2">Esistenti</option>
+                        <option value="3">Nuovo obiettivo</option>
+                     </select>
+                     <label for="floatingSelect">Tipo</label>
+                  </div>
+                  <div class="precondition-list" id="suggested-preconditions-list-div">
+                     <div class="list-group list-group-flush overflow-auto" id="suggested-preconditions-list"
+                        style="max-height:260px;overflow:auto;">
+                     </div>
+                  </div>
+                  <div class="row h-25 my-1 d-none" id="existing-preconditions-list-div">
+                     <div class="list-group list-group-flush overflow-auto" id="existing-preconditions-list"
+                        style="max-height:260px;overflow:auto;">
+                     </div>
+                  </div>
+               </div>
+               <div class="row h-25">
+                  <div class="list-group list-group-flush overflow-auto" id="preconditions-list"
+                     style="max-height:200px;overflow:auto;">
+                  </div>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <!-- Button trigger modal -->
+<a type="button" class="btn btn-primary" style="background: red" id="firstDelete"  > Delete</a>
+
+               <button type="button"  class="btn btn-primary">Save changes</button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+</body>
+</html>

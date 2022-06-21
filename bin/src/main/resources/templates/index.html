@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="shortcut icon" href="/images/wikitel.png" />
+<title>Wikitel</title>
+<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+	
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+		
+	
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+
+ 
+<link rel="stylesheet"	href="https://cdn.jsdelivr.net/combine/npm/radioslider@1.0.0-beta.1/dist/radioslider.min.css,npm/radioslider@1.0.0-beta.1/dist/radioslider.min.css" />
+
+
+<script	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+	  
+		<script src="https://kit.fontawesome.com/ced3f913ea.js" crossorigin="anonymous"></script>
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+		
+		<script src="https://cdn.jsdelivr.net/combine/npm/radioslider@1.0.0-beta.1/dist/jquery.radioslider.min.js,npm/radioslider@1.0.0-beta.1/dist/jquery.radioslider.min.js"></script>
+		
+		
+		
+		<script type="text/javascript"src="/js/wikitel.js"></script>
+		<link th:href="@{/css/success_modal.css}" rel="stylesheet">
+		<link th:href="@{/css/index.css}" rel="stylesheet">
+		<link th:href="@{/css/profile.css}" rel="stylesheet">
+</head>
+<style>
+.radioslider__handle {
+    left: 49.98%;
+}
+.role_name {
+    display: flex;
+    justify-content: space-around;
+}
+input[type=radio]:checked +label>i {
+ color:crimson;
+}
+
+body{
+	font-family: 'Nunito', sans-serif;
+}
+.role {
+    display: flex;
+    justify-content: space-evenly;
+}
+.Interest {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    row-gap: 5px;
+   padding: 5px;
+    }
+    
+    .red{
+	background-color: red;
+}
+.red:hover{
+	background-color:rgba(255, 60, 60, 0.8);
+}
+
+
+.h:hover{
+	background-color: #cccfd173;
+	
+}
+
+.image-upload .btn:hover .text{
+  opacity: 1;
+}
+
+
+.text{
+  color: #000000de;
+  font-size: 3.5em;
+  opacity: 0;
+}
+
+.texts{
+  color: #000000de;
+  font-size: 3.5em;
+}
+.image-upload {
+  position: relative;
+  width: 23%;
+}
+
+.s{
+	margin: auto;
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+/* Make the image responsive */
+.image-upload img{
+  width: 200px;
+  height: 200px;
+}
+
+.xs{
+  width: 150px;
+  height: 150px;
+}
+
+/* Style the button and place it in the middle of the container/image */
+.image-upload .btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  background-color: #cccfd173;
+  color: white;
+  font-size: 16px;
+  padding: 12px 24px;
+  border: none;
+ width: 200px;
+  height: 200px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.image-upload .btn:hover {
+  opacity: 1;      
+}
+.panel-body {
+	display: flex;
+    position: relative;
+    padding: 15px;
+    border: 1px solid #e2e2e2;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+    
+   .badge{
+	margin-top: 2%;
+}
+.image-upload > input
+{
+    display: none;
+}
+
+#progressbar {
+  margin-bottom: 30px;
+  overflow: hidden;
+  text-align: center;
+}
+  #progressbar li {
+  list-style-type: none;
+  color: #99a2a8;
+  font-size: 9px;
+  width: calc(100% / 5);
+  float: left;
+  position: relative;
+  font: 500 13px/1 "Roboto", sans-serif;
+  z-index: 1;
+}
+  #progressbar li:nth-child(2):before {
+	font-family: "Font Awesome 5 Free";
+  content: "\f084";
+  font-weight: 900;
+}
+  #progressbar li:nth-child(3):before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f507";
+  font-weight: 900;
+}
+  #progressbar li:nth-child(4):before {
+  font-family: "Material Icons";
+  content: "\e7c8";
+  font-weight: 900;
+}
+  #progressbar li:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f681";
+  font-weight: 900;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  display: block;
+  background: #eaf0f4;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+}
+  #progressbar li:after {
+  content: "";
+  width: 100%;
+  height: 10px;
+  background: #eaf0f4;
+  position: absolute;
+  left: -38%;
+  top: 21px;
+  z-index: -1;
+}
+  #progressbar li:last-child:after {
+  width: 150%;
+}
+  #progressbar li.active {
+  color: #5cb85c;
+}
+  #progressbar li.active:before,   #progressbar li.active:after {
+  background: #5cb85c;
+  color: white;
+}
+</style>
+<body>
+
+	<div id="body-guest">
+    <nav class="navbar navbar-expand-sm navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+                WikiTEL
+            </a>
+            <ul class="navbar-nav ms-auto navbar-right" id="navbar-connect">
+                <li class="nav-item">
+                <button type="button" class="btn btn-success btn-sm uno" style="width: 100%;" data-bs-toggle="modal" data-bs-target="#modal1">Accedi</button>
+                    
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-success btn-sm due" style="width: 100%;" data-bs-toggle="modal" data-bs-target="#modal2">Registrati</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="intro mx-3 my-2">
+        <h2>WikiTEL (Wikipedia-based Technology-Enhanced Learning)</h2>
+
+        <p style="text-align:justify">
+            Partendo da una rappresentazione statica contenente una traccia con un alto livello di astrazione delle
+            lezioni, inizialmente memorizzata in un database, viene pianificata una lezione su un argomento di
+            interesse, adattata dinamicamente durante la sua lezione e personalizzata sulla base utenti coinvolti.
+        </p>
+
+        <p style="text-align:justify">
+            L'idea di utilizzare delle tecnologie legate all'<a
+                href="https://it.wikipedia.org/wiki/Intelligenza_artificiale">Intelligenza Artificiale</a> (AI) nasce
+            dall'esigenza di creare un'esperienza didattica sufficientemente ampia da permettere la riproduzione di un
+            gran numero di situazioni diverse che sono, allo stesso tempo, caratterizzate da un'elevata variabilità  di
+            stimoli, finalizzata a aumentare il livello di coinvolgimento degli utenti. La <a
+                href="https://it.wikipedia.org/wiki/Pianificazione_automatica">pianificazione automatica</a>, infatti,
+            favorisce la generazione di lezioni diverse che sarebbe troppo complicato ottenere con una semplice
+            pre-compilazione di storie. L'approccio alla <a href="https://github.com/pstlab/oRatio">pianificazione
+                basato su timeline</a>, in particolare, rappresenta l'elemento unificante dei vari moduli garantendo
+            l'adattabilità  dinamica dei piani e promuovendo l'apprendimento esperienziale.
+        </p>
+
+        <p style="text-align:justify">
+            Da un punto di vista di alto livello è possibile distinguere due tipologie di utenti coinvolti: gli
+            <b>studenti</b>, cioè un gruppo di persone, potenzialmente, di qualsiasi età , interessate ad utilizzare i
+            servizi di apprendimento offerti da WikiTEL, e gli <b>insegnanti</b>, ovvero utenti con privilegi
+            speciali che hanno la possibilità  di osservare gli studenti, monitorando l'andamento delle azioni e
+            l'ambiente di apprendimento. Gli utenti di cui sopra interagiscono con il sistema WikiTEL che è composto da
+            tre blocchi funzionali, intesi come sottosistemi architettonici, implementando le corrispondenti
+            funzionalità  di alto livello: (i) la <em>modellazione dell'utente</em>, il cui obiettivo è creare e
+            mantenere un modello utente e fornire una guida per migliorare il processo di apprendimento; (ii) la
+            <em>modellazione delle lezioni</em>, il cui ruolo è combinare le informazioni dal sottosistema precedente e
+            creare la lezione personalizzata oltre che controllarne l'evoluzione; (iii) la <em>presentazione della
+                lezione</em>, il cui scopo è rappresentare efficacemente la lezione.
+        </p>
+
+        <p>
+            &copy; 2018 <a href="https://www.istc.cnr.it/en/group/pst">Planning and Scheduling Technology
+                Laboratory</a>.
+        </p>
+          <p th:if="${loginError}" class="error" style="color: red;">Wrong user or password</p>
+    </div>
+<div id="postResultDiv">
+</div>
+
+
+
+
+<div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+          <h4 class="modal-title" id="myModalLabel">Login</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            
+          </div>
+          <div class="modal-body">
+ <form th:action="@{/index}"  method="POST">
+          <div class="form-group">
+            <label for="email" class="col-form-label">Email:</label>
+            <input type="text" class="form-control" id="email" name="email">
+          </div>
+          <div class="form-group">
+            <label for="password" class="col-form-label">Password:</label>
+            <input type="password" class="form-control" id="password" name="password" autocomplete="on">
+          </div>
+          <div class="modal-footer">
+        <button type="button" class="btn btn-secondary red" onclick="close()" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary" >Accedi</button>
+      </div>
+        </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+
+        <div id="modal3" class="modal fade">
+	<div class="modal-dialog modal-confirm">
+		<div class="modal-content">
+			<div class="modal-header">
+				<div class="icon-box">
+					<i class="material-icons">&#xE876;</i>
+				</div>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body text-center">
+				<h4>Great!</h4>	
+				<p>Your account has been created successfully.</p>
+				<button class="btn btn-success" data-dismiss="modal" id="ok"><span>Continue</span> <i class="material-icons">&#xE5C8;</i></button>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+    
+
+
+<div class="modal fade register" id="modal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+   <div class="modal-dialog" style="max-width: 50%;">
+      <div class="modal-content">
+          <form id="register_form">
+            <div class="modal-header" style="border-bottom: 0px solid!important;align-items: initial!important; flex-direction: column-reverse!important;">
+                <ul id="progressbar">
+    				  <li class="active">Dati</li>  
+      					<li>Credenziali</li> 
+      					<li>Ruolo</li>
+      					<li>Interessi</li>
+      					<li>Questionario</li>
+ 				   </ul>
+               <h4 class="modal-title" id="myModalLabel"></h4>
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" >
+               <div class="modal-split">
+               
+                    <div class="image-upload s">
+        <img  id="myImg" src="https://getstamped.co.uk/wp-content/uploads/WebsiteAssets/Placeholder.jpg"  alt="Admin" class="rounded-circle" width="150">
+   
+
+ <button type="button" class="btn btn-light rounded-circle" data-bs-toggle="modal" data-bs-target="#exampleModal">
+ <div class="text"><i class="fas fa-plus"></i></div>
+</button>
+</div>
+                  
+                  <label for="firs_name" class="col-form-label">Nome:</label>
+            <input type="text" class="form-control" id="first_name" name="first_name">
+    
+    <label for="last_name" class="col-form-label">Cognome:</label>
+    <input type="text" class="form-control" id="last_name" name="last_name">
+                   <div class="invalid-feedback">
+          Please put your last name.
+      
+                  </div>
+               </div>
+               <div class="modal-split">
+                 
+                  <label for="email" class="col-form-label">Email:</label>
+            <input type="text" class="form-control" id="email_r" name="email_r">
+            <p id="error"></p>
+    <label for="password_r" class="col-form-label">Password:</label>
+            <input type="password" class="form-control" id="password_r" name="password_r" autocomplete="on">
+               </div>
+               <div class="modal-split">
+                 
+                  <div class="role">
+                  <div class="role_default">
+              <div class="mr">
+  <input type="radio" id="default" name="roles" class="input-hidden" value="STUDENT"  >
+  <label for="default" style="font-size: 10em;"><i class="fas fa-user"></i>
+  </label>
+</div>
+<div class="role_nom"><h1>Default</h1></div>
+                  </div>
+<div class="role_admin">
+<div class="mr">
+  <input type="radio" id="admin" name="roles" class="input-hidden" value="TEACHER"  >
+  <label for="admin" style="font-size: 10em;"><i class="fas fa-user-plus"></i></label>
+</div>
+<div class="role_nom"><h1>Admin</h1></div>
+                  </div>
+                  </div>
+                  
+               </div>
+                 <div class="modal-split" style="height: 350px; overflow: auto;">
+                 
+                  <div class="Interest" id="interests">
+   <div th:each="i : ${interests}">
+                            <div class="form-check form-switch col">
+  <input class="form-check-input" type="checkbox" role="switch"  th:value="${i.id}" th:name="${i.name}">
+  <label class="form-check-label" for="flexSwitchCheckDefault" th:text="${i.name}"></label>
+</div>
+                            </div>
+  </div>
+               </div>
+               <div class="modal-split">
+                  
+   <div class="questions" id="question" >
+  
+
+<div class="collapse" id="collapseExample">
+  <div class="card card-body">
+    Some placeholder content for the collapse component. This panel is hidden by default but revealed when the user activates the relevant trigger.
+  </div>
+</div>
+</div>
+
+               </div>
+            </div>
+            <div class="modal-footer" style="border-top: 0px solid!important">
+               
+            </div>
+         </form>
+      </div>
+   </div>
+</div>
+ <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-option">
+    <div class="modal-content cont">
+      <div class="modal-header" style="border-bottom: 0 !important">
+        <h5 class="modal-title" id="exampleModalLabel"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" style="display: flex !important;justify-content: center;">
+      <div class="images">
+      
+      
+      <div class="mr">
+  <input type="radio" id="avatar1" name="drone" class="input-hidden" value="avatar1"  
+         checked>
+  <label for="avatar1"><img  id="1" src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="Admin" class="rounded-circle" width="150"> </label>
+</div>
+
+<div class="mr">
+  <input type="radio" id="avatar2" name="drone" class="input-hidden" value="avatar2"  >
+  <label for="avatar2"><img  id="2" src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+
+<div class="mr">
+  <input type="radio" id="avatar3" name="drone" class="input-hidden" value="avatar3"  >
+  <label for="avatar3"><img  id="3" src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+
+<div class="mr">
+  <input type="radio" id="avatar4" name="drone" class="input-hidden" value="avatar4"  >
+  <label for="avatar4"><img  id="4" src="https://bootdey.com/img/Content/avatar/avatar4.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+      
+      <div class="mr">
+  <input type="radio" id="avatar7" name="drone" class="input-hidden" value="avatar7"  >
+  <label for="avatar7"><img  id="7" src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+      
+     <div class="mr">
+  <input type="radio" id="avatar8" name="drone" class="input-hidden" value="avatar8"  >
+  <label for="avatar8"><img  id="8" src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+      
+      <div class="mr">
+  <input type="radio" id="avatar5" name="drone" class="input-hidden" value="avatar5"  >
+  <label for="avatar5"><img  id="5" src="https://bootdey.com/img/Content/avatar/avatar5.png" alt="Admin" class="rounded-circle" width="150"></label>
+</div>
+      
+<div class="mr" >
+			<input type="file" name="photo-upload-button" id="photo-upload-button" accept="image/*" class="input-file"/>
+			<input type="radio" id="plus" name="drone" class="input-hidden" value="plus">
+			<label class="label" for="photo-upload-button">
+      <img id="file-ip-1-preview" class="rounded-circle" width="150">
+      <label class="labels" id="backg" for="plus" onclick="showPreview()">
+      <i id="plus" class="fas fa-plus" ></i>
+      </label>
+    </label>
+</div>
+
+
+      </div>
+      </div>
+      <div class="modal-footer" style="border-top: 0 !important">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color:red">Close</button>
+        <button type="button" data-dismiss="modal" class="btn btn-primary" data-bs-dismiss="modal" onclick="image()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  
+  
+  
+  <div class="modal fade" id="exampleModal4" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: 0px solid!important">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer" style="border-top: 0 !important">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  
+</body>
+</html>

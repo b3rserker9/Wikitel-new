@@ -1,0 +1,83 @@
+@startuml db
+left to right direction
+
+entity Lesson {
+    * id : long <<generated>>
+    --
+    * name : string
+}
+
+entity Model {
+    * id : long <<generated>>
+    --
+    * name : string
+}
+
+entity Rule {
+    * id : long <<generated>>
+    --
+    * name : string
+    * top_down : bool
+    * topics : string[]
+    * length : long
+}
+
+entity TextRule {
+    --
+    * text : string
+}
+
+entity WebRule {
+    --
+    * url : string
+}
+
+entity WikiRule {
+    --
+    * url : string
+}
+
+entity Suggestion {
+    * id : long <<generated>>
+    --
+}
+
+entity WikiSuggestion {
+    --
+    * page : string
+}
+
+entity RuleSuggestion {
+    --
+    * score : double
+}
+
+entity User {
+    * id : long <<generated>>
+    --
+    * first_name : string
+    * last_name : string
+    * email : string
+    * password : string
+    * profile : string
+}
+
+Rule <|-- TextRule
+Rule <|-- WebRule
+Rule <|-- WikiRule
+Suggestion <|-- WikiSuggestion
+
+User --> "*" Rule : learnt_topics
+User "*" <--> "*" Model : models
+User "*" <--> "*" User : teachers
+User "*" <--> "*" Lesson : following_lessons
+User "1" <--> "*" Lesson : teaching_lessons
+Lesson --> Model : model
+Lesson --> "*" Rule : goals
+Model --> "*" Rule : rules
+Rule "*" <--> "*" Rule : conditions
+
+Rule "*" <--> "*" Suggestion
+(Rule, Suggestion) .. RuleSuggestion
+
+@enduml
