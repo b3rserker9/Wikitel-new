@@ -1,7 +1,19 @@
 var max=0;
 var value=0;
 
-
+export function mongo(){
+	   $.ajax({
+                url: "/mongo",
+                type: "POST", 
+                success: function() {
+                   console.log("PROVA")
+                },
+                error: function(err) {
+                    console.error(err);
+                    toastr.error("Errore durante l'upload dell'immagine");
+                }
+            });
+}
 export function file_upload(){
 	var form = $("#formFileLg")[0].files[0];
 	var data = new FormData();

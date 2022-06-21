@@ -208,13 +208,14 @@ public class MainController {
 		
 	}
 	
-	@GetMapping("/mongo")
+	@PostMapping("/mongo")
 	public String edit2(){
 		mongo.save(new Provamongo("funge"));
 		System.out.println("mongo funziona??");
 		return "prova";
 		
 	}
+
 	
 	@PostMapping("/edit_interests")
 	public Response edit_interests(@RequestBody User user) throws JsonGenerationException, JsonMappingException, IOException{
