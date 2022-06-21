@@ -72,6 +72,7 @@ import javax.servlet.http.HttpServletResponse;
 import it.cnr.istc.psts.wikitel.db.*;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
+import it.cnr.istc.psts.wikitel.Repository.ProvaMongoRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
 
 import it.cnr.istc.psts.wikitel.Repository.UserRepository;
@@ -82,7 +83,6 @@ import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.RuleSuggestionRelationService;
 import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
-import it.cnr.istc.psts.wikitel.db.UserEntity;
 import it.cnr.psts.wikitel.API.Message;
 
 @RestController
@@ -90,11 +90,14 @@ public class MainController {
 	
 	static final Logger LOG = LoggerFactory.getLogger(MainController.class);
 	
-	  @Autowired
-	    protected PasswordEncoder passwordEncoder;
+	@Autowired
+ protected PasswordEncoder passwordEncoder;
 	
 	@Autowired
 	private UserRepository userrepository;
+	
+	@Autowired
+	private ProvaMongoRepository mongo;
 	
 	@Autowired
 	private UserService userservice;
@@ -202,6 +205,14 @@ public class MainController {
 		credentialservice.save(credentials);
 		
 		return response;
+		
+	}
+	
+	@PostMapping("/mongo")
+	public String edit2(){
+		mongo.save(new Provamongo("funge"));
+		System.out.println("mongo funziona??");
+		return "prova";
 		
 	}
 	

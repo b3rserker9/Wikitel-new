@@ -34,6 +34,7 @@ import it.cnr.istc.psts.wikitel.controller.UserController;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 
 @SpringBootApplication
+
 public class WikitelNewApplication {
 	
 
