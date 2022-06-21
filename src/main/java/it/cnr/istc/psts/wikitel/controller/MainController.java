@@ -216,7 +216,12 @@ public class MainController {
 		return "prova";
 		
 	}
-
+	@PostMapping("/ciao")
+	public String edit4(){
+		System.out.println("mongo funziona??");
+		return "prova";
+		
+	}
 	
 	@PostMapping("/edit_interests")
 	public Response edit_interests(@RequestBody User user) throws JsonGenerationException, JsonMappingException, IOException{
