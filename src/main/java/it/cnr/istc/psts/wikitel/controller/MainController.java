@@ -210,6 +210,7 @@ public class MainController {
 	
 	@PostMapping("/mongo")
 	public String edit2(){
+		System.out.println("mongo funziona??");
 		mongo.save(new Provamongo("funge"));
 		System.out.println("mongo funziona??");
 		return "prova";
