@@ -15,6 +15,8 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -24,6 +26,7 @@ import lombok.Data;
 
 @Entity
 @Data
+
 public class ModelEntity {
 
     @Id

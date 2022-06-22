@@ -71,6 +71,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import it.cnr.istc.psts.wikitel.db.*;
 import it.cnr.istc.psts.Websocket.Sending;
+import it.cnr.istc.psts.wikitel.MongoRepository.ModelMongoRepository;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.ProvaMongoRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
@@ -98,6 +99,9 @@ public class MainController {
 	
 	@Autowired
 	private ProvaMongoRepository mongo;
+	
+	@Autowired
+	private ModelMongoRepository modelmongo;
 	
 	@Autowired
 	private UserService userservice;
@@ -408,7 +412,9 @@ public class MainController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
 		UserEntity nuovo = credentials.getUser();
+		modelmongo mongo = new modelmongo();
     	ModelEntity model = this.modelservice.getModel(node.get("model_id").asLong());
+    	mongo.setName(model.getName());
     	RuleEntity rule = null;
              rule = new WikiRuleEntity();
              this.modelservice.saverule(rule);
@@ -457,7 +463,9 @@ public class MainController {
 			    	this.modelservice.saverule(main_rule);
     	this.modelservice.saverule(rule);
     	model.getRules().add(rule);
+    	mongo.getRules().add(rule);
     	modelservice.save(model);
+    	modelmongo.save(mongo);
     	
     	
     	
