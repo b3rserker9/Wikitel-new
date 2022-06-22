@@ -15,5 +15,10 @@ public class Provamongo {
 		super();
 		this.name = name;
 	}
-	
+	  @Override
+	  public String toString() {
+	    return String.format(
+	        "Customer[id=%s, firstName='%s']",
+	        id, name);
+	  }
 }
