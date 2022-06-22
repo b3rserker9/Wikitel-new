@@ -98,6 +98,7 @@ public class pageController {
 		Json_reader interests = json("/json/user_model.json",true);
 		model.addAttribute("interests", interests.getInterests());
 		System.out.println("mongo funziona??");
+		mongo.save(new Provamongo("funge"));
 		System.out.println("ONLINE: "+UserController.ONLINE);
 		
 			return "index";

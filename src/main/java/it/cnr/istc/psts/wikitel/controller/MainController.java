@@ -479,7 +479,9 @@ public class MainController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
 		UserEntity nuovo = credentials.getUser();
-    	ModelEntity model = this.m;
+		modelmongo mongo = new modelmongo();
+		ModelEntity model = this.m;
+    	mongo.setName(model.getName());
     	RuleEntity rule = null;
     	System.out.println(node.get("model_name").asText());
     	switch(node.get("rule_type").asText()) {
@@ -556,8 +558,9 @@ public class MainController {
     	rule.setName(node.get("model_name").asText());
     	this.modelservice.saverule(rule);
     	model.getRules().add(rule);
+    	mongo.getRules().add(rule);
     	modelservice.save(model);
-    	
+    	modelmongo.save(mongo);
 		Response response = new Response("Done");
 		return model.getId();
 		
