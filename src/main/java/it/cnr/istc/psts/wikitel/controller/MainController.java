@@ -71,7 +71,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import it.cnr.istc.psts.wikitel.db.*;
 import it.cnr.istc.psts.Websocket.Sending;
-import it.cnr.istc.psts.wikitel.MongoRepository.ModelMongoRepository;
+import it.cnr.istc.psts.wikitel.MongoRepository.RuleMongoRepository;
+import it.cnr.istc.psts.wikitel.Mongodb.MongoDb;
+import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
+import it.cnr.istc.psts.wikitel.Mongodb.SuggestionMongo;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.ProvaMongoRepository;
 import it.cnr.istc.psts.wikitel.Repository.Response;
@@ -101,7 +104,7 @@ public class MainController {
 	private ProvaMongoRepository mongo;
 	
 	@Autowired
-	private ModelMongoRepository modelmongo;
+	private RuleMongoRepository rulemongorep;
 	
 	@Autowired
 	private UserService userservice;
@@ -465,7 +468,7 @@ public class MainController {
     	model.getRules().add(rule);
     	mongo.getRules().add(rule);
     	modelservice.save(model);
-    	modelmongo.save(mongo);
+    	
     	
     	
     	
@@ -482,6 +485,7 @@ public class MainController {
 		modelmongo mongo = new modelmongo();
 		ModelEntity model = this.m;
     	mongo.setName(model.getName());
+    	RuleMongo rulemongo = new RuleMongo();
     	RuleEntity rule = null;
     	System.out.println(node.get("model_name").asText());
     	switch(node.get("rule_type").asText()) {
@@ -502,19 +506,27 @@ public class MainController {
              name = name.replace(' ','_');
              Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name, Prova.class);
              ((WikiRuleEntity) rule).setUrl(prova.getUrl()); 
+           
              rule.getTopics().addAll(prova.getCategories());
 			 rule.setLength(prova.getLength());
+			 
 			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();
 			 int i = -1;
 			 for (String pre : prova.getPreconditions()) { 
 				 i++;
+				 SuggestionMongo sugmongo = new SuggestionMongo();
 				 RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
+				
 			     WikiSuggestionEntity suggestion = null;
+		
 			     if (  modelservice.getpage(pre)== null) {
 			    	 System.out.println("Ciao");
 			    	 
 			    	 suggestion = new WikiSuggestionEntity();
 						suggestion.setPage(pre);
+						sugmongo.setPage(pre);
+						
+
 						modelservice.savewikisuggestion(suggestion);
 				}else {
 					 
@@ -527,11 +539,17 @@ public class MainController {
 			    
 			     relation.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
 			     relation.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
+			     sugmongo.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
+			     sugmongo.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
 			     relations.add(relation); 
 			     System.out.println(relation.getSuggestion().getId());
 			     
 			     relationservice.saverelation(relation);
 			     rule.getSuggestions().add(relation);
+			     rulemongo.getSuggestions().add(sugmongo);
+			    
+			     
+			    
 			 }     
 			    
 			    
@@ -545,6 +563,7 @@ public class MainController {
          	uploadfile.transferTo(new File(baseDir + file1));
          	((FileRuleEntity) rule).setSrc(baseDir +file1);
          	this.modelservice.saverule(rule);
+         	
         	 break;
     	}
     /*	if(node.get("effect_id").asLong() == -1) {
@@ -556,11 +575,11 @@ public class MainController {
     		}
     	}*/
     	rule.setName(node.get("model_name").asText());
+    	rulemongo.setName(node.get("model_name").asText());
     	this.modelservice.saverule(rule);
     	model.getRules().add(rule);
-    	mongo.getRules().add(rule);
+    	rulemongorep.save(rulemongo);
     	modelservice.save(model);
-    	modelmongo.save(mongo);
 		Response response = new Response("Done");
 		return model.getId();
 		
