@@ -239,6 +239,7 @@ function time(name) {
 function Postsuggetion(id) {
     console.log("id: " + id)
     current_model = id;
+    document.getElementById("loading_modal").style.display = "flex";
     $.ajax({
 
         type: "POST",
@@ -254,6 +255,7 @@ function Postsuggetion(id) {
             $("#suggested-preconditions-list").empty();
             console.log("SUCCESS : ", data);
             precondition_setup(data,id);
+            document.getElementById("loading_modal").style.display = "none";
             /*s.forEach(function(l){		
 							document.getElementById("suggested-preconditions-list").innerHTML+='<div class="form-check col-6">'+
  ' <input class="form-check-input" type="checkbox" name="'+l.suggestion.page+'" id="flexRadioDefault1">'
@@ -275,9 +277,11 @@ function Postsuggetion(id) {
 
 function precondition_setup(data,id) {
     rules = data;
+    console.log("prova: " +data);
     let rule = null;
     var x = document.getElementById("rule_list");
-    console.log();
+    var options = document.querySelectorAll('#rule_list option');
+    options.forEach(o => o.remove());
     let suggestion = [];
     for (let i = 0; i < rules.length; i++) {
         console.log(rules[i]);

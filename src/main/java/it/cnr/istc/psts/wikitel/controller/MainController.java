@@ -392,6 +392,14 @@ public class MainController {
 		
 	}
 	
+	
+	@PostMapping("/prova")
+	public RuleMongo ged(){
+		System.out.println("sono qui!!");
+		return rulemongorep.findByName("Palombaro lungo");
+		
+	}
+	
 	@PostMapping("/NewModel")
 	public Response NewModel(@RequestBody String Model) {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -479,6 +487,7 @@ public class MainController {
 	@RequestMapping(value = "/Newrule",  method = RequestMethod.POST)
 	public Long NewModel(@RequestBody ObjectNode node,@RequestBody MultipartFile uploadfile) throws RestClientException, IllegalStateException, IOException{	
 		RestTemplate restTemplate = new RestTemplate();
+		boolean bool = true;
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
 		UserEntity nuovo = credentials.getUser();
@@ -488,6 +497,8 @@ public class MainController {
     	RuleMongo rulemongo = new RuleMongo();
     	RuleEntity rule = null;
     	System.out.println(node.get("model_name").asText());
+    	System.out.println("nome: "+node.get("rule_name").asText());
+    	String name= node.get("rule_name").asText();
     	switch(node.get("rule_type").asText()) {
     	 case "Testo":
              rule = new TextRuleEntity();
@@ -500,9 +511,11 @@ public class MainController {
              this.modelservice.saverule(rule);
              break;
          case "Pagina Wikipedia":
+        	 if(rulemongorep.findByName(name)== null) {
+        		 System.out.println("mongo: "+rulemongorep.findByName(node.get("rule_text").asText()));
              rule = new WikiRuleEntity();
              this.modelservice.saverule(rule);
-             String name= node.get("rule_name").asText();
+             
              name = name.replace(' ','_');
              Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name, Prova.class);
              ((WikiRuleEntity) rule).setUrl(prova.getUrl()); 
@@ -531,6 +544,7 @@ public class MainController {
 				}else {
 					 
 					suggestion = modelservice.getpage(pre);
+					sugmongo.setPage(suggestion.getPage());
 				}    
 			    
 			     
@@ -547,10 +561,14 @@ public class MainController {
 			     relationservice.saverelation(relation);
 			     rule.getSuggestions().add(relation);
 			     rulemongo.getSuggestions().add(sugmongo);
-			    
+			 }
 			     
 			    
 			 }     
+        	 else {
+        		 bool=false;
+        		 System.out.println("non sono entrato");
+        	 }
 			    
 			    
 			  
@@ -574,6 +592,7 @@ public class MainController {
     
     		}
     	}*/
+    	if(bool) {
     	rule.setName(node.get("model_name").asText());
     	rulemongo.setName(node.get("model_name").asText());
     	this.modelservice.saverule(rule);
@@ -581,6 +600,7 @@ public class MainController {
     	rulemongorep.save(rulemongo);
     	modelservice.save(model);
 		Response response = new Response("Done");
+    	}
 		return model.getId();
 		
 	}

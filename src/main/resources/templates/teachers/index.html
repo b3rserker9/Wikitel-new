@@ -99,6 +99,91 @@ div#suggested-preconditions-list{
   margin: -25px 0 0 -25px;
 }
 
+#loading_modal{
+	display: none;
+	 position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(106 105 105 / 86%);
+    z-index: 2;
+    cursor: pointer;
+}
+.center {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.wave {
+  width: 5px;
+  height: 100px;
+  background: linear-gradient(45deg, #0880d7, #fff);
+  margin: 10px;
+  animation: wave 1s linear infinite;
+  border-radius: 20px;
+}
+.wave:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.wave:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.wave:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.wave:nth-child(5) {
+  animation-delay: 0.4s;
+}
+.wave:nth-child(6) {
+  animation-delay: 0.5s;
+}
+.wave:nth-child(7) {
+  animation-delay: 0.6s;
+}
+.wave:nth-child(8) {
+  animation-delay: 0.7s;
+}
+.wave:nth-child(9) {
+  animation-delay: 0.8s;
+}
+.wave:nth-child(10) {
+  animation-delay: 0.9s;
+}
+
+@keyframes wave {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+
+.card-item{
+	  display: flex;
+  padding: 1rem;
+}
+@media (max-width: 1120px) {
+  .card-item{
+    width: 50%;
+  }
+  .page{
+	flex-direction:column ;
+}
+}
+
+
+.card_container{
+	display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
 </style>
 <body>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
@@ -201,7 +286,38 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
   <div class="page">
   	<div class="section1">
   	<h1>Welcome Prof. <span th:text="${user.first_name}"></span></h1>
-  	
+  	<div class=card_container>
+
+<div class="card-item">
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <button type="button" class="btn btn-primary">Button</button>
+  </div>
+</div>
+</div>
+
+<div class="card-item">
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <button type="button" class="btn btn-primary">Button</button>
+  </div>
+</div>
+</div>
+
+<div class="card-item">
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <button type="button" class="btn btn-primary">Button</button>
+  </div>
+</div>
+</div>
+  	</div>
   <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
   	</div>
   	<div class="section2">
@@ -342,12 +458,27 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
    <div class="modal-dialog">
+    
       <div class="modal-content">
+      <div class="loaidng modal-content" id="loading_modal">
+      <div class="center">
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+</div></div>
          <form id="new_precondition">
             <div class="modal-header">
                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+           
             <div class="form-floating">
                      <select class="form-select" id="rule_list" aria-label="Floating label select example">
                 
@@ -392,6 +523,7 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
                      style="max-height:200px;overflow:auto;">
                   </div>
                </div>
+            
             </div>
             <div class="modal-footer">
                <!-- Button trigger modal -->
@@ -400,7 +532,8 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
                <button type="button"  class="btn btn-primary">Save changes</button>
             </div>
          </form>
-      </div>
+      
+   </div>
    </div>
 </div>
 </body>

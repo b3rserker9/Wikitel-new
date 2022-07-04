@@ -1,11 +1,14 @@
 package it.cnr.istc.psts.wikitel.Mongodb;
 
+import java.beans.Transient;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import it.cnr.istc.psts.wikitel.db.RuleEntity;
 import it.cnr.istc.psts.wikitel.db.RuleSuggestionRelationEntity;
 import lombok.Data;
 
@@ -18,8 +21,10 @@ public class RuleMongo {
 	
 	private String name;
 	
-	private final Set<RuleMongo> precondition = new HashSet<>();
+	private  Set<RuleMongo> precondition = new HashSet<>();
 	
-	 private final Set<SuggestionMongo> suggestions = new HashSet<>();
+	 private  Set<SuggestionMongo> suggestions = new HashSet<>();
+	 
+	
 
 }

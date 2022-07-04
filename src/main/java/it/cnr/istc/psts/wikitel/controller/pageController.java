@@ -39,6 +39,8 @@ import it.cnr.istc.pst.oratio.SolverException;
 import it.cnr.istc.psts.WikitelNewApplication;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
+import it.cnr.istc.psts.wikitel.MongoRepository.RuleMongoRepository;
+import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.ProvaMongoRepository;
 import it.cnr.istc.psts.wikitel.Service.CredentialService;
@@ -75,6 +77,9 @@ public class pageController {
 	private ProvaMongoRepository mongo;
 	
 	@Autowired
+	private RuleMongoRepository rulemongorep;
+	
+	@Autowired
 	private LessonService lessonservice;
 	
 	@Autowired
@@ -100,7 +105,9 @@ public class pageController {
 		System.out.println("mongo funziona??");
 		mongo.save(new Provamongo("funge"));
 		System.out.println("ONLINE: "+UserController.ONLINE);
-		
+	RuleMongo r = rulemongorep.findByName("Cocciopesto");
+		System.out.println(rulemongorep.findSug("62bc0f7c7032c719fc157d7d"));
+		System.out.println(r.getName());
 			return "index";
 	}
 	
