@@ -521,6 +521,8 @@ public class MainController {
              ((WikiRuleEntity) rule).setUrl(prova.getUrl()); 
            
              rule.getTopics().addAll(prova.getCategories());
+             rulemongo.getTopics().addAll(prova.getCategories());
+             rulemongo.setLength(prova.getLength());
 			 rule.setLength(prova.getLength());
 			 
 			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();
@@ -594,7 +596,7 @@ public class MainController {
     	}*/
     	if(bool) {
     	rule.setName(node.get("model_name").asText());
-    	rulemongo.setName(node.get("model_name").asText());
+    	rulemongo.setTitle(name);
     	this.modelservice.saverule(rule);
     	model.getRules().add(rule);
     	rulemongorep.save(rulemongo);

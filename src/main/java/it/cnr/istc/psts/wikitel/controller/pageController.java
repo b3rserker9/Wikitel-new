@@ -96,7 +96,7 @@ public class pageController {
 
 
 	@RequestMapping(value = {"/","/index"}, method = RequestMethod.GET)
-	public String index(Model model) throws NoSuchFieldException, SolverException {
+	public String index(Model model) throws NoSuchFieldException, SolverException, IOException, InterruptedException {
 		RestTemplate restTemplate = new RestTemplate();
 		//Prova prova = restTemplate.getForObject("http://192.168.1.79:5015/wiki?page=Palombaro_lungo", Prova.class);
 		//System.out.println(prova.getLength());
@@ -105,7 +105,7 @@ public class pageController {
 		System.out.println("mongo funziona??");
 		mongo.save(new Provamongo("funge"));
 		System.out.println("ONLINE: "+UserController.ONLINE);
-
+		
 		
 			return "index";
 	}
