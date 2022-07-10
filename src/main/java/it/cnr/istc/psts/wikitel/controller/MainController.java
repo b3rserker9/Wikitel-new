@@ -396,7 +396,7 @@ public class MainController {
 	@PostMapping("/prova")
 	public RuleMongo ged(){
 		System.out.println("sono qui!!");
-		return rulemongorep.findByName("Palombaro lungo");
+		return rulemongorep.findByTitle("Palombaro lungo");
 		
 	}
 	
@@ -511,8 +511,8 @@ public class MainController {
              this.modelservice.saverule(rule);
              break;
          case "Pagina Wikipedia":
-        	 if(rulemongorep.findByName(name)== null) {
-        		 System.out.println("mongo: "+rulemongorep.findByName(node.get("rule_text").asText()));
+        	 if(rulemongorep.findByTitle(name)== null) {
+        		 System.out.println("mongo: "+rulemongorep.findByTitle(node.get("rule_text").asText()));
              rule = new WikiRuleEntity();
              this.modelservice.saverule(rule);
              
@@ -521,8 +521,8 @@ public class MainController {
              ((WikiRuleEntity) rule).setUrl(prova.getUrl()); 
            
              rule.getTopics().addAll(prova.getCategories());
-             rulemongo.getTopics().addAll(prova.getCategories());
-             rulemongo.setLength(prova.getLength());
+             
+            
 			 rule.setLength(prova.getLength());
 			 
 			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();

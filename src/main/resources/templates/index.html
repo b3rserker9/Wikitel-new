@@ -35,6 +35,11 @@
 		<link th:href="@{/css/profile.css}" rel="stylesheet">
 </head>
 <style>
+:root{
+  --blue:#0188DF;
+  --black:#354046;
+}
+
 .radioslider__handle {
     left: 49.98%;
 }
@@ -207,12 +212,60 @@ body{
   width: 150%;
 }
   #progressbar li.active {
-  color: #5cb85c;
+  color: #0188DF;
 }
   #progressbar li.active:before,   #progressbar li.active:after {
-  background: #5cb85c;
+  background: #0188DF;
   color: white;
 }
+.home .content h1{
+  font-size: 5rem;
+  color:var(--black);
+}
+
+.home .content h1 span{
+  color:var(--blue);
+}
+
+.home .content h3{
+  font-size: 19px;
+  color:var(--black);
+}
+.index{
+  height:3.5rem;
+  width: 15rem;
+  background:var(--blue);
+  color:#fff;
+  font-size: 1.7rem;
+  text-transform: capitalize;
+  border-radius: .5rem;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  overflow: hidden;
+  margin:1rem 0;
+}
+
+.index::before{
+  content: '';
+  position: absolute;
+  top: -100%; left: 0;
+  height:100%;
+  width: 100%;
+  background-color: var(--black);
+  z-index: -1;
+  transition: .2s linear;
+}
+
+.index:hover:before{
+  top: 0%;
+}
+
+.index:hover{
+  box-shadow: .1rem 0rem var(--blue),
+              0 .3rem .5rem rgba(0,0,0,.3);
+}
+
 </style>
 <body>
 
@@ -236,6 +289,34 @@ body{
     </nav>
 </li>
  
+ <section class="home" id="home">
+
+<div class="container">
+
+    <div class="row min-vh-70 align-items-center text-center text-md-left">
+
+        <div class="col-md-8 pr-md-5" data-aos="zoom-in">
+            <img src="images/index.svg" width="100%" alt="">
+        </div>
+
+        <div class="col-md-4 pl-md-5 content" data-aos="fade-left">
+            <h1><span>W</span>iki<span>T</span>EL</h1>
+            <h3>Wikipedia-based Technology-Enhanced Learning</h3>
+            <a href="#info"><button class="button index">learn more</button></a>
+        </div>
+
+    </div>
+
+</div>
+
+</section>
+
+ <div class="spaces" style="width: 100%;height: 175px;"></div>
+ 
+ 
+ 
+ 
+ <div class="container" id="info">
     <div class="intro mx-3 my-2">
         <h2>WikiTEL (Wikipedia-based Technology-Enhanced Learning)</h2>
 
@@ -278,6 +359,7 @@ body{
         </p>
           <p th:if="${loginError}" class="error" style="color: red;">Wrong user or password</p>
     </div>
+	</div>
 <div id="postResultDiv">
 </div>
 

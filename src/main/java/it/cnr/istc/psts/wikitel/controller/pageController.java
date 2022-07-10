@@ -105,7 +105,10 @@ public class pageController {
 		System.out.println("mongo funziona??");
 		mongo.save(new Provamongo("funge"));
 		System.out.println("ONLINE: "+UserController.ONLINE);
-		
+		Process process = Runtime.getRuntime().exec("python3 -c 'import C:\\Users\\aliyo\\OneDrive\\Desktop\\python.py;python.prova() '");
+		process.waitFor();
+		int exitCode = process.exitValue();
+		System.out.println(exitCode);
 		
 			return "index";
 	}
