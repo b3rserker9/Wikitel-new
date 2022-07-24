@@ -10,7 +10,9 @@
 	
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 		
-	
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
 
@@ -52,7 +54,7 @@ input[type=radio]:checked +label>i {
 }
 
 body{
-	font-family: 'Nunito', sans-serif;
+	font-family: 'Open Sans', sans-serif;
 }
 .role {
     display: flex;
@@ -218,16 +220,20 @@ body{
   background: #0188DF;
   color: white;
 }
-.home .content h1{
+ .content h1{
   font-size: 5rem;
   color:var(--black);
 }
 
-.home .content h1 span{
+.content h1 span{
   color:var(--blue);
 }
 
-.home .content h3{
+ .content h3 span{
+  color:var(--blue);
+}
+
+.content h3{
   font-size: 19px;
   color:var(--black);
 }
@@ -270,7 +276,8 @@ body{
 <body>
 
 	<div id="body-guest">
-    <nav class="navbar navbar-expand-sm navbar-light">
+    <nav class="navbar navbar-expand-sm navbar-light" style="    background: #e2f6f691;
+">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
@@ -289,7 +296,7 @@ body{
     </nav>
 </li>
  
- <section class="home" id="home">
+ <section class="home" id="home" style="position: relative;    background: #e2f6f691;">
 
 <div class="container">
 
@@ -301,21 +308,105 @@ body{
 
         <div class="col-md-4 pl-md-5 content" data-aos="fade-left">
             <h1><span>W</span>iki<span>T</span>EL</h1>
-            <h3>Wikipedia-based Technology-Enhanced Learning</h3>
+            <h3><span>Wiki</span> pedia-based <span>T</span>echnology-<span>E</span>nhanced <span>L</span>earning</h3>
+            
             <a href="#info"><button class="button index">learn more</button></a>
         </div>
 
     </div>
 
 </div>
+<div class="space" style="    height: var(--bs-gutter-x, 195px);"></div>
+<svg xmlns="http://www.w3.org/2000/svg" style="position: absolute;bottom: 0;" viewBox="0 0 1440 320"><path fill="#ffffff" fill-opacity="1" d="M0,160L48,160C96,160,192,160,288,144C384,128,480,96,576,122.7C672,149,768,235,864,234.7C960,235,1056,149,1152,133.3C1248,117,1344,171,1392,197.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg></section>
 
+ <div class="spaces" style="width: 100%;height: 150px;"></div>
+ 
+ 
+ 
+<section class="about-area" id="info"  style="position: relative;">
+
+<div class="container">
+
+    <div class="row min-vh-50 align-items-center text-center text-md-left">
+
+        <div class="col-md-5 pr-md-5" data-aos="zoom-in">
+            <img src="images/AI.svg" width="100%" alt="">
+        </div>
+
+        <div class="col-md-7 pl-md-5 content" data-aos="fade-left">
+            <h2 class="text-uppercase pt-5">
+                            <span>Let me</span>
+                            <span>introduce</span>
+                            <span>myself</span>
+                        </h2>
+                        <div class="paragraph pt-2">
+                            <p class="para">
+                                L'idea di utilizzare delle tecnologie legate all'<a
+                href="https://it.wikipedia.org/wiki/Intelligenza_artificiale">Intelligenza Artificiale</a> (AI) nasce
+            dall'esigenza di creare un'esperienza didattica sufficientemente ampia da permettere la riproduzione di un
+            gran numero di situazioni diverse che sono, allo stesso tempo, caratterizzate da un'elevata variabilità  di
+            stimoli, finalizzata a aumentare il livello di coinvolgimento degli utenti. La <a
+                href="https://it.wikipedia.org/wiki/Pianificazione_automatica">pianificazione automatica</a>, infatti,
+            favorisce la generazione di lezioni diverse che sarebbe troppo complicato ottenere con una semplice
+            pre-compilazione di storie. L'approccio alla <a href="https://github.com/pstlab/oRatio">pianificazione
+                basato su timeline</a>, in particolare, rappresenta l'elemento unificante dei vari moduli garantendo
+            l'adattabilità  dinamica dei piani e promuovendo l'apprendimento esperienziale.
+                            </p>
+                          
+        </div>
+
+    </div>
+
+</div>
 </section>
+ 
+  <div class="spaces" style="width: 100%;height: var(--bs-gutter-x, 150px);">
 
- <div class="spaces" style="width: 100%;height: 175px;"></div>
+<svg xmlns="http://www.w3.org/2000/svg" style="position: absolute;transform: rotate(180deg);" viewBox="0 0 1440 320"><path fill="#ffffff" fill-opacity="1" d="M0,160L48,160C96,160,192,160,288,144C384,128,480,96,576,122.7C672,149,768,235,864,234.7C960,235,1056,149,1152,133.3C1248,117,1344,171,1392,197.3L1440,224L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg></section>
+
+  
+  </div>
+ 
+ <footer class="footer" style="display: flex;">
+    <div class="container" style="margin-top: auto;margin-bottom: auto;">
+        <div class="row">
+            <div class="col-md-5">
+              <div class="row">
+            <div class="col-md-12 ">
+               <div class="logo-part content" >
+                  <h1><span>W</span>iki<span>T</span>EL</h1>
+            	<h3><span>Wiki</span>pedia-based <span>T</span>echnology-<span>E</span>nhanced <span>L</span>earning</h3>
+                  <p>
+            &copy; 2018 <a href="https://www.istc.cnr.it/en/group/pst">Planning and Scheduling Technology
+                Laboratory</a>.
+        </p>
+               </div>
+            </div>
+         </div>
+            </div>
+            <div class="col-md-2">
+                <h5 class="text-md-right">Contact Us</h5>
+                <hr>
+            </div>
+            <div class="col-md-5">
+                <form>
+                    <fieldset class="form-group" >
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    </fieldset>
+                    <fieldset class="form-group" style="margin-top: 13px;">
+                        <textarea class="form-control" id="exampleMessage" placeholder="Message"></textarea>
+                    </fieldset>
+                    <fieldset class="form-group text-xs-right">
+                        <button type="button" class="btn btn-secondary-outline btn-lg">Send</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</footer>
  
  
- 
- 
+<!--
  <div class="container" id="info">
     <div class="intro mx-3 my-2">
         <h2>WikiTEL (Wikipedia-based Technology-Enhanced Learning)</h2>
@@ -360,6 +451,7 @@ body{
           <p th:if="${loginError}" class="error" style="color: red;">Wrong user or password</p>
     </div>
 	</div>
+	-->
 <div id="postResultDiv">
 </div>
 

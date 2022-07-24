@@ -1,3 +1,5 @@
+
+
 .btn-success{
 	background-color: #007ee2;
 	border-color:#007ee2 ;
@@ -17,7 +19,7 @@ li{
 }
 
 body {
-  background-color: #f1f1f1;
+  background-color: #ffff;
 }
 
 #regForm {
@@ -100,4 +102,97 @@ button:hover {
 .testo{
 	display: flex;
 	justify-content: space-between;
+}
+
+ .about-area .about-title p{
+    padding: 1rem 7rem;
+}
+
+ .about-area .client{
+    background: #ffffff10;
+    box-shadow: var(--box-shadow);
+    margin: 3rem 0rem;
+}
+
+ .about-area .client .client-img{
+    padding: 2rem;
+}
+
+ .about-area .client .about-client{
+    padding-top: 2rem;
+}
+
+ .about-area .client .about-client h4{
+    font: normal 500 21px/ 20px var(--roboto);
+}
+
+ .about-area .client .about-client p{
+    font-size: 14px;
+}
+
+ .about-area .owl-carousel .owl-item{
+    display: flex;
+    justify-content: center;
+    padding: 0 1.5rem;
+}
+
+ .about-area .owl-carousel .owl-dots .owl-dot.active span{
+    background: var(--primary-color);
+    width: 12px;
+    height: 12px;
+}
+
+.footer {
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 500px;
+}
+.logo-part {
+    border-right: 1px solid grey;
+    height: 100%;
+    }
+    
+    .logo-footer {
+        margin-bottom: 40px;
+     }
+
+/* Taller footer on small screens */
+@media (max-width: 500px) {
+    body {
+      margin-bottom: 700px;
+    }
+    .footer {
+      height: 700px;
+    }
+}
+
+/* Sticky footer style and color
+-------------------------------------------------- */
+html {
+  position: relative;}
+footer {
+  padding-top: 30px;
+  background-color: #e2f6f691;
+  color: #bbb;
+}
+
+footer a {
+  color: #999;
+  text-decoration:none;
+}
+
+footer a:hover, footer a:focus {
+  color: #aaa;
+  text-decoration:none;
+  border-bottom:1px dotted #999;
+}
+
+footer .form-control {
+    background-color: ##bdbdbd91;
+    box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
+    border: none;
+    resize: none;
+    color: #d1d2d2;
+    padding: 0.7em 1em;
 }
