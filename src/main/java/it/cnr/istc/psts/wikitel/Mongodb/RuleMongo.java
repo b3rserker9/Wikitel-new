@@ -7,6 +7,7 @@ import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import it.cnr.istc.psts.wikitel.db.RuleEntity;
 import lombok.Data;
 
 @Document("Rule")
@@ -25,7 +26,13 @@ public class RuleMongo {
 	private  Set<SuggestionMongo> suggestions = new HashSet<>();
 	 
 	private Set<String> topics = new HashSet<>();
-	 
 	
+	private  Set<RuleMongo> effects = new HashSet<>();
+	
+	private boolean top_down = true;
+	 
+	  public boolean isTopDown() {
+	        return top_down;
+	    }
 
 }

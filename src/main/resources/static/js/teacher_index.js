@@ -94,7 +94,8 @@ function New_rule() {
         rule_name: $("#new-model-name").val(),
         rule_type: text,
         rule_url: $("#new-rule-url").val(),
-        rule_text: $("#rule_Textarea").val()
+        rule_text: $("#rule_Textarea").val(),
+        pre:"0"
 
     }
 
@@ -197,6 +198,7 @@ function Create_new_precondition() {
                 model_id: current_model,
                 rule_id: current_rule,
                 rule_name: item.name,
+                pre:"1"
             }
             console.log(precondition);
             $.ajax({
@@ -286,7 +288,7 @@ function precondition_setup(data,id) {
     for (let i = 0; i < rules.length; i++) {
         console.log(rules[i]);
         var option = document.createElement("option");
-        option.text = rules[i].name;
+        option.text = rules[i].title;
         option.value = i;
         x.add(option);
     }
@@ -305,8 +307,8 @@ document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id )
         current_rule = rule.id;
         suggestions.forEach(function(l) {
             document.getElementById("suggested-preconditions-list").innerHTML += '<div class="form-check col-6">' +
-                ' <input class="form-check-input" type="checkbox" name="' + l.suggestion.page + '" id="flexRadioDefault1">' +
-                ' <label class="form-check-label" for="flexRadioDefault1">' + l.suggestion.page + ' </label></div>'
+                ' <input class="form-check-input" type="checkbox" name="' + l.page + '" id="flexRadioDefault1">' +
+                ' <label class="form-check-label" for="flexRadioDefault1">' + l.page + ' </label></div>'
         })
     });
     rule = rules[0];
@@ -316,8 +318,8 @@ document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id )
     console.log(suggestions);
     suggestions.forEach(function(l) {
         document.getElementById("suggested-preconditions-list").innerHTML += '<div class="form-check col-6">' +
-            ' <input class="form-check-input" type="checkbox" name="' + l.suggestion.page + '" id="flexRadioDefault1">' +
-            ' <label class="form-check-label" for="flexRadioDefault1">' + l.suggestion.page + ' </label></div>'
+            ' <input class="form-check-input" type="checkbox" name="' + l.page + '" id="flexRadioDefault1">' +
+            ' <label class="form-check-label" for="flexRadioDefault1">' + l.page + ' </label></div>'
     })
     current_rule = rules[0].id;
 }

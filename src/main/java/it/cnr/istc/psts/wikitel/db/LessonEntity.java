@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.MatrixVariable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 import lombok.Data;
 
@@ -44,7 +46,9 @@ public class LessonEntity {
     @ManyToMany
     private final Collection<RuleEntity> goals = new ArrayList<>();
     
-
+    @Transient
+    private Collection<RuleMongo> rule;
+    
     @ManyToMany
     private List<Files> files = new ArrayList<>();
 

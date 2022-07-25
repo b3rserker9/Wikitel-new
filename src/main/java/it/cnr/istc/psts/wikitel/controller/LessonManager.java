@@ -60,6 +60,7 @@ import it.cnr.psts.wikitel.API.Lesson.LessonState;
 import it.cnr.psts.wikitel.API.Message;
 import it.cnr.psts.wikitel.API.Message.Stimulus;
 import it.cnr.istc.psts.Websocket.Sending;
+import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
 import it.cnr.istc.psts.wikitel.Service.*;
 
 
@@ -100,7 +101,10 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 	        this.userservice = userservice;
 	        for (final UserEntity student : lesson.getFollowed_by())
 	            stimuli.put(student.getId(), new ArrayList<>());
-	 
+	        for(RuleEntity s : lesson.getGoals())
+	        	lesson.getRule().add(this.modelservice.getrulemongo(s.getString()));
+	        for(RuleEntity s : lesson.getModel().getRules())
+	        	lesson.getModel().getRule().add(this.modelservice.getrulemongo(s.getString()));
 	 
 	        solver.addStateListener(this);
 	        solver.addGraphListener(this);
@@ -524,7 +528,7 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        }
 
 		        sb.append("\nUser u;\n");
-		        for (final RuleEntity goal : lesson_entity.getGoals()) {
+		        for (final RuleMongo goal : lesson_entity.getRule()) {
 		            sb.append("\n{\n");
 		            sb.append("  goal st").append(goal.getId()).append(" = new l_").append(lesson_entity.getId()).append(".St_")
 		                    .append(goal.getId()).append("(u:u);\n");
@@ -552,16 +556,16 @@ public class LessonManager implements StateListener, GraphListener, ExecutorList
 		        sb.append("}\n\n");
 
 		        sb.append("class Lesson {\n");
-		        model_entity.getRules().forEach(rule -> to_string(sb, rule));
+		        model_entity.getRule().forEach(rule -> to_string(sb, rule));
 		        sb.append("}");
 		    }
 		 
-		 private static void to_string(final StringBuilder sb, final RuleEntity rule_entity) {
+		 private static void to_string(final StringBuilder sb, final RuleMongo rule_entity) {
 		        sb.append("\n  predicate ").append("St_").append(rule_entity.getId()).append("(User u) : Interval {\n");
 		        sb.append("    duration >= ").append(rule_entity.getLength()).append(".0;\n");
 		        sb.append("    fact bt = new u.busy_time.Use(start:start, duration:duration, end:end, amount:1.0);\n");
 
-		        for (final RuleEntity pre : rule_entity.getPreconditions()) {
+		        for (final RuleMongo pre : rule_entity.getPrecondition()) {
 		            sb.append("\n    {\n");
 		            sb.append("      goal st").append(pre.getId()).append(" = new St_").append(pre.getId()).append("(u:u);\n");
 		            if (rule_entity.isTopDown())

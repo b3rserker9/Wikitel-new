@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import it.cnr.istc.psts.wikitel.MongoRepository.RuleMongoRepository;
+import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.RuleRepository;
 import it.cnr.istc.psts.wikitel.Repository.RuleSuggestionRelationRepository;
@@ -32,12 +34,34 @@ public class ModelService {
 	 private RuleRepository rulerepository;
 	 
 	 @Autowired
+	 private RuleMongoRepository rulemongorep;
+	 
+	 @Autowired
 	 private LessonService lessonservice;
 	 
 	 @Autowired
 	 private UserService userservice;
 	 
 	
+	 
+	 @Transactional
+		public RuleMongo getrulemongoname(String id) {
+			Optional<RuleMongo> result  = this.rulemongorep.findByTitle(id);
+			return result.orElse(null);
+		}
+	 
+	 @Transactional
+	 public List<RuleMongo> getmongotopics(String id) {
+			List<RuleMongo> result  =  this.rulemongorep.findtopics(id);
+			return result;
+		}
+	 
+	 @Transactional
+		public RuleMongo getrulemongo(String id) {
+			Optional<RuleMongo> result  = this.rulemongorep.findById(id);
+			return result.orElse(null);
+		}
+		
 	
 	@Transactional
     public ModelEntity save(ModelEntity model) {

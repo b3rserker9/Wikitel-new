@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
 import lombok.Data;
 
 @Entity
@@ -39,10 +41,12 @@ public class ModelEntity {
     private final Collection<UserEntity> teachers = new ArrayList<>();
     
     
-    @OneToMany(cascade = CascadeType.REMOVE)
+    @OneToMany(cascade = CascadeType.ALL)
     @JsonManagedReference
     private final Collection<RuleEntity> rules = new ArrayList<>();
 
+    @Transient
+    private Collection<RuleMongo> rule;
  
 
     public void addTeacher(final UserEntity teacher) {
