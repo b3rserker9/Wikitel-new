@@ -64,15 +64,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import it.cnr.istc.psts.wikitel.db.*;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.MongoRepository.RuleMongoRepository;
-import it.cnr.istc.psts.wikitel.Mongodb.MongoDb;
+
 import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
 import it.cnr.istc.psts.wikitel.Mongodb.SuggestionMongo;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
