@@ -55,23 +55,23 @@ function slider(value){
 	
 		 rules.forEach(function(l) {
         const rule = new Object();
-        rule.label = l.name;
-        rule.id = l.name;
+        rule.label = l.title;
+        rule.id = l.title;
         let prova = getRandomColor();
          rule.color="#1e90ff";
         rule.group = "rule";
         nodes.push(rule);
-        max=map1.get(l.name)[0]
+        max=map1.get(l.title)[0]
        
       
         l.suggestions.forEach(function(s) {
-            raw = ["", s.suggestion.page, s.score, s.score2];
+            raw = ["", s.page, s.score, s.score2];
             if (s.score2 == 0) {
                 s.score2 = 0.01
             }
-            if((s.score2>=((max*value)/100)) && !rules.some(obj => obj.name === s.suggestion.page) && !nodes.some(obj => obj.label === s.suggestion.page)){
+            if((s.score2>=((max*value)/100)) && !rules.some(obj => obj.name === s.page) && !nodes.some(obj => obj.label === s.page)){
             const pippo = new Object();
-		    pippo.label = s.suggestion.page
+		    pippo.label = s.page
             pippo.id = pippo.label;
         	pippo.group = l.id;
             pippo.color = prova;
@@ -149,6 +149,7 @@ function order() {
 
     let order = [];
     rules.forEach(function(l) {
+		console.log(l)
         order = [];
         l.suggestions.forEach(function(s) {
  
@@ -157,53 +158,62 @@ function order() {
         order.sort(function(a, b) {
             return b - a
         });
-   		map1.set(l.name,order);
+   		map1.set(l.title,order);
     })
+}
+function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
 }
 
 function start(){
 	 rules.forEach(function(l) {
         const rule = new Object();
-        rule.label = l.name;
-        rule.id = l.name;
+        rule.label = l.title;
+        rule.id = l.title;
         let prova = getRandomColor();
          rule.color="#1e90ff";
          
         current_rule.push(rule);
         nodes.push(rule);
-         let max=map1.get(l.name)[0]
+         let max=map1.get(l.title)[0]
         
         l.suggestions.forEach(function(s) {
 	const pippo = new Object();
-	pippo.id =s.suggestion.page;
-            raw = ["", s.suggestion.page, s.score, s.score2];
+	pippo.id =s.page;
+            raw = ["", s.page, s.score, s.score2];
             if (s.score2 == 0) {
                 s.score2 = 0.05
             }
-            if(!rules.some(obj => obj.name === s.suggestion.page)){
+            if(!rules.some(obj => obj.title === s.page)){
 	let colors = prova
 		if(s.score2<0.1){
 			 colors = "rgba(200,200,200,0.5)";
 			}
             
-            pippo.label = s.suggestion.page
+            pippo.label = s.page
             pippo.id = pippo.label;          
              pippo.group = l.id;
             pippo.color = colors;
             pippo.title = "cliccami!";
-            edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
+            edges.push({from: l.title, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
             nodes.push(pippo);
             tables.push(raw);
             
             }
             else{
-	 edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
+	 edges.push({from: l.title, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
 }
 
         })
 
     })
-    
+    var jsonData = JSON.stringify(nodes);
+	download(jsonData, 'json.txt', 'text/plain');
+ 
  
     nodes = nodes.filter((value, index, self) =>
         index === self.findIndex((t) => (
@@ -446,8 +456,7 @@ function ajaxGet() {
         }),
         success: function(data) {
             console.log("SUCCESS : ", data);
-            moedl = data;
-            rules = data.rules;
+            rules = data;
             order();
             start();
 
