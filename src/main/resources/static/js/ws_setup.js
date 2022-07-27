@@ -94,11 +94,10 @@ function setup_ws(msg) {
             case 'CausalLinkAdded':
                console.log("FlawCostChanged7");
                 break;
-            case 'Timelines':
-            
+            case 'Timelines':    
             console.log(c_msg.timelines[0].horizon + "horizon");
-            localStorage.setItem("horizon",c_msg.timelines[0].horizon);
              lesson.horizon(c_msg.timelines[0].horizon);
+             console.log(c_msg)
              timeline(c_msg.timelines[0].values)
        break;
             case 'Tick':

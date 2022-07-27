@@ -12,7 +12,7 @@ let name;
  function drawChart() {
       var container = document.getElementById('timeline');
       var chart = new google.visualization.Timeline(container);
-       var dataTable = new google.visualization.DataTable();
+      var dataTable = new google.visualization.DataTable();
       dataTable.addColumn({ type: 'string', id: 'Room' });
       dataTable.addColumn({ type: 'string', id: 'Name' });
       dataTable.addColumn({ type: 'date', id: 'Start' });

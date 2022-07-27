@@ -45,8 +45,7 @@ public class ModelEntity {
     @JsonManagedReference
     private final Collection<RuleEntity> rules = new ArrayList<>();
 
-    @Transient
-    private Collection<RuleMongo> rule;
+
  
 
     public void addTeacher(final UserEntity teacher) {

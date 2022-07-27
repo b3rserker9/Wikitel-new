@@ -1,5 +1,6 @@
 package it.cnr.istc.psts.wikitel.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
@@ -15,4 +16,5 @@ public interface RuleRepository extends  CrudRepository<RuleEntity, Long> {
 	@Query(value = "Select name from rule_entity where id= ?", nativeQuery = true)
 	public String findNameById(Long id);
 
+	
 }

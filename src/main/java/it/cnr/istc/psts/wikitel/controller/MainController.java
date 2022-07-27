@@ -43,7 +43,7 @@ import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
-
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -55,29 +55,24 @@ import org.springframework.core.io.InputStreamResource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.URLConnection;
-import java.net.UnknownHostException;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Optional;
+import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import it.cnr.istc.psts.wikitel.db.*;
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.MongoRepository.RuleMongoRepository;
 
 import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
-
+import it.cnr.istc.psts.wikitel.Mongodb.SuggestionM;
 import it.cnr.istc.psts.wikitel.Mongodb.SuggestionMongo;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
-import it.cnr.istc.psts.wikitel.Repository.ProvaMongoRepository;
+
 import it.cnr.istc.psts.wikitel.Repository.Response;
 
 import it.cnr.istc.psts.wikitel.Repository.UserRepository;
@@ -101,8 +96,6 @@ public class MainController {
 	@Autowired
 	private UserRepository userrepository;
 	
-	@Autowired
-	private ProvaMongoRepository mongo;
 	
 	@Autowired
 	private RuleMongoRepository rulemongorep;
@@ -194,13 +187,23 @@ public class MainController {
 	
 	
 	@PostMapping("/findsuggestion")
-	public Collection<RuleMongo> GetSuggestion(@RequestBody ObjectNode node) {
+	public Set<RuleEntity> GetSuggestion(@RequestBody ObjectNode node) {
 		System.out.println(node.get("ids").asLong());
 		ModelEntity model = this.modelservice.getModel(node.get("ids").asLong());
-		List<RuleMongo> rule = new ArrayList();
-		for ( RuleEntity r : model.getRules())
-			rule.add(this.modelservice.getrulemongo(r.getString()));
-		return rule;
+		
+		Set<RuleEntity> re = new HashSet<>();
+		for(RuleEntity r : model.getRules()) {
+			RuleEntity rule = new RuleEntity();
+			for(SuggestionString s : r.getSuggestions()) {
+				rule.setLength(r.getLength());
+				rule.setId(r.getId());
+				rule.setName(r.getName()); 
+				rule.getSuggestionm().addAll(this.modelservice.getsuggestion(s.getName()).getSuggestion());
+				re.add(rule);
+			}
+				
+		}
+		return re;
 	}
 	
 	@PostMapping("/edit")
@@ -218,14 +221,7 @@ public class MainController {
 		
 	}
 	
-	@PostMapping("/mongo")
-	public String edit2(){
-		System.out.println("mongo funziona??");
-		mongo.save(new Provamongo("funge"));
-		System.out.println("mongo funziona??");
-		return "prova";
-		
-	}
+	
 	@PostMapping("/ciao")
 	public String edit4(){
 		System.out.println("mongo funziona??");
@@ -390,14 +386,11 @@ public class MainController {
 	
 	
 	@PostMapping("/Argomento/Getmodel")
-	public List<RuleMongo> getmodel(@RequestBody ObjectNode node){
+	public Collection<RuleEntity> getmodel(@RequestBody ObjectNode node){
 		ModelEntity model =  this.modelservice.getModel(node.get("ids").asLong());
-		List<RuleMongo> rule = new ArrayList();
-		for ( RuleEntity r : model.getRules())
-			rule.add(this.modelservice.getrulemongo(r.getString()));
-		return rule;
+		return model.getRules();
 		
-	}
+	} 
 	
 	
 
@@ -419,98 +412,9 @@ public class MainController {
 		
 	}
 	
-	@RequestMapping(value = "/NewPrecondition",  method = RequestMethod.POST)
-	public Long NewPrecondition(@RequestBody ObjectNode node) throws JsonProcessingException, RestClientException, UnknownHostException{	
-		RestTemplate restTemplate = new RestTemplate();
-		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
-		UserEntity nuovo = credentials.getUser();
-		boolean bool = true;
-		modelmongo mongo = new modelmongo();
-    	ModelEntity model = this.modelservice.getModel(node.get("model_id").asLong());
-    	mongo.setName(model.getName());
-    	RuleEntity rule = null;
-    	String name= node.get("rule_name").asText();
-             rule = new WikiRuleEntity();
-             RuleMongo rulemongo = new RuleMongo();
-             if(rulemongorep.findByTitle(name)== null) {
-            	 System.out.println("mongo: "+rulemongorep.findByTitle(node.get("rule_text").asText()));
-                 
-             
-                 
-                 name = name.replace(' ','_');
-                 Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name, Prova.class);
-                 ((RuleEntity) rule).setUrl(prova.getUrl()); 
-    			 
-    			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();
-    			 int i = -1;
-    			 for (String pre : prova.getPreconditions()) { 
-    				 i++;
-    				 SuggestionMongo sugmongo = new SuggestionMongo();
-    				 RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
-    				
-    			     WikiSuggestionEntity suggestion = null;
-    		
-    			     if (  modelservice.getpage(pre)== null) {
-    			    	 System.out.println("Ciao");
-    			    	 
-    			    	 suggestion = new WikiSuggestionEntity();
-    						suggestion.setPage(pre);
-    						sugmongo.setPage(pre);
-    						
-
-    						modelservice.savewikisuggestion(suggestion);
-    				}else {
-    					 
-    					suggestion = modelservice.getpage(pre);
-    					sugmongo.setPage(suggestion.getPage());
-    				}    
-    			    
-    			     
-    			     relation.setRule(rule);
-    			     relation.setSuggestion(suggestion);
-    			    
-    			     relation.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
-    			     relation.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
-    			     sugmongo.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
-    			     sugmongo.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
-    			     relations.add(relation); 
-    			     System.out.println(relation.getSuggestion().getId());
-    			     
-    			     relationservice.saverelation(relation);
-    			     rulemongo.getSuggestions().add(sugmongo);
-    			 }
-    			     
-    			    
-    			 }     
-            	 else {
-            		 bool=false;
-            		 System.out.println("non sono entrato");
-            		 rule = new RuleEntity(this.modelservice.getrulemongoname(name).getId());
-            		 
-            	 }
-
-    	
-			     RuleMongo main_rule= this.modelservice.getrulemongo(node.get("rule_id").asText());
-			    	rulemongo.getEffects().add(main_rule);
-			    	main_rule.getPrecondition().add(rulemongo);
-			     rule.setName(node.get("rule_name").asText());
-			    	this.rulemongorep.save(rulemongo);
-			    	this.rulemongorep.save(main_rule);
-			    	rule.setString(rulemongo.getId());
-    	model.getRules().add(rule);
-    	
-    	modelservice.save(model);
-    	
-    	
-    	
-    	
-		Response response = new Response("Done");
-		return rule.getId();
-}
 	
 	@RequestMapping(value = "/Newrule",  method = RequestMethod.POST)
-	public Long NewModel(@RequestBody ObjectNode node,@RequestBody MultipartFile uploadfile) throws RestClientException, IllegalStateException, IOException{	
+	public Long NewModel(@RequestBody ObjectNode node,@RequestBody MultipartFile uploadfile) throws Exception{	
 		RestTemplate restTemplate = new RestTemplate();
 		boolean bool = true;
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -519,11 +423,12 @@ public class MainController {
 		
 		ModelEntity model = this.m;
     	
-    	RuleMongo rulemongo = new RuleMongo();
+		JsonNode effect= node.get("rule_id");
+    	if(effect!=null)
+    		model = this.modelservice.getModel(node.get("model_id").asLong());
+		RuleMongo rulemongo = new RuleMongo();
     	RuleEntity rule = null;
-    	System.out.println(node.get("model_name").asText());
-    	System.out.println("nome: "+node.get("rule_name").asText());
-    	String name= node.get("rule_name").asText();
+    	final String  name= node.get("rule_name").asText();
     	switch(node.get("rule_type").asText()) {
     	 case "Testo":
              rule = new TextRuleEntity();
@@ -536,33 +441,29 @@ public class MainController {
              this.modelservice.saverule(rule);
              break;
          case "Pagina Wikipedia":
+        	 rule = new WikiRuleEntity();
+        	 SuggestionM sm = new SuggestionM();
         	 if(this.modelservice.getrulemongoname(name) == null) {
-        		 System.out.println("mongo: "+rulemongorep.findByTitle(node.get("rule_text").asText()));
              
-         
-             rule = new WikiRuleEntity();
-             name = name.replace(' ','_');
-             Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name, Prova.class);
-             ((WikiRuleEntity) rule).setUrl(prova.getUrl()); 
-			 
+             Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name.replace(' ','_'), Prova.class);
+             ((WikiRuleEntity) rule).setUrl(prova.getUrl());
 			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();
+			 
 			 int i = -1;
 			 for (String pre : prova.getPreconditions()) { 
 				 i++;
 				 SuggestionMongo sugmongo = new SuggestionMongo();
 				 RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
-				
+					
 			     WikiSuggestionEntity suggestion = null;
 		
 			     if (  modelservice.getpage(pre)== null) {
-			    	 System.out.println("Ciao");
-			    	 
-			    	 suggestion = new WikiSuggestionEntity();
-						suggestion.setPage(pre);
+			    	// suggestion = new WikiSuggestionEntity();
+					//	suggestion.setPage(pre);
 						sugmongo.setPage(pre);
 						
 
-						modelservice.savewikisuggestion(suggestion);
+						//modelservice.savewikisuggestion(suggestion);
 				}else {
 					 
 					suggestion = modelservice.getpage(pre);
@@ -570,27 +471,61 @@ public class MainController {
 				}    
 			    
 			     
-			     relation.setRule(rule);
-			     relation.setSuggestion(suggestion);
+			  //   relation.setRule(rule);
+			   //  relation.setSuggestion(suggestion);
 			    
-			     relation.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
-			     relation.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
+			   //  relation.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
+			   //  relation.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
 			     sugmongo.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
 			     sugmongo.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
-			     relations.add(relation); 
-			     System.out.println(relation.getSuggestion().getId());
-			     
-			     relationservice.saverelation(relation);
+			   //  relations.add(relation); 
+			   
+			    
+			    // relationservice.saverelation(relation);
 			     rulemongo.getSuggestions().add(sugmongo);
-			 }
+			     sm.getSuggestion().add(sugmongo);
 			     
+			   //  rule.getSuggestions().add(relation);
+			     
+			 }
+			 this.modelservice.savesm(sm);
+			 SuggestionString s = new SuggestionString();
+			 s.setName(sm.getId());
+			 rule.getSuggestions().add(s);
+			 rule.setLength(prova.getLength());
+			 rule.getTopics().addAll(prova.getCategories());
+			 rulemongo.setLength(prova.getLength());
+		     rulemongo.getTopics().addAll(prova.getCategories());
 			    
 			 }     
         	 else {
         		 bool=false;
         		 System.out.println("non sono entrato");
-        		 rule = new RuleEntity(this.modelservice.getrulemongoname(name).getId());
-        		 model.getRules().add(rule);
+        		 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();
+        		 RuleMongo m = this.modelservice.getrulemongoname(name);
+        		 rule.setLength(m.getLength());
+        		 rule.setName(name);
+        		 for (SuggestionMongo s : m.getSuggestions()) {
+        			 sm.getSuggestion().add(s);
+        			 //RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
+        			 //WikiSuggestionEntity suggestion = new WikiSuggestionEntity();
+        			 //suggestion.setPage(s.getPage());
+        			 //modelservice.savewikisuggestion(suggestion);
+        			 //relation.setRule(rule);
+        			 //relation.setSuggestion(suggestion);
+        			 //relation.setScore(s.getScore());
+        			 //relation.setScore2(s.getScore2());
+        			 //relations.add(relation);
+        			 //relationservice.saverelation(relation);
+        			 //rule.getSuggestions().add(relation);
+        			 
+        			 
+        		 }
+        		 this.modelservice.savesm(sm);
+        		 SuggestionString s = new SuggestionString();
+    			 s.setName(sm.getId());
+    			 rule.getSuggestions().add(s);
+    			 rule.getTopics().addAll(m.getTopics());
         		 
         	 }
 			    
@@ -608,23 +543,30 @@ public class MainController {
          	
         	 break;
     	}
-    /*	if(node.get("effect_id").asLong() == -1) {
-    		final RuleEntity effect_entity = this.modelservice.getRule(node.get("effect_id").asLong());
-    		if(effect_entity instanceof WikiRuleEntity ) {
-    			Optional<RuleSuggestionRelationEntity> relation = effect_entity.getSuggestions().stream()
-                        .filter(s -> ((WikiSuggestionEntity) s.getSuggestion()).getPage().equals(node.get("model_name").asText())).findAny();
-    
-    		}
-    	}*/
+    	if (effect != null) {
+            final RuleEntity effect_entity = this.modelservice.getRule(effect.asLong());
+            if (effect_entity == null)
+                throw new Exception();
+            effect_entity.addEffect(rule);
+            rule.addPrecondition(effect_entity);
+
+         /*   if (effect_entity instanceof WikiRuleEntity) {
+                Optional<RuleSuggestionRelationEntity> relation = effect_entity.getSuggestions().stream()
+                        .filter(s -> ((WikiSuggestionEntity) s.getSuggestion()).getPage().equals(name)).findAny();
+                relation.ifPresent(rel -> {
+                    effect_entity.removeSuggestion(rel);
+                    this.relationservice.delete(rel);
+                });
+            }*/
+        }
     	if(bool) {
-    	rule.setName(node.get("model_name").asText());
+    	rule.setName(node.get("rule_name").asText());
     	rulemongo.setTitle(name);;
-    	
     	rulemongorep.save(rulemongo);
-    	rule.setString(rulemongo.getId());
-    	model.getRules().add(rule);
 		Response response = new Response("Done");
     	}
+    	this.modelservice.saverule(rule);
+    	model.getRules().add(rule);
     	modelservice.save(model);
 		return model.getId();
 		
@@ -664,7 +606,6 @@ public class MainController {
     	nuovo.getTeaching_lessons().add(lesson);
     	userservice.saveUser(nuovo);
 		Response response = new Response("Ciao",lesson);
-		send.notify("prova", UserController.ONLINE.get(nuovo.getId()));
 		 final LessonManager lesson_manager = new LessonManager(lesson,send,this.modelservice,this.userservice);
 		LESSONS.put(lesson.getId(),lesson_manager);
 		lesson_manager.Solve();
@@ -754,6 +695,14 @@ public class MainController {
 		return userservice.getTeacher("STUDENT");
 		
 	}
+	
+	@GetMapping("/json")
+	public RuleMongo Getstudentsds(){
+				
+		return this.modelservice.getrulemongoname("piramide");
+		
+	}
+	
 	
 	@GetMapping("lezione/lessons")
 	public Response getlessons2(){

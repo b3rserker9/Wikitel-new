@@ -42,7 +42,6 @@ import it.cnr.istc.psts.wikitel.Authentication.AuthConfiguration;
 import it.cnr.istc.psts.wikitel.MongoRepository.RuleMongoRepository;
 import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
-import it.cnr.istc.psts.wikitel.Repository.ProvaMongoRepository;
 import it.cnr.istc.psts.wikitel.Service.CredentialService;
 import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
@@ -52,7 +51,7 @@ import it.cnr.istc.psts.wikitel.db.Credentials;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.Prova;
-import it.cnr.istc.psts.wikitel.db.Provamongo;
+
 import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 import static it.cnr.istc.psts.wikitel.db.UserEntity.STUDENT_ROLE;
@@ -73,8 +72,6 @@ public class pageController {
 	@Autowired
 	private CredentialService credentialservice;
 	
-	@Autowired
-	private ProvaMongoRepository mongo;
 	
 	@Autowired
 	private RuleMongoRepository rulemongorep;
@@ -103,7 +100,7 @@ public class pageController {
 		Json_reader interests = json("/json/user_model.json",true);
 		model.addAttribute("interests", interests.getInterests());
 		System.out.println("mongo funziona??");
-		mongo.save(new Provamongo("funge"));
+		
 		System.out.println("ONLINE: "+UserController.ONLINE);
 		Process process = Runtime.getRuntime().exec("python3 -c 'import C:\\Users\\aliyo\\OneDrive\\Desktop\\python.py;python.prova() '");
 		process.waitFor();

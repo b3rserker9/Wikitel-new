@@ -23,4 +23,9 @@ public class RuleSuggestionRelationService {
 		 
 		 return this.relationrep.save(relation);
 	    }
+	 @Transactional
+	 public void delete(RuleSuggestionRelationEntity ruleSuggestionRelationId) {
+		 this.relationrep.delete(ruleSuggestionRelationId);
+	 }
+	 
 }

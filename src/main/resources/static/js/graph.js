@@ -2,6 +2,7 @@ let array;
 let rules = [];
 let current_rule = [];
 let current_edge = [];
+let AddNode = [];
 var selected = null;
 var nodes = [];
 var edges = [];
@@ -55,27 +56,27 @@ function slider(value){
 	
 		 rules.forEach(function(l) {
         const rule = new Object();
-        rule.label = l.title;
-        rule.id = l.title;
+        rule.label = l.name;
+        rule.id = l.name;
         let prova = getRandomColor();
          rule.color="#1e90ff";
         rule.group = "rule";
         nodes.push(rule);
-        max=map1.get(l.title)[0]
+        max=map1.get(l.name)[0]
        
       
-        l.suggestions.forEach(function(s) {
+        l.suggestionm.forEach(function(s) {
             raw = ["", s.page, s.score, s.score2];
             if (s.score2 == 0) {
                 s.score2 = 0.01
             }
-            if((s.score2>=((max*value)/100)) && !rules.some(obj => obj.title === s.page) && !nodes.some(obj => obj.label === s.page)){
+            if((s.score2>=((max*value)/100)) && !rules.some(obj => obj.name === s.page) && !nodes.some(obj => obj.label === s.page)){
             const pippo = new Object();
 		    pippo.label = s.page
             pippo.id = pippo.label;
         	pippo.group = l.id;
             pippo.color = prova;
-            pippo.title = s.score2;
+            pippo.name = s.score2;
             nodes.push(pippo);
             tables.push(raw);
 
@@ -152,37 +153,37 @@ function order() {
     rules.forEach(function(l) {
         order = [];
         
-        l.suggestions.forEach(function(s) {
+        l.suggestionm.forEach(function(s) {
  
             order.push(s.score2);
         })
         order.sort(function(a, b) {
             return b - a
         });
-   		map1.set(l.title,order);
+   		map1.set(l.name,order);
     })
 }
 
 function start(){
 	 rules.forEach(function(l) {
         const rule = new Object();
-        rule.label = l.title;
-        rule.id = l.title;
+        rule.label = l.name;
+        rule.id = l.name;
         let prova = getRandomColor();
          rule.color="#1e90ff";
          
         current_rule.push(rule);
         nodes.push(rule);
-         let max=map1.get(l.title)[0]
-        
-        l.suggestions.forEach(function(s) {
+         let max=map1.get(l.name)[0]
+        console.log(l.suggestionm)
+        l.suggestionm.forEach(function(s) {
 	const pippo = new Object();
 	pippo.id =s.page;
             raw = ["", s.page, s.score, s.score2];
             if (s.score2 == 0) {
                 s.score2 = 0.05
             }
-            if(!rules.some(obj => obj.title === s.page)){
+            if(!rules.some(obj => obj.name === s.page)){
 	let colors = prova
 		if(s.score2<0.1){
 			 colors = "rgba(200,200,200,0.5)";
@@ -192,14 +193,14 @@ function start(){
             pippo.id = pippo.label;          
              pippo.group = l.id;
             pippo.color = colors;
-            pippo.title = "cliccami!";
-            edges.push({from: l.title, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
+            pippo.name = "cliccami!";
+            edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
             nodes.push(pippo);
             tables.push(raw);
             
             }
             else{
-	 edges.push({from: l.title, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
+	 edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
 }
 
         })
@@ -344,6 +345,7 @@ function redrawAll() {
     network.on("click", function(params) {
         if ((params.nodes.length) > 0) {
 	rule_effects=nodesDataset.get(params.nodes)[0].group;
+	console.log(rule_effects);
 	rule_selected=nodesDataset.get(params.nodes)[0].label
             params.event = "[original event]";
             select = params.nodes[0]
@@ -383,6 +385,7 @@ function esplora(){
                 model_id: window.location.pathname.split('/')[2],
                 rule_id: rule_effects,
                 rule_name: rule_selected,
+                rule_type: "Pagina Wikipedia"
             }
             console.log(precondition);
 	
@@ -390,7 +393,7 @@ function esplora(){
 
                 type: "POST",
                 contentType: "application/json",
-                url: "/NewPrecondition",
+                url: "/Newrule",
                 data: JSON.stringify(precondition),
                 dataType: "json",
                 success: function(data) {
@@ -441,7 +444,7 @@ function ajaxGet() {
     $.ajax({
         type: "POST",
         contentType: "application/json",
-        url: "Getmodel",
+        url: "/findsuggestion",
         dataType: "json",
         data: JSON.stringify({
             ids: document.getElementById('model_name').getAttribute('value')
@@ -460,17 +463,46 @@ function ajaxGet() {
     });
 }
 
+function NewNodeManual() {
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        url: "/newNodeMan",
+        dataType: "json",
+        data: JSON.stringify(AddNode),
+        success: function(data) {
+            console.log("SUCCESS : ", data);
+        },
+        error: function(e) {
+            alert("Error!")
+            console.log("ERROR: ", e);
+        }
+    });
+}
+
 function addNode() {
+	
+	var newNode = {
+        id: $("#Add_node_name").val(),
+        text: document.getElementById("rule_Textarea").value,
+        group: type,
+        rule_id: select
+    } 
+    AddNode.push(newNode);
+    console.log(AddNode);
+    
     nodesDataset.add({
         id: $("#Add_node_name").val(),
         label: $("#Add_node_name").val(),
         group: type
-    });
+    } );
     edgesDataset.add({
         from: select,
         to: $("#Add_node_name").val(),
         arrows: arrow
     });
+    
+    
 }
 
 
@@ -478,4 +510,12 @@ function addNode() {
 $(document).ready(
     function() {
         ajaxGet()
+        
+         $("#Save").submit(function() {
+            event.preventDefault();
+
+            NewNodeManual();
+
+
+        });
     })

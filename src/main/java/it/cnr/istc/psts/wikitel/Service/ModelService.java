@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.cnr.istc.psts.wikitel.MongoRepository.RuleMongoRepository;
+import it.cnr.istc.psts.wikitel.MongoRepository.SuggestionMRepository;
 import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
+import it.cnr.istc.psts.wikitel.Mongodb.SuggestionM;
 import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.RuleRepository;
 import it.cnr.istc.psts.wikitel.Repository.RuleSuggestionRelationRepository;
@@ -42,7 +44,20 @@ public class ModelService {
 	 @Autowired
 	 private UserService userservice;
 	 
+	 @Autowired
+	 private SuggestionMRepository suggestionm;
 	
+	 
+		@Transactional
+	    public SuggestionM savesm(SuggestionM sm) {
+	        return this.suggestionm.save(sm);
+	    }
+		
+		 @Transactional
+			public SuggestionM getsuggestion(String id) {
+				Optional<SuggestionM> result  = this.suggestionm.findById(id);
+				return result.orElse(null);
+			}
 	 
 	 @Transactional
 		public RuleMongo getrulemongoname(String id) {

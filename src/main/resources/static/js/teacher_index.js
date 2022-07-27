@@ -95,7 +95,6 @@ function New_rule() {
         rule_type: text,
         rule_url: $("#new-rule-url").val(),
         rule_text: $("#rule_Textarea").val(),
-        pre:"0"
 
     }
 
@@ -171,7 +170,7 @@ function deleteModal(modal){
 
                 type: "POST",
                 contentType: "application/json",
-                url: "NewPrecondition",
+                url: "Newrule",
                 data: JSON.stringify(precondition),
                 dataType: "json",
                 success: function(data) {
@@ -198,14 +197,14 @@ function Create_new_precondition() {
                 model_id: current_model,
                 rule_id: current_rule,
                 rule_name: item.name,
-                pre:"1"
+                rule_type: "Pagina Wikipedia",
             }
             console.log(precondition);
             $.ajax({
 
                 type: "POST",
                 contentType: "application/json",
-                url: "NewPrecondition",
+                url: "Newrule",
                 data: JSON.stringify(precondition),
                 dataType: "json",
                 success: function(data) {
@@ -256,12 +255,12 @@ function Postsuggetion(id) {
         success: function(data) {
             $("#suggested-preconditions-list").empty();
             console.log("SUCCESS : ", data);
-            precondition_setup(data,id);
+            precondition_setup(data ,id);
             document.getElementById("loading_modal").style.display = "none";
             /*s.forEach(function(l){		
 							document.getElementById("suggested-preconditions-list").innerHTML+='<div class="form-check col-6">'+
- ' <input class="form-check-input" type="checkbox" name="'+l.suggestion.page+'" id="flexRadioDefault1">'
- +' <label class="form-check-label" for="flexRadioDefault1">'+ l.suggestion.page +' </label></div>'
+ ' <input class="form-check-input" type="checkbox" name="'+l.suggestionsuggestion.page+'" id="flexRadioDefault1">'
+ +' <label class="form-check-label" for="flexRadioDefault1">'+ l.suggestionsuggestion.page +' </label></div>'
 						})*/
 
 
@@ -278,9 +277,8 @@ function Postsuggetion(id) {
 }
 
 function precondition_setup(data,id) {
-    rules = data;
-    console.log("prova: " +data);
     let rule = null;
+    let rules = data;
     var x = document.getElementById("rule_list");
     var options = document.querySelectorAll('#rule_list option');
     options.forEach(o => o.remove());
@@ -288,10 +286,11 @@ function precondition_setup(data,id) {
     for (let i = 0; i < rules.length; i++) {
         console.log(rules[i]);
         var option = document.createElement("option");
-        option.text = rules[i].title;
+        option.text = rules[i].name;
         option.value = i;
         x.add(option);
     }
+    console.log(document.getElementById("rule_list").options[0]);
     var x = document.getElementById("rule_list").options[0].value;
     
 document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id );
@@ -302,7 +301,7 @@ document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id )
         rule = rules[i];
         console.log(rule);
         $("#rule-length").val(rule.length);
-        let suggestions = rule.suggestions;
+        let suggestions = rule.suggestionm;
         console.log(suggestions);
         current_rule = rule.id;
         suggestions.forEach(function(l) {
@@ -314,7 +313,7 @@ document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id )
     rule = rules[0];
     console.log(rule.length);
     $("#rule-length").val(rule.length);
-    let suggestions = rule.suggestions;
+    let suggestions = rule.suggestionm;
     console.log(suggestions);
     suggestions.forEach(function(l) {
         document.getElementById("suggested-preconditions-list").innerHTML += '<div class="form-check col-6">' +
@@ -345,7 +344,7 @@ function GetSuggestion(id) {
             data.forEach(function(l) {
                 document.getElementById("collapse").innerHTML += '<div class="form-check">' +
                     ' <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">' +
-                    ' <label class="form-check-label" for="flexRadioDefault1">' + l.page + ' </label></div>'
+                    ' <label class="form-check-label" for="flexRadioDefault1">' + lsuggestion.page + ' </label></div>'
             })
 
 
