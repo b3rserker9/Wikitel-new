@@ -183,6 +183,7 @@ function redrawAll() {
   network.fit();
   network.stabilize();
   allNodes = nodesDataset.get({returnType:"Object"});
+  document.getElementById("loader-page").style.display= "none"
   var b = new bootstrap.Modal(document.getElementById("myModal"), {keyboard:!1});
   network.on("click", function(d) {
     0 < d.nodes.length && (rule_effects = nodesDataset.get(d.nodes)[0].group, console.log(rule_effects), rule_selected = nodesDataset.get(d.nodes)[0].label, d.event = "[original event]", select = d.nodes[0], selected = d.nodes[0].replaceAll(" ", "_"), document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected, b.show());
