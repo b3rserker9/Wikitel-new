@@ -297,7 +297,7 @@ document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id )
     $('#rule_list').on('change', function(e) {
         $('#suggested-preconditions-list').empty();
         let i = this.value
-        console.log(i);
+        console.log(rules);
         rule = rules[i];
         console.log(rule);
         $("#rule-length").val(rule.length);
@@ -344,7 +344,7 @@ function GetSuggestion(id) {
             data.forEach(function(l) {
                 document.getElementById("collapse").innerHTML += '<div class="form-check">' +
                     ' <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">' +
-                    ' <label class="form-check-label" for="flexRadioDefault1">' + lsuggestion.page + ' </label></div>'
+                    ' <label class="form-check-label" for="flexRadioDefault1">' +l.page + ' </label></div>'
             })
 
 

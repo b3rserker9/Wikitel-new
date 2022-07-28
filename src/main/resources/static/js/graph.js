@@ -1,521 +1,246 @@
-let array;
-let rules = [];
-let current_rule = [];
-let current_edge = [];
-let AddNode = [];
-var selected = null;
-var nodes = [];
-var edges = [];
-let type = "text";
-var network = null;
-let uniqueChars = null;
-let text = "desktop";
-let arrow = "to";
-let tables = [];
-let c = null;
-let raw = [];
-let all = [];
-const map1 = new Map();
-var nodesDataset;
-var edgesDataset;
-var prova;
-var rule_selected;
-var rule_effects;
-
-
+var $jscomp = $jscomp || {};
+$jscomp.scope = {};
+$jscomp.arrayIteratorImpl = function(a) {
+  var b = 0;
+  return function() {
+    return b < a.length ? {done:!1, value:a[b++],} : {done:!0};
+  };
+};
+$jscomp.arrayIterator = function(a) {
+  return {next:$jscomp.arrayIteratorImpl(a)};
+};
+$jscomp.makeIterator = function(a) {
+  var b = "undefined" != typeof Symbol && Symbol.iterator && a[Symbol.iterator];
+  return b ? b.call(a) : $jscomp.arrayIterator(a);
+};
+$jscomp.arrayFromIterator = function(a) {
+  for (var b, d = []; !(b = a.next()).done;) {
+    d.push(b.value);
+  }
+  return d;
+};
+$jscomp.arrayFromIterable = function(a) {
+  return a instanceof Array ? a : $jscomp.arrayFromIterator($jscomp.makeIterator(a));
+};
+var array, rules = [], current_rule = [], current_edge = [], AddNode = [], selected = null, nodes = [], edges = [], type = "text", network = null, uniqueChars = null, text = "desktop", arrow = "to", tables = [], c = null, raw = [], all = [], map1 = new Map(), nodesDataset, edgesDataset, prova, rule_selected, rule_effects;
 function update_add() {
-    var select = document.getElementById('graph_rilevanza');
-    var option = select.options[select.selectedIndex];
-    console.log(option.value);
-    switch (option.value) {
-        case '2':
-            arrow = "to, from"
-            break;
-        case '1':
-            arrow = "to"
-            break;
-    }
-
+  var a = document.getElementById("graph_rilevanza");
+  a = a.options[a.selectedIndex];
+  console.log(a.value);
+  switch(a.value) {
+    case "2":
+      arrow = "to, from";
+      break;
+    case "1":
+      arrow = "to";
+  }
 }
-
-function filter_rule(){
-	if(document.getElementById("only_rule").checked){
-		nodesDataset = new vis.DataSet(current_rule);
-		console.log(nodesDataset);
-	}else{
-		nodesDataset = new vis.DataSet(nodes);
-	}
-	redrawAll();
+function filter_rule() {
+  document.getElementById("only_rule").checked ? (nodesDataset = new vis.DataSet(current_rule), console.log(nodesDataset)) : nodesDataset = new vis.DataSet(nodes);
+  redrawAll();
 }
-
-function slider(value){
-	console.log(value);
-	nodes =[];
-	document.getElementById("range_input").innerHTML=value + "%";
-	let max=0;
-	
-		 rules.forEach(function(l) {
-        const rule = new Object();
-        rule.label = l.name;
-        rule.id = l.name;
-        let prova = getRandomColor();
-         rule.color="#1e90ff";
-        rule.group = "rule";
-        nodes.push(rule);
-        max=map1.get(l.name)[0]
-       
-      
-        l.suggestionm.forEach(function(s) {
-            raw = ["", s.page, s.score, s.score2];
-            if (s.score2 == 0) {
-                s.score2 = 0.01
-            }
-            if((s.score2>=((max*value)/100)) && !rules.some(obj => obj.name === s.page) && !nodes.some(obj => obj.label === s.page)){
-            const pippo = new Object();
-		    pippo.label = s.page
-            pippo.id = pippo.label;
-        	pippo.group = l.id;
-            pippo.color = prova;
-            pippo.name = s.score2;
-            nodes.push(pippo);
-            tables.push(raw);
-
+function slider(a) {
+  console.log(a);
+  nodes = [];
+  document.getElementById("range_input").innerHTML = a + "%";
+  var b = 0;
+  rules.forEach(function(d) {
+    var e = {};
+    e.label = d.name;
+    e.id = d.name;
+    var l = getRandomColor();
+    e.color = "#1e90ff";
+    e.group = "rule";
+    nodes.push(e);
+    b = map1.get(d.name)[0];
+    d.suggestionm.forEach(function(g) {
+      raw = ["", g.page, g.score, g.score2];
+      0 == g.score2 && (g.score2 = 0.01);
+      if (g.score2 >= b * a / 100 && !rules.some(function(f) {
+        return f.name === g.page;
+      }) && !nodes.some(function(f) {
+        return f.label === g.page;
+      })) {
+        var h = {};
+        h.label = g.page;
+        h.id = h.label;
+        h.group = d.id;
+        h.color = l;
+        h.name = g.score2;
+        nodes.push(h);
+        tables.push(raw);
+      }
+    });
+  });
+  nodesDataset = new vis.DataSet(nodes);
+  redrawAll();
 }
-        })
-
-    })
-    
-		
-	 nodesDataset = new vis.DataSet(nodes);
-    redrawAll()
-}
-
 function update() {
-    var select = document.getElementById('new-rule-type');
-    var option = select.options[select.selectedIndex];
-    switch (option.value) {
-        case '2':
-            document.getElementById('url').style.display = "block";
-            document.getElementById('textarea').style.display = "none";
-            document.getElementById('file').style.display = "none";
-            text = "desktop"
-
-            break;
-        case '1':
-            document.getElementById('url').style.display = "none";
-            document.getElementById('textarea').style.display = "block";
-            document.getElementById('file').style.display = "none";
-            text = "desktop"
-            type = "text"
-            break;
-        case '3':
-            document.getElementById('url').style.display = "none";
-            document.getElementById('textarea').style.display = "none";
-            document.getElementById('file').style.display = "none";
-            text = "server"
-            type = "wikipedia"
-
-            break;
-        case '4':
-            document.getElementById('url').style.display = "none";
-            document.getElementById('textarea').style.display = "none";
-            document.getElementById('file').style.display = "block";
-            text = "switch"
-            type = "file"
-            break;
-    }
-
+  var a = document.getElementById("new-rule-type");
+  switch(a.options[a.selectedIndex].value) {
+    case "2":
+      document.getElementById("url").style.display = "block";
+      document.getElementById("textarea").style.display = "none";
+      document.getElementById("file").style.display = "none";
+      text = "desktop";
+      break;
+    case "1":
+      document.getElementById("url").style.display = "none";
+      document.getElementById("textarea").style.display = "block";
+      document.getElementById("file").style.display = "none";
+      text = "desktop";
+      type = "text";
+      break;
+    case "3":
+      document.getElementById("url").style.display = "none";
+      document.getElementById("textarea").style.display = "none";
+      document.getElementById("file").style.display = "none";
+      text = "server";
+      type = "wikipedia";
+      break;
+    case "4":
+      document.getElementById("url").style.display = "none", document.getElementById("textarea").style.display = "none", document.getElementById("file").style.display = "block", text = "switch", type = "file";
+  }
 }
-
 function getRandomColor() {
-    var letters = '0123456789ABCDEF';
-    var color = '#';
-    for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
+  for (var a = "#", b = 0; 6 > b; b++) {
+    a += "0123456789ABCDEF"[Math.floor(16 * Math.random())];
+  }
+  return a;
 }
-
 function wiki_link() {
-    window.open("https://it.wikipedia.org/wiki/" + selected, "_blank");
+  window.open("https://it.wikipedia.org/wiki/" + selected, "_blank");
 }
-
-
-var network;
-var allNodes;
-var highlightActive = false;
-
+var allNodes, highlightActive = !1;
 function order() {
-
-
-    let order = [];
-    console.log(rules)
-    rules.forEach(function(l) {
-        order = [];
-        
-        l.suggestionm.forEach(function(s) {
- 
-            order.push(s.score2);
-        })
-        order.sort(function(a, b) {
-            return b - a
-        });
-   		map1.set(l.name,order);
-    })
+  var a = [];
+  console.log(rules);
+  rules.forEach(function(b) {
+    a = [];
+    b.suggestionm.forEach(function(d) {
+      a.push(d.score2);
+    });
+    a.sort(function(d, e) {
+      return e - d;
+    });
+    map1.set(b.name, a);
+  });
 }
-
-function start(){
-	 rules.forEach(function(l) {
-        const rule = new Object();
-        rule.label = l.name;
-        rule.id = l.name;
-        let prova = getRandomColor();
-         rule.color="#1e90ff";
-         
-        current_rule.push(rule);
-        nodes.push(rule);
-         let max=map1.get(l.name)[0]
-        console.log(l.suggestionm)
-        l.suggestionm.forEach(function(s) {
-	const pippo = new Object();
-	pippo.id =s.page;
-            raw = ["", s.page, s.score, s.score2];
-            if (s.score2 == 0) {
-                s.score2 = 0.05
-            }
-            if(!rules.some(obj => obj.name === s.page)){
-	let colors = prova
-		if(s.score2<0.1){
-			 colors = "rgba(200,200,200,0.5)";
-			}
-            
-            pippo.label = s.page
-            pippo.id = pippo.label;          
-             pippo.group = l.id;
-            pippo.color = colors;
-            pippo.name = "cliccami!";
-            edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
-            nodes.push(pippo);
-            tables.push(raw);
-            
-            }
-            else{
-	 edges.push({from: l.name, to: pippo.id, color: {opacity: s.score2 / max }, width: 4});
-}
-
-        })
-
-    })
-    
- 
-    nodes = nodes.filter((value, index, self) =>
-        index === self.findIndex((t) => (
-            t.id === value.id
-        ))
-    )
-    
-    table = document.getElementById("example");
-    for (var i = 0; i < tables.length; i++) {
-        // create a new row
-        tbody = document.getElementById("row_element");
-        var newRow = tbody.insertRow(table.length);
-        for (var j = 0; j < tables[i].length; j++) {
-            // create a new cell
-            var cell = newRow.insertCell(j);
-
-            // add value to the cell
-            cell.innerHTML = tables[i][j];
-        }
+function start() {
+  rules.forEach(function(e) {
+    var l = {};
+    l.label = e.name;
+    l.id = e.name;
+    var g = getRandomColor();
+    l.color = "#1e90ff";
+    current_rule.push(l);
+    nodes.push(l);
+    var h = map1.get(e.name)[0];
+    e.suggestionm.forEach(function(f) {
+      var k = {};
+      k.id = f.page;
+      raw = ["", f.page, f.score, f.score2];
+      0 == f.score2 && (f.score2 = 0.05);
+      if (rules.some(function(n) {
+        return n.name === f.page;
+      })) {
+        edges.push({from:e.name, to:k.id, color:{opacity:f.score2 / h}, width:4});
+      } else {
+        var m = g;
+        0.1 > f.score2 && (m = "rgba(200,200,200,0.5)");
+        k.label = f.page;
+        k.id = k.label;
+        k.group = e.id;
+        k.color = m;
+        k.name = "cliccami!";
+        edges.push({from:e.name, to:k.id, color:{opacity:f.score2 / h}, width:4});
+        nodes.push(k);
+        tables.push(raw);
+      }
+    });
+  });
+  nodes = nodes.filter(function(e, l, g) {
+    return l === g.findIndex(function(h) {
+      return h.id === e.id;
+    });
+  });
+  table = document.getElementById("example");
+  for (var a = 0; a < tables.length; a++) {
+    tbody = document.getElementById("row_element");
+    for (var b = tbody.insertRow(table.length), d = 0; d < tables[a].length; d++) {
+      b.insertCell(d).innerHTML = tables[a][d];
     }
-
-     prova = $('#example').DataTable({
-      dom: 'Blfrtip',
-    buttons: [
-        'selectAll',
-        'selectNone'
-    ],
-    language: {
-        buttons: {
-            selectAll: "Select all items",
-            selectNone: "Select none"
-        }
-    },
-        columnDefs: [{
-            orderable: false,
-            className: 'select-checkbox',
-            targets: 0
-        }],
-     
-        select: {
-            style: 'multi',
-            selector: 'td:first-child'
-        },
-        order: [
-            [1, 'asc']
-        ]
-
-    });
-	 nodesDataset = new vis.DataSet(nodes);
-    edgesDataset = new vis.DataSet(edges); 
-    redrawAll()
+  }
+  prova = $("#example").DataTable({dom:"Blfrtip", buttons:["selectAll", "selectNone"], language:{buttons:{selectAll:"Select all items", selectNone:"Select none"}}, columnDefs:[{orderable:!1, className:"select-checkbox", targets:0}], select:{style:"multi", selector:"td:first-child"}, order:[[1, "asc"]]});
+  nodesDataset = new vis.DataSet(nodes);
+  edgesDataset = new vis.DataSet(edges);
+  redrawAll();
 }
-
 function redrawAll() {
-    var container = document.getElementById("mynetwork");
-    var options = {
-	layout: {improvedLayout:false},
-        groups: {
-            file: {
-                shape: "icon",
-                icon: {
-                    face: "'FontAwesome'",
-                    code: "\uf15b",
-                    size: 50,
-                    color: "#000000",
-                },
-            },
-            wikipedia: {
-                shape: "icon",
-                icon: {
-                    face: "'FontAwesome'",
-                    code: "\uf266",
-                    size: 50,
-                    color: "#000000",
-                },
-            },
-            text: {
-                shape: "icon",
-                icon: {
-                    face: "'FontAwesome'",
-                    code: "\uf031",
-                    size: 50,
-                    color: "#000000",
-                },
-            },
-        },
-        nodes: {
-            shape: "dot",
-            scaling: {
-                min: 10,
-                max: 30,
-
-            },
-            font: {
-                size: 12,
-                face: "Tahoma",
-            },
-        },
-        edges: {
-            width: 0.15,
-            color: {
-                inherit: "from"
-            },
-            smooth: {
-                type: "continuous",
-            },
-        },
-        physics: {
-            // Even though it's disabled the options still apply to network.stabilize().
-        
-            solver: "repulsion",
-            repulsion: {
-                nodeDistance: 900 // Put more distance between the nodes.
-            }
-        }
-    };
-    var data = {
-        nodes: nodesDataset,
-        edges: edgesDataset
-    }; 
-
-    network = new vis.Network(container, data, options);
-    network.fit();
-    network.stabilize();
-  
-    // get a JSON object
-    allNodes = nodesDataset.get({
-        returnType: "Object"
-    });
-    
-    var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
-        keyboard: false
-    })
-    
-    
-    network.on("click", function(params) {
-        if ((params.nodes.length) > 0) {
-	rule_effects=nodesDataset.get(params.nodes)[0].group;
-	console.log(rule_effects);
-	rule_selected=nodesDataset.get(params.nodes)[0].label
-            params.event = "[original event]";
-            select = params.nodes[0]
-            selected = params.nodes[0].replaceAll(' ', '_');
-            document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected
-            myModal.show()
-        }
-    });
+  var a = document.getElementById("mynetwork");
+  network = new vis.Network(a, {nodes:nodesDataset, edges:edgesDataset}, {layout:{improvedLayout:!1}, groups:{file:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf15b", size:50, color:"#000000",},}, wikipedia:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf266", size:50, color:"#000000",},}, text:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf031", size:50, color:"#000000",},},}, nodes:{shape:"dot", scaling:{min:10, max:30,}, font:{size:12, face:"Tahoma",},}, edges:{width:0.15, color:{inherit:"from"}, 
+  smooth:{type:"continuous",},}, physics:{stabilization:false, solver:"repulsion", repulsion:{nodeDistance:900}}});
+  network.fit();
+  network.stabilize();
+  allNodes = nodesDataset.get({returnType:"Object"});
+  var b = new bootstrap.Modal(document.getElementById("myModal"), {keyboard:!1});
+  network.on("click", function(d) {
+    0 < d.nodes.length && (rule_effects = nodesDataset.get(d.nodes)[0].group, console.log(rule_effects), rule_selected = nodesDataset.get(d.nodes)[0].label, d.event = "[original event]", select = d.nodes[0], selected = d.nodes[0].replaceAll(" ", "_"), document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected, b.show());
+  });
 }
-
-
-
-/*function disegna(nodes, edges) {
-    var mynetwork = document.getElementById("mynetwork");
-    var x = -mynetwork.clientWidth / 2 + 50;
-    var y = -mynetwork.clientHeight / 2 + 50;
-    var step = 70;
-
-
-    var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
-        keyboard: false
-    })
-    network.on("click", function(params) {
-        params.event = "[original event]";
-        console.log(params);
-        select = params.nodes[0]
-        selected = params.nodes[0].replaceAll(' ', '_');
-        console.log(selected.replaceAll(' ', '-'));
-        document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected
-        myModal.show()
-    });
-}*/
-
-function esplora(){
-	 toastr.info("Avviata la ricerca su " + rule_selected);
-	   var precondition = {
-                model_id: window.location.pathname.split('/')[2],
-                rule_id: rule_effects,
-                rule_name: rule_selected,
-                rule_type: "Pagina Wikipedia"
-            }
-            console.log(precondition);
-	
-	 $.ajax({
-
-                type: "POST",
-                contentType: "application/json",
-                url: "/Newrule",
-                data: JSON.stringify(precondition),
-                dataType: "json",
-                success: function(data) {
-                    console.log("SUCCESS : ", data);
-                    toastr.info("La ricerca su " + rule_selected + "è stata completata");
-                    ajaxGet();
-					
-                },
-                error: function(e) {
-                    alert("Error!")
-                    console.log("ERROR: ", e);
-                }
-            });
+function esplora() {
+  toastr.info("Avviata la ricerca su " + rule_selected);
+  var a = {model_id:window.location.pathname.split("/")[2], rule_id:rule_effects, rule_name:rule_selected, rule_type:"Pagina Wikipedia"};
+  console.log(a);
+  $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", data:JSON.stringify(a), dataType:"json", success:function(b) {
+    console.log("SUCCESS : ", b);
+    toastr.info("La ricerca su " + rule_selected + "\u00e8 stata completata");
+    ajaxGet();
+  }, error:function(b) {
+    alert("Error!");
+    console.log("ERROR: ", b);
+  }});
 }
-
-  function aggiorna(){
-	nodes = []
-        nodesDataset = [];
-        nodes.push(...current_rule);
-    
-        for (let i = 0; i < prova.rows({
-                selected: true
-            }).count(); i++) {
-            console.log(prova.rows({
-                selected: true
-            }).data()[i][1]);
-            const pippo = new Object();
-            pippo.label = prova.rows({
-                selected: true
-            }).data()[i][1]
-            pippo.id = pippo.label;
-            pippo.group = 5;
-            nodes.push({
-                id: prova.rows({
-                    selected: true
-                }).data()[i][1],
-                label: prova.rows({
-                    selected: true
-                }).data()[i][1],
-                group: text
-            });
-        }
-        nodesDataset = new vis.DataSet(nodes);
-	redrawAll()
+function aggiorna() {
+  nodes = [];
+  nodesDataset = [];
+  nodes.push.apply(nodes, $jscomp.arrayFromIterable(current_rule));
+  for (var a = 0; a < prova.rows({selected:!0}).count(); a++) {
+    console.log(prova.rows({selected:!0}).data()[a][1]), prova.rows({selected:!0}).data(), nodes.push({id:prova.rows({selected:!0}).data()[a][1], label:prova.rows({selected:!0}).data()[a][1], group:text});
+  }
+  nodesDataset = new vis.DataSet(nodes);
+  redrawAll();
 }
-
 function ajaxGet() {
-    $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: "/findsuggestion",
-        dataType: "json",
-        data: JSON.stringify({
-            ids: document.getElementById('model_name').getAttribute('value')
-        }),
-        success: function(data) {
-            console.log("SUCCESS : ", data);
-            rules = data;
-            order();
-            start();
-
-        },
-        error: function(e) {
-            alert("Error!")
-            console.log("ERROR: ", e);
-        }
-    });
+  $.ajax({type:"POST", contentType:"application/json", url:"/findsuggestion", dataType:"json", data:JSON.stringify({ids:document.getElementById("model_name").getAttribute("value")}), success:function(a) {
+    console.log("SUCCESS : ",a);
+    rules = a;
+    order();
+    start();
+  }, error:function(a) {
+    alert("Error!");
+    console.log("ERROR: ", a);
+  }});
 }
-
 function NewNodeManual() {
-    $.ajax({
-        type: "POST",
-        contentType: "application/json",
-        url: "/newNodeMan",
-        dataType: "json",
-        data: JSON.stringify(AddNode),
-        success: function(data) {
-            console.log("SUCCESS : ", data);
-        },
-        error: function(e) {
-            alert("Error!")
-            console.log("ERROR: ", e);
-        }
-    });
+  $.ajax({type:"POST", contentType:"application/json", url:"/newNodeMan", dataType:"json", data:JSON.stringify(AddNode), success:function(a) {
+    console.log("SUCCESS : ", a);
+  }, error:function(a) {
+    alert("Error!");
+    console.log("ERROR: ", a);
+  }});
 }
-
 function addNode() {
-	
-	var newNode = {
-        id: $("#Add_node_name").val(),
-        text: document.getElementById("rule_Textarea").value,
-        group: type,
-        rule_id: select
-    } 
-    AddNode.push(newNode);
-    console.log(AddNode);
-    
-    nodesDataset.add({
-        id: $("#Add_node_name").val(),
-        label: $("#Add_node_name").val(),
-        group: type
-    } );
-    edgesDataset.add({
-        from: select,
-        to: $("#Add_node_name").val(),
-        arrows: arrow
-    });
-    
-    
+  var a = {id:$("#Add_node_name").val(), text:document.getElementById("rule_Textarea").value, group:type, rule_id:select};
+  AddNode.push(a);
+  console.log(AddNode);
+  nodesDataset.add({id:$("#Add_node_name").val(), label:$("#Add_node_name").val(), group:type});
+  edgesDataset.add({from:select, to:$("#Add_node_name").val(), arrows:arrow});
 }
-
-
-
-$(document).ready(
-    function() {
-        ajaxGet()
-        
-         $("#Save").submit(function() {
-            event.preventDefault();
-
-            NewNodeManual();
-
-
-        });
-    })
+$(document).ready(function() {
+  ajaxGet();
+  $("#Save").submit(function() {
+    event.preventDefault();
+    NewNodeManual();
+  });
+});

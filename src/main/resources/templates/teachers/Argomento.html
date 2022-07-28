@@ -43,11 +43,12 @@
 	
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 		<script type="text/javascript" src="/js/Argomento.js"></script>
-		<script type="text/javascript" src="/js/graph.js"></script>
+		<script defer type="text/javascript" src="/js/graph.js"></script>
 		
 		<link th:href="@{/css/teacher_index.css}" rel="stylesheet">
 		<link th:href="@{/css/hello.css}" rel="stylesheet">
 		<link th:href="@{/css/argomento.css}" rel="stylesheet">
+		<link th:href="@{/css/loader.css}" rel="stylesheet">
 		
 		  <link  rel="stylesheet"   href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 		
@@ -123,6 +124,20 @@ function openNav() {
 
 </script>
 <body  >
+<div class="loader-page">
+<div class="loader">
+  <div class="square" ></div>
+  <div class="square"></div>
+  <div class="square last"></div>
+  <div class="square clear"></div>
+  <div class="square"></div>
+  <div class="square last"></div>
+  <div class="square clear"></div>
+  <div class="square "></div>
+  <div class="square last"></div>
+</div>
+
+</div>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
 <div hidden="true" id="modelid" th:value="${model}"></div>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;padding: 15PX 15px;display:flex;justify-content: space-between;">

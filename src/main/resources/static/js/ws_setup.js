@@ -96,6 +96,7 @@ function setup_ws(msg) {
                 break;
             case 'Timelines':    
             console.log(c_msg.timelines[0].horizon + "horizon");
+            localStorage.setItem("horizon",c_msg.timelines[0].horizon);
              lesson.horizon(c_msg.timelines[0].horizon);
              console.log(c_msg)
              timeline(c_msg.timelines[0].values)

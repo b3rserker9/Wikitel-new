@@ -526,6 +526,7 @@ public class MainController {
     			 s.setName(sm.getId());
     			 rule.getSuggestions().add(s);
     			 rule.getTopics().addAll(m.getTopics());
+    			 ((WikiRuleEntity) rule).setUrl("https://it.wikipedia.org/wiki/"+ name );
         		 
         	 }
 			    
@@ -599,7 +600,7 @@ public class MainController {
     	List<Long> goals = mapper.readValue(node.get("goals").asText(), new TypeReference<List<Long>>(){});
     	for(Long g : goals) {
     		System.out.println("ID " + Long.valueOf(g));
-    		//lesson.getGoals().add(this.modelservice.getRule(Long.valueOf(g)));
+    		lesson.getGoals().add(this.modelservice.getRule(Long.valueOf(g)));
     	}
     	
     	lessonservice.save(lesson);
