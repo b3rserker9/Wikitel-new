@@ -17,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.hibernate.annotations.Type;
 
@@ -46,6 +47,8 @@ public class UserEntity {
     private String profile;
     @Column(columnDefinition="text")
     private String src;
+    @Transient
+    private String email;
     
     @Column(columnDefinition="text")
     private String Questionario;

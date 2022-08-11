@@ -23,7 +23,10 @@ let close = false;
 function active(name) {
 	console.log(name)
     var span = document.getElementById(name);
-    span.style.display="none";
+    span.style.zIndex=1;
+    span.style.backgroundColor="#ffff";
+    var loading = document.getElementById(name + 's');
+    loading.style.display= "none";
 
 }
 
@@ -76,7 +79,7 @@ function New_rule_file(){
                     cache: false,
                     success: function(res) {
                         console.log("SUCCESS : ", res);
-                        active(res+"s");
+                        active(res);
                     },
                     error: function(err) {
                         console.error(err);
@@ -109,7 +112,7 @@ function New_rule() {
 
 
         success: function(data) {
-            active(data+'s');
+            active(data);
             console.log("SUCCESS : ", data);
         },
         error: function(e) {
@@ -275,14 +278,12 @@ function Postsuggetion(id) {
 
 
 }
-
 function precondition_setup(data,id) {
-    let rule = null;
-    let rules = data;
+   console.log(data)
+     rules = data;
     var x = document.getElementById("rule_list");
     var options = document.querySelectorAll('#rule_list option');
     options.forEach(o => o.remove());
-    let suggestion = [];
     for (let i = 0; i < rules.length; i++) {
         console.log(rules[i]);
         var option = document.createElement("option");
@@ -292,35 +293,43 @@ function precondition_setup(data,id) {
     }
     console.log(document.getElementById("rule_list").options[0]);
     var x = document.getElementById("rule_list").options[0].value;
-    
+    console.log(rules)
 document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id );
-    $('#rule_list').on('change', function(e) {
-        $('#suggested-preconditions-list').empty();
-        let i = this.value
-        console.log(rules);
-        rule = rules[i];
-        console.log(rule);
-        $("#rule-length").val(rule.length);
-        let suggestions = rule.suggestionm;
-        console.log(suggestions);
-        current_rule = rule.id;
-        suggestions.forEach(function(l) {
-            document.getElementById("suggested-preconditions-list").innerHTML += '<div class="form-check col-6">' +
-                ' <input class="form-check-input" type="checkbox" name="' + l.page + '" id="flexRadioDefault1">' +
-                ' <label class="form-check-label" for="flexRadioDefault1">' + l.page + ' </label></div>'
-        })
-    });
-    rule = rules[0];
+   
+    let rule = rules[0];
     console.log(rule.length);
     $("#rule-length").val(rule.length);
     let suggestions = rule.suggestionm;
     console.log(suggestions);
     suggestions.forEach(function(l) {
-        document.getElementById("suggested-preconditions-list").innerHTML += '<div class="form-check col-6">' +
+        document.getElementById("suggested-preconditions-list").innerHTML += '<div class="form-check col-md-6">' +
             ' <input class="form-check-input" type="checkbox" name="' + l.page + '" id="flexRadioDefault1">' +
             ' <label class="form-check-label" for="flexRadioDefault1">' + l.page + ' </label></div>'
     })
     current_rule = rules[0].id;
+    console.log(rules)
+     $('#rule_list').on('change', function(e) {
+	
+        $('#suggested-preconditions-list').empty();
+        console.log(rules);
+        let i = this.value
+        console.log(i);
+        
+       let rule = rules[i];
+        console.log(rule);
+        $("#rule-length").val(rule.length);
+        let suggestions = rule.suggestionm;
+        console.log(suggestions);
+        current_rule = rule.id;
+        document.getElementById("loading_modal").style.display = "flex";
+        suggestions.forEach(function(l) {
+            document.getElementById("suggested-preconditions-list").innerHTML += '<div class="form-check col-md-6">' +
+                ' <input class="form-check-input" type="checkbox" name="' + l.page + '" id="flexRadioDefault1">' +
+                ' <label class="form-check-label" for="flexRadioDefault1">' + l.page + ' </label></div>'
+        })
+        document.getElementById("loading_modal").style.display = "none";
+        console.log("2")
+    });
 }
 
 
@@ -364,7 +373,7 @@ function add(model) {
         document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/' + model.id + '">' + model.name + '</a></div>'
     } else {
 
-        document.getElementById("rows").innerHTML += '<div class="columns animate__animated animate__bounce" id="' + model.id + '"><div class="cards" id="' + model.id + 'c">  <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion(' + model.id + ')"><i class="fas fa-cog"></i></button><a id="' + model.name + 'a" href="/Argomento/' + model.id + '" class="disabled"> <h3 >' + model.name + '</h3></a> <span id="' + model.id + 's" class="spinner-border"></span> </div></div>'
+        document.getElementById("rows").innerHTML += '<div class="col-md-3 col-sm-6 item"> <div class="card item-card card-block" style="z-index:-60;background-color: #aba6a626" id="' + model.id + '"><div class="spinner-border text-primary" role="status" id="'+model.id+'s"> <span class="visually-hidden">Loading...</span> </div> <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion(' + model.id + ')"><i class="fas fa-cog"></i></button></h4> <a id=" ' + model.name + 'a" href="/Argomento/' + model.id + '"><h5 class="item-card-title mt-3 mb-3" style="text-align:center;font-size:1.75rem!important" >'+ model.name + '</h5></a> </div> </div>'
         document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/' + model.id + '">' + model.name + '</a></div>'
     }
     a.push(model);

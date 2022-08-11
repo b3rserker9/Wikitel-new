@@ -25,7 +25,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
         @Type(value = Message.LessonStateUpdate.class, name = "lesson-state-update"),
         @Type(value = Message.Stimulus.TextStimulus.class, name = "text-stimulus"),
         @Type(value = Message.Stimulus.QuestionStimulus.class, name = "question-stimulus"),
-        @Type(value = Message.Stimulus.URLStimulus.class, name = "url-stimulus") })
+        @Type(value = Message.Stimulus.URLStimulus.class, name = "url-stimulus"),
+        @Type(value = Message.Searching.class, name = "searching")})
 public abstract class Message {
 
     /**
@@ -453,6 +454,32 @@ public abstract class Message {
          */
         public long getId() {
             return id;
+        }
+    }
+    
+    public static class Searching extends Message {
+
+        private final String name;
+        private final long status;
+
+        @JsonCreator
+        public Searching(@JsonProperty("Name") final String name, @JsonProperty("Status") final long status) {
+            this.name = name;
+            this.status = status;
+        }
+
+        /**
+         * @return the lesson_id
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * @return the id
+         */
+        public long getStatus() {
+            return status;
         }
     }
 }

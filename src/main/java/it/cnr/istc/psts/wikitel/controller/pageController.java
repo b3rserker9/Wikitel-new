@@ -211,7 +211,9 @@ public class pageController {
 		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("students",lezione.getFollowed_by());
 		if(credentials.getRole().equals(STUDENT_ROLE)) { 
-		model.addAttribute("messages",MainController.LESSONS.get(id).getStimuli(userentity.getId()));
+			String n = String.valueOf(id) + String.valueOf(userentity.getId());
+			System.out.println(MainController.LESSONS);
+		model.addAttribute("messages",MainController.LESSONS.get(n).getStimuli(userentity.getId()));
 		//send.notify(Starter.mapper.writeValueAsString(MainController.LESSONS.get(id).st), UserController.ONLINE.get(userentity.getId()));	
 		}
 	

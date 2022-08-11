@@ -58,6 +58,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -128,8 +129,11 @@ public class MainController {
 	
 	private ModelEntity m;
 	
+	  @Autowired
+	    private ObjectMapper objectMapper;
 	
-	public static final Map<Long, LessonManager> LESSONS = new HashMap<>();
+	
+	public static final Map<String, LessonManager> LESSONS = new HashMap<>();
 	
 	
 	@PostMapping("/register")
@@ -157,12 +161,13 @@ public class MainController {
 	public void prova(@Payload Session session, SimpMessageHeaderAccessor headerAccessor ) throws JsonProcessingException {
 		UserController.ONLINE.put(session.getUser_id(), session.getSession());
 		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(session.getUser_id()));
+		String n = String.valueOf(session.getLesson_id()) + String.valueOf(session.getUser_id());
 		if(session.getLesson_id()!=null) {
-		LessonManager manager = MainController.LESSONS.get(session.getLesson_id());
+		LessonManager manager = MainController.LESSONS.get(n);
 		send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(session.getLesson_id(), manager.getSolver().getTimelines())), session.getSession());
 		send.notify(Starter.mapper.writeValueAsString(new LessonManager.Tick(session.getLesson_id(), manager.getCurrentTime())), session.getSession());
 		if(manager.st!=null) {
-		send.notify(Starter.mapper.writeValueAsString(MainController.LESSONS.get(session.getLesson_id()).st), UserController.ONLINE.get(session.getUser_id()));	
+		send.notify(Starter.mapper.writeValueAsString(MainController.LESSONS.get(n).st), UserController.ONLINE.get(session.getUser_id()));	
 		}
 		}
 		
@@ -194,16 +199,100 @@ public class MainController {
 		Set<RuleEntity> re = new HashSet<>();
 		for(RuleEntity r : model.getRules()) {
 			RuleEntity rule = new RuleEntity();
-			for(SuggestionString s : r.getSuggestions()) {
 				rule.setLength(r.getLength());
 				rule.setId(r.getId());
 				rule.setName(r.getName()); 
-				rule.getSuggestionm().addAll(this.modelservice.getsuggestion(s.getName()).getSuggestion());
+				rule.getSuggestionm().addAll(this.modelservice.getsuggestion(r.getSuggestions()).getSuggestion());
 				re.add(rule);
-			}
+			
 				
 		}
 		return re;
+	}
+	
+	@PostMapping("/findsuggestiontot")
+	public List<Set<ObjectNode>> GetSuggestiontot(@RequestBody ObjectNode node) {
+		System.out.println(node.get("ids").asLong());
+		ModelEntity model = this.modelservice.getModel(node.get("ids").asLong());
+		
+		Set<RuleEntity> re = new HashSet<>();
+		Set<ObjectNode> nodes = new HashSet<>();
+		Set<ObjectNode> edges = new HashSet<>();
+		Set<ObjectNode> nodes2 = new HashSet<>();
+		Set<ObjectNode> rules = new HashSet<>();
+		
+		
+		long i=0 ;
+		for(RuleEntity rule : model.getRules()) {
+			ObjectNode  robgr= objectMapper.createObjectNode();   
+			robgr.put("id",rule.getName()); 
+			robgr.put("label",rule.getName()); 
+			robgr.put("group", i);
+			robgr.put("type", "rule");
+			nodes.add(robgr);
+			rules.add(robgr);
+			i++;
+		}
+		i=0;
+		for(RuleEntity r : model.getRules()) {
+			RuleEntity rule = new RuleEntity();
+				rule.setLength(r.getLength());
+				rule.setId(r.getId());
+				rule.setName(r.getName()); 
+				rule.getSuggestionm().addAll(this.modelservice.getsuggestion(r.getSuggestions()).getSuggestion());
+				re.add(rule);
+				List<Double> max = new ArrayList<>();
+				for(SuggestionMongo sm : rule.getSuggestionm()) {
+					max.add(sm.getScore2());
+				}
+			for(SuggestionMongo sm : rule.getSuggestionm()) {
+				if(!containsName(nodes, sm.getPage())) {
+					
+				ObjectNode obj=objectMapper.createObjectNode();    
+				obj.put("id",sm.getPage()); 
+				obj.put("label",sm.getPage()); 
+				obj.put("group", i);
+				obj.put("type", "sug");
+				obj.put("score", sm.getScore2());
+				obj.put("max", Collections.max(max));
+				nodes.add(obj);
+				ObjectNode obj2=objectMapper.createObjectNode(); 
+				obj2.put("id",sm.getPage());
+				obj2.put("parent",rule.getName());
+				
+				obj2.put("score1",sm.getScore());
+				obj2.put("score2",sm.getScore2());
+				obj2.put("type", "Suggestion");
+				obj2.put("label",sm.getPage()); 
+				obj2.put("group", i);
+				nodes2.add(obj2);
+				}
+				ObjectNode edge=objectMapper.createObjectNode();
+				edge.put("from",rule.getName());    
+				edge.put("to",sm.getPage()); 
+				edges.add(edge);
+			}
+			for(RuleEntity effect : r.getPreconditions()) {
+				ObjectNode edge=objectMapper.createObjectNode();
+				edge.put("from",rule.getName());    
+				edge.put("to",effect.getName()); 
+				edges.add(edge);
+			}
+			i++;
+				
+		}
+		
+		List<Set<ObjectNode>> tot = new ArrayList<>();
+		tot.add(0,edges);
+		tot.add(1,nodes);
+		tot.add(2,nodes2);
+		tot.add(3,rules);
+		return tot;
+	}
+	
+	
+	public boolean containsName(final Set<ObjectNode> list, final String name){
+	    return list.stream().filter(o -> o.get("id").asText().equals(name)).findFirst().isPresent();
 	}
 	
 	@PostMapping("/edit")
@@ -422,13 +511,14 @@ public class MainController {
 		UserEntity nuovo = credentials.getUser();
 		
 		ModelEntity model = this.m;
-    	
+		final String  name= node.get("rule_name").asText();
 		JsonNode effect= node.get("rule_id");
     	if(effect!=null)
     		model = this.modelservice.getModel(node.get("model_id").asLong());
 		RuleMongo rulemongo = new RuleMongo();
     	RuleEntity rule = null;
-    	final String  name= node.get("rule_name").asText();
+    	
+    	send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 0)), UserController.ONLINE.get(nuovo.getId()));
     	switch(node.get("rule_type").asText()) {
     	 case "Testo":
              rule = new TextRuleEntity();
@@ -453,22 +543,16 @@ public class MainController {
 			 for (String pre : prova.getPreconditions()) { 
 				 i++;
 				 SuggestionMongo sugmongo = new SuggestionMongo();
-				 RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
+			//	 RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
 					
-			     WikiSuggestionEntity suggestion = null;
+			   //  WikiSuggestionEntity suggestion = null;
 		
-			     if (  modelservice.getpage(pre)== null) {
+			     
 			    	// suggestion = new WikiSuggestionEntity();
 					//	suggestion.setPage(pre);
 						sugmongo.setPage(pre);
 						
-
-						//modelservice.savewikisuggestion(suggestion);
-				}else {
-					 
-					suggestion = modelservice.getpage(pre);
-					sugmongo.setPage(suggestion.getPage());
-				}    
+ 
 			    
 			     
 			  //   relation.setRule(rule);
@@ -489,9 +573,7 @@ public class MainController {
 			     
 			 }
 			 this.modelservice.savesm(sm);
-			 SuggestionString s = new SuggestionString();
-			 s.setName(sm.getId());
-			 rule.getSuggestions().add(s);
+			 rule.setSuggestion(sm.getId());
 			 rule.setLength(prova.getLength());
 			 rule.getTopics().addAll(prova.getCategories());
 			 rulemongo.setLength(prova.getLength());
@@ -521,10 +603,9 @@ public class MainController {
         			 
         			 
         		 }
+        		 
         		 this.modelservice.savesm(sm);
-        		 SuggestionString s = new SuggestionString();
-    			 s.setName(sm.getId());
-    			 rule.getSuggestions().add(s);
+    			 rule.setSuggestion(sm.getId());
     			 rule.getTopics().addAll(m.getTopics());
     			 ((WikiRuleEntity) rule).setUrl("https://it.wikipedia.org/wiki/"+ name );
         		 
@@ -548,17 +629,21 @@ public class MainController {
             final RuleEntity effect_entity = this.modelservice.getRule(effect.asLong());
             if (effect_entity == null)
                 throw new Exception();
-            effect_entity.addEffect(rule);
-            rule.addPrecondition(effect_entity);
+            rule.addEffect(effect_entity);
+            effect_entity.addPrecondition(rule);
 
-         /*   if (effect_entity instanceof WikiRuleEntity) {
-                Optional<RuleSuggestionRelationEntity> relation = effect_entity.getSuggestions().stream()
-                        .filter(s -> ((WikiSuggestionEntity) s.getSuggestion()).getPage().equals(name)).findAny();
+          if (effect_entity instanceof WikiRuleEntity) {
+        	  System.out.println("sono qui!!");
+        	  SuggestionM sm = this.modelservice.getsuggestion(effect_entity.getSuggestions());
+                Optional<SuggestionMongo> relation = sm.getSuggestion().stream()
+                        .filter(s -> s.getPage().equals(name)).findAny();
                 relation.ifPresent(rel -> {
-                    effect_entity.removeSuggestion(rel);
-                    this.relationservice.delete(rel);
+                	System.out.println(rel);
+                    sm.getSuggestion().remove(rel);
+                    this.modelservice.savesm(sm);
                 });
-            }*/
+            }
+          this.modelservice.saverule(effect_entity);
         }
     	if(bool) {
     	rule.setName(node.get("rule_name").asText());
@@ -569,6 +654,7 @@ public class MainController {
     	this.modelservice.saverule(rule);
     	model.getRules().add(rule);
     	modelservice.save(model);
+    	send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 1)), UserController.ONLINE.get(nuovo.getId()));
 		return model.getId();
 		
 	}
@@ -585,14 +671,7 @@ public class MainController {
     	lesson.setModel(modelservice.getModel(node.get("models").asLong()));
     	
     	ObjectMapper mapper = new ObjectMapper();
-    	long[] map = Starter.mapper.readValue(node.get("students").asText(), long[].class);
-    	for(long id : map) {
-    		UserEntity student = this.userservice.getUserId(Long.valueOf(id));
-    		lesson.addStudent(student);
-    		student.getFollowing_lessons().add(lesson);
-    		this.userrepository.save(student);
-    		System.out.println("User subscribe :  " + id);
-    	}
+    
     	
     	
     	lesson.setTeacher(nuovo);
@@ -607,16 +686,34 @@ public class MainController {
     	nuovo.getTeaching_lessons().add(lesson);
     	userservice.saveUser(nuovo);
 		Response response = new Response("Ciao",lesson);
-		 final LessonManager lesson_manager = new LessonManager(lesson,send,this.modelservice,this.userservice);
-		LESSONS.put(lesson.getId(),lesson_manager);
-		lesson_manager.Solve();
+		
+		
+	
 		for(UserEntity u : lesson.getFollowed_by()) {
 			if(UserController.ONLINE.get(u.getId())!=null)
 			send.notify(Starter.mapper.writeValueAsString(new Message.Subscribe(lesson.getId(), lesson.getName())), UserController.ONLINE.get(u.getId()));
 		}
+		long[] map = Starter.mapper.readValue(node.get("students").asText(), long[].class);
+		List<UserEntity> u = new ArrayList<>();
+    	for(long id : map) {
+    		UserEntity student = this.userservice.getUserId(Long.valueOf(id));
+    		u.add(student);
+    		lesson.addStudent(student);
+    		student.getFollowing_lessons().add(lesson);
+    		this.userrepository.save(student);
+    		System.out.println("User subscribe :  " + id);
+    		String n = String.valueOf(lesson.getId()) + String.valueOf(Long.valueOf(id));
+    		 final LessonManager lesson_manager = new LessonManager(lesson,send,this.modelservice,this.userservice);
+    		LESSONS.put(n,lesson_manager);
+    		lesson_manager.Solve();
+    		lesson.getFollowed_by().clear();
+    	}
+    	lesson.getFollowed_by().addAll(u);
+    	lessonservice.save(lesson);
 		return response;
 		
 	}
+	
 	
 	@PostMapping("/iscrizione")
 	public Response iscrizione(@RequestBody Long id){
@@ -675,7 +772,7 @@ public class MainController {
 		
 	}
 	
-	@PostMapping("/provamessaggio")
+	@GetMapping("/provamessaggio")
 	public String Prova43() {
 		for(Long u : UserController.ONLINE.keySet()) {
 			System.out.println("ID: "+u);

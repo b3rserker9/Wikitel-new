@@ -48,12 +48,8 @@ public class RuleEntity {
 	    @ManyToMany
 	    @LazyCollection(LazyCollectionOption.FALSE)
 	    private final Set<RuleEntity> effects = new HashSet<>();
-	   /* @OneToMany(orphanRemoval = true)
-	    @JsonManagedReference
-	    @LazyCollection(LazyCollectionOption.FALSE)
-	    private final Set<RuleSuggestionRelationEntity> suggestions = new HashSet<>();*/
-	    @OneToMany(cascade = CascadeType.ALL)
-	    private final Set<SuggestionString> suggestions = new HashSet<>();
+	  
+	    private String suggestions;
 	    
 	    @Transient
 	    private Set<SuggestionMongo> suggestionm = new HashSet<>();
@@ -92,9 +88,14 @@ public class RuleEntity {
 	        return topics;
 	    }
 	    
-	    public Set<SuggestionString> getSuggestions() {
+	    public String getSuggestions() {
 	        return this.suggestions;
 	    }
+	    
+	    public void setSuggestion(String suggestions) {
+	        this.suggestions = suggestions;
+	    }
+	    
 
 	    public void addTopic(final String topic) {
 	        topics.add(topic);
@@ -138,8 +139,6 @@ public class RuleEntity {
 
 	   
 
-	    public void removeSuggestion(final RuleSuggestionRelationEntity suggestion) {
-	        suggestions.remove(suggestion);
-	    }
+	    
     
 }

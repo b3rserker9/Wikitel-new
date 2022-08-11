@@ -90,6 +90,7 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	    private Flaw current_flaw = null;
 	    	    private final Map<Long, Resolver> resolvers = new HashMap<>();
 	    	    private Resolver current_resolver = null;
+	    	    private Long user;
 	    	    Stimulus st = null;
 	    	    
 	    	    
@@ -99,9 +100,10 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	        this.send=send;
 	    	        this.modelservice = modelservice;
 	    	        this.userservice = userservice;
-	    	        for (final UserEntity student : lesson.getFollowed_by())
+	    	        for (final UserEntity student : lesson.getFollowed_by()) {
 	    	            stimuli.put(student.getId(), new ArrayList<>());
-	    	 
+	    	            user = student.getId();
+	    	        }
 	    	 
 	    	        solver.addStateListener(this);
 	    	        solver.addGraphListener(this);
@@ -110,11 +112,9 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	    
 	    	    public void Solve() {
 	    	    	final StringBuilder sb = new StringBuilder();
-	    	    	System.out.println(lesson.getName());
-	    	    	System.out.println("prova: "+ lesson.getFollowed_by().size());
 	    	        to_string(sb, lesson);
 	    	        
-	    	        final File lesson_file = new File(System.getProperty("user.dir")+"\\riddle\\" + lesson.getId() + ".rddl");
+	    	        final File lesson_file = new File(System.getProperty("user.dir")+"\\riddle\\" + lesson.getId() + user + ".rddl");
 	    	        try {
 	    	            if (lesson_file.createNewFile()) {
 	    	                System.out.println("File created: " + lesson_file.getName());

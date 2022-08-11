@@ -164,7 +164,7 @@ function start() {
       return h.id === e.id;
     });
   });
-  table = document.getElementById("example");
+  tables = document.getElementById("example");
   for (var a = 0; a < tables.length; a++) {
     tbody = document.getElementById("row_element");
     for (var b = tbody.insertRow(table.length), d = 0; d < tables[a].length; d++) {
@@ -176,14 +176,32 @@ function start() {
   edgesDataset = new vis.DataSet(edges);
   redrawAll();
 }
+
+function newStart(tot){
+	nodesDataset = new vis.DataSet(tot[1]);
+  	edgesDataset = new vis.DataSet(tot[0]);
+  	 prova = $("#example").DataTable({dom:"Blfrtip", buttons:["selectAll", "selectNone"], language:{buttons:{selectAll:"Select all items", selectNone:"Select none"}}, columnDefs:[{orderable:!1, className:"select-checkbox", targets:0}], select:{style:"multi", selector:"td:first-child"}, order:[[1, "asc"]]});
+  
+  
+  table = document.getElementById("example");
+  for (var a = 0; a < tables.length; a++) {
+    tbody = document.getElementById("row_element");
+    for (var b = tbody.insertRow(table.length), d = 0; d < tables[a].length; d++) {
+      b.insertCell(d).innerHTML = tables[a][d];
+    }
+  }
+  redrawAll();
+ 
+}
+
 function redrawAll() {
   var a = document.getElementById("mynetwork");
   network = new vis.Network(a, {nodes:nodesDataset, edges:edgesDataset}, {layout:{improvedLayout:!1}, groups:{file:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf15b", size:50, color:"#000000",},}, wikipedia:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf266", size:50, color:"#000000",},}, text:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf031", size:50, color:"#000000",},},}, nodes:{shape:"dot", scaling:{min:10, max:30,}, font:{size:12, face:"Tahoma",},}, edges:{width:0.15, color:{inherit:"from"}, 
   smooth:{type:"continuous",},}, physics:{stabilization:false, solver:"repulsion", repulsion:{nodeDistance:900}}});
   network.fit();
   network.stabilize();
-  allNodes = nodesDataset.get({returnType:"Object"});
-  document.getElementById("loader-page").style.display= "none"
+ // allNodes = nodesDataset.get({returnType:"Object"});
+//  document.getElementById("loader-page").style.display= "none"
   var b = new bootstrap.Modal(document.getElementById("myModal"), {keyboard:!1});
   network.on("click", function(d) {
     0 < d.nodes.length && (rule_effects = nodesDataset.get(d.nodes)[0].group, console.log(rule_effects), rule_selected = nodesDataset.get(d.nodes)[0].label, d.event = "[original event]", select = d.nodes[0], selected = d.nodes[0].replaceAll(" ", "_"), document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected, b.show());
@@ -213,18 +231,18 @@ function aggiorna() {
   redrawAll();
 }
 function ajaxGet() {
-  $.ajax({type:"POST", contentType:"application/json", url:"/findsuggestion", dataType:"json", data:JSON.stringify({ids:document.getElementById("model_name").getAttribute("value")}), success:function(a) {
+  $.ajax({type:"POST", contentType:"application/json", url:"/findsuggestiontot", dataType:"json", data:JSON.stringify({ids:document.getElementById("model_name").getAttribute("value")}), success:function(a) {
     console.log("SUCCESS : ",a);
-    rules = a;
-    order();
-    start();
+    //order();
+    //start();
+    newStart(a)
   }, error:function(a) {
     alert("Error!");
     console.log("ERROR: ", a);
   }});
 }
 function NewNodeManual() {
-  $.ajax({type:"POST", contentType:"application/json", url:"/newNodeMan", dataType:"json", data:JSON.stringify(AddNode), success:function(a) {
+  $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", dataType:"json", data:JSON.stringify(AddNode), success:function(a) {
     console.log("SUCCESS : ", a);
   }, error:function(a) {
     alert("Error!");
@@ -232,7 +250,7 @@ function NewNodeManual() {
   }});
 }
 function addNode() {
-  var a = {id:$("#Add_node_name").val(), text:document.getElementById("rule_Textarea").value, group:type, rule_id:select};
+  var a = {rule_name:$("#Add_node_name").val(), rule_text:document.getElementById("rule_Textarea").value, rule_type :type, rule_id:select, rule_parent:rule_effects};
   AddNode.push(a);
   console.log(AddNode);
   nodesDataset.add({id:$("#Add_node_name").val(), label:$("#Add_node_name").val(), group:type});

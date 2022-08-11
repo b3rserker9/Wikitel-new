@@ -70,12 +70,7 @@ body{
 	margin-top: 3%;
 }
 
-div#suggested-preconditions-list{
-	display: flex;
-	flex-wrap: wrap;
-	    flex-direction: row;
-	
-}
+
 .chip {
   display: inline-block;
   padding: 0 25px;
@@ -102,6 +97,8 @@ div#suggested-preconditions-list{
 #loading_modal{
 	display: none;
 	 position: absolute;
+	 justify-content: center;
+	 left: 0px;
     width: 100%;
     height: 100%;
     background-color: rgb(106 105 105 / 86%);
@@ -109,7 +106,6 @@ div#suggested-preconditions-list{
     cursor: pointer;
 }
 .center {
-  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -183,7 +179,72 @@ div#suggested-preconditions-list{
     margin: 0;
     padding: 0;
 }
+.d{
+  transition:0.5s;
+  cursor:pointer;
+}
+.card-block{
+	    -webkit-box-flex: 1;
+    -webkit-flex: 1 1 auto;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+.card-title{  
+  font-size:15px;
+  transition:1s;
+  cursor:pointer;
+}
+.card-title i{  
+  font-size:15px;
+  transition:1s;
+  cursor:pointer;
+  color:#ffa710
+}
+.card-title i:hover{
+  transform: scale(1.25) rotate(100deg); 
+  color:#18d4ca;
+  
+}
+ .d:hover{
+  transform: scale(1.05);
+  box-shadow: 10px 10px 15px rgba(0,0,0,0.3);
+}
+.card-text{
+  height:80px;  
+}
+.text-right {
+    text-align: right!important;
+}
 
+.card::before, .card::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: scale3d(0, 0, 1);
+  transition: transform .3s ease-out 0s;
+  background: rgba(255, 255, 255, 0.1);
+  content: '';
+  pointer-events: none;
+}
+.card::before {
+  transform-origin: left top;
+}
+.card::after {
+  transform-origin: right bottom;
+}
+.card:hover::before, .card:hover::after, .card:focus::before, .card:focus::after {
+  transform: scale3d(1, 1, 1);
+}
+.btn-link.focus, .btn-link:focus, .btn-link:hover {
+    
+    background-color: #f5f5f500!important;
+}
+.form-check-input[type=checkbox] {
+    margin-right: 0px!important;
+}
 </style>
 <body>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
@@ -361,16 +422,25 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
   </div>
   <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
   		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new_lesson1">Nuovo Argomento</button>
-  <div class="rows" id="rows">
-  <div class="columns animate__animated animate__bounce" th:each="m : ${model}" >
-   <div class="cards">
-      <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" th:attr="onclick=|Postsuggetion('${m.getID()}')|"  ><i class="fas fa-cog"></i></button>
-      <a th:id="${m.getID()} + 'a'" th:href="'/Argomento/' + ${m.getID()}">
-         <h3 th:text="${m.getName()}"></h3>
-      </a>
-   </div>
-</div>
-</div></div>
+  <div class="container mt-2">
+<!--   <div class="card card-block mb-2">
+    <h4 class="card-title">Card 1</h4>
+    <p class="card-text">Welcom to bootstrap card styles</p>
+    <a href="#" class="btn btn-primary">Submit</a>
+  </div>   -->
+  <div class="row gy-4" id="rows">
+    <div class="col-md-3 col-sm-6 item" th:each="m : ${model}">
+      <div class="card d item-card card-block" th:id="${m.getID()} ">
+      
+      <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" th:attr="onclick=|Postsuggetion('${m.getID()}')|"  ><i class="fas fa-cog"></i></button></h4>
+    
+        <a th:id="${m.getID()} + 'a'" th:href="'/Argomento/' + ${m.getID()}"><h5 class="item-card-title mt-3 mb-3" style="text-align: center; font-size: 1.75rem!important;" th:text="${m.getName()}"></h5></a>
+      
+  </div>
+    </div>
+  </div>
+  </div>
+ </div>
 </div>
  </div>
 
@@ -460,7 +530,13 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
    <div class="modal-dialog">
     
       <div class="modal-content">
-      <div class="loaidng modal-content" id="loading_modal">
+
+         <form id="new_precondition">
+            <div class="modal-header">
+               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                 <div class="loaidng modal-content" id="loading_modal">
       <div class="center">
   <div class="wave"></div>
   <div class="wave"></div>
@@ -473,12 +549,6 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
   <div class="wave"></div>
   <div class="wave"></div>
 </div></div>
-         <form id="new_precondition">
-            <div class="modal-header">
-               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-           
             <div class="form-floating">
                      <select class="form-select" id="rule_list" aria-label="Floating label select example">
                 
@@ -503,24 +573,18 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
                      <select class="form-select" id="new-precondition-type" aria-label="Floating label select example">
                         <option value="1">Suggeriti</option>
                         <option value="2">Esistenti</option>
-                        <option value="3">Nuovo obiettivo</option>
                      </select>
                      <label for="floatingSelect">Tipo</label>
                   </div>
                   <div class="precondition-list" id="suggested-preconditions-list-div">
-                     <div class="list-group list-group-flush overflow-auto" id="suggested-preconditions-list"
-                        style="max-height:260px;overflow:auto;">
+                     <div class="row"  id="suggested-preconditions-list"
+                        style="max-height:260px;overflow:auto;padding-left:13px;">
                      </div>
                   </div>
                   <div class="row h-25 my-1 d-none" id="existing-preconditions-list-div">
                      <div class="list-group list-group-flush overflow-auto" id="existing-preconditions-list"
                         style="max-height:260px;overflow:auto;">
                      </div>
-                  </div>
-               </div>
-               <div class="row h-25">
-                  <div class="list-group list-group-flush overflow-auto" id="preconditions-list"
-                     style="max-height:200px;overflow:auto;">
                   </div>
                </div>
             
