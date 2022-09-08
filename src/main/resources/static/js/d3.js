@@ -167,9 +167,10 @@ function neighbourhoodHighlight(a) {
 	
 	 if(nodesDataset.get(a.nodes)[0].type === "rule"){
 	  document.getElementById("addnodo").style.display= "block";
-	 
+	  document.getElementById("esploranodo").style.display= "none";
 	  }else{
 	   document.getElementById("addnodo").style.display= "none";
+	   document.getElementById("esploranodo").style.display= "block";
 	   }
 	    if(nodesDataset.get(a.nodes)[0].rule_type === "text"){
 	  	document.getElementById("textarea1").style.display= "block"
