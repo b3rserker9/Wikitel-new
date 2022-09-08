@@ -95,7 +95,7 @@ function setup_ws(msg) {
                console.log("FlawCostChanged7");
                 break;
             case 'Timelines':    
-            console.log(c_msg.timelines[0].horizon + "horizon");
+            console.log(c_msg.timelines[0] + "horizon");
             localStorage.setItem("horizon",c_msg.timelines[0].horizon);
              lesson.horizon(c_msg.timelines[0].horizon);
              console.log(c_msg)

@@ -164,6 +164,7 @@ public class MainController {
 		UserController.ONLINE.put(session.getUser_id(), session.getSession());
 		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(session.getUser_id()));
 		String n = String.valueOf(session.getLesson_id()) + String.valueOf(session.getUser_id());
+		System.out.println("LIST: " + MainController.LESSONS + " " + n);
 		if(session.getLesson_id()!=null) {
 		LessonManager manager = MainController.LESSONS.get(n);
 		send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(session.getLesson_id(), manager.getSolver().getTimelines())), session.getSession());
@@ -765,6 +766,7 @@ public class MainController {
     		System.out.println("User subscribe :  " + id);
     		String n = String.valueOf(lesson.getId()) + String.valueOf(Long.valueOf(id));
     		 final LessonManager lesson_manager = new LessonManager(lesson,send,this.modelservice,this.userservice);
+    		 System.out.println("NUMERO" + n);
     		LESSONS.put(n,lesson_manager);
     		lesson_manager.Solve();
     		lesson.getFollowed_by().clear();

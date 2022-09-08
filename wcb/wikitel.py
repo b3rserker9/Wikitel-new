@@ -4,6 +4,7 @@ import flask
 from flask import Flask, request, render_template, json
 from flask_restful import Resource, Api
 import wikipediaapi
+import wikipedia
 from nltk import tokenize
 from nltk.corpus import stopwords
 import it_core_news_sm
@@ -19,6 +20,7 @@ app = Flask(__name__)
 api = Api(app)
 
 wiki = wikipediaapi.Wikipedia('it')
+wikipedia.set_lang("it")
 nlp = it_core_news_sm.load()
 
 stop_words = set(stopwords.words('italian'))
@@ -51,60 +53,71 @@ def get_category(title):
 class WikiTEL(Resource):
     def get(self):
         p = request.args.get('page')
+        if(wikipedia.page(p).exists()):
+            wiki_page = wiki.page(p)
+            print(wiki_page)
+            url = wiki_page.fullurl
+            categories = set()
+            preconditions = []
 
-        wiki_page = wiki.page(p)
-        url = wiki_page.fullurl
-        categories = set()
-        preconditions = []
+            for cat in wiki_page.categories:
+                if regexp.search(cat):
+                    continue
+                print('finding category for ' + cat)
+                if cat in target_categories:
+                    categories.append(cat)
+                else:
+                    c_cat = get_category(cat)
+                    if(c_cat):
+                        categories.add(c_cat)
 
-        for cat in wiki_page.categories:
-            if regexp.search(cat):
-                continue
-            print('finding category for ' + cat)
-            if cat in target_categories:
-                categories.append(cat)
-            else:
-                c_cat = get_category(cat)
-                if(c_cat):
-                    categories.add(c_cat)
+            doc = nlp(str(wiki_page.text))
 
-        doc = nlp(str(wiki_page.text))
+            filtrati = []
+            for w in doc:
+                if w.text not in stop_words:
+                    filtrati.append(w.text)
+                    
+            print('computing preconditions..')
+            docs=[wiki_page.title]
+            docs2=[str(wiki_page.text)]
+            for s in wiki_page.links:
+                preconditions.append(wiki.page(s).title)
+                page_text = str(wiki.page(s).text)
+                docs.append(page_text)
+                docs2.append(page_text)
 
-        filtrati = []
-        for w in doc:
-            if w.text not in stop_words:
-                filtrati.append(w.text)
-                
-        print('computing preconditions..')
-        docs=[wiki_page.title]
-        docs2=[str(wiki_page.text)]
-        for s in wiki_page.links:
-            preconditions.append(wiki.page(s).title)
-            page_text = str(wiki.page(s).text)
-            docs.append(page_text)
-            docs2.append(page_text)
+            tfidf_vectorizer = TfidfVectorizer()
+            tfidf_matrix_train = tfidf_vectorizer.fit_transform(docs)  #finds the tfidf score with normalization
+            tfidf_matrix_train2 = tfidf_vectorizer.fit_transform(docs2)
 
-        tfidf_vectorizer = TfidfVectorizer()
-        tfidf_matrix_train = tfidf_vectorizer.fit_transform(docs)  #finds the tfidf score with normalization
-        tfidf_matrix_train2 = tfidf_vectorizer.fit_transform(docs2)
+            print('computing rank1..')
+            rank1=list(cosine_similarity(tfidf_matrix_train[0:1], tfidf_matrix_train)[0])
+            print('computing rank2..')
+            rank2=list(cosine_similarity(tfidf_matrix_train2[0:1], tfidf_matrix_train2)[0])
 
-        print('computing rank1..')
-        rank1=list(cosine_similarity(tfidf_matrix_train[0:1], tfidf_matrix_train)[0])
-        print('computing rank2..')
-        rank2=list(cosine_similarity(tfidf_matrix_train2[0:1], tfidf_matrix_train2)[0])
+            rank1.pop(0)
+            rank2.pop(0)
+            return app.response_class(
+                response=json.dumps(
+                    {'url': url,
+                    'categories': list(categories),
+                    'length': len(filtrati),
+                    'preconditions': preconditions,
+                    'rank1':rank1,
+                    'rank2':rank2,
+                    'exists': 'true'}),
+                status=200,
+                mimetype='application/json')
+        else:
 
-        rank1.pop(0)
-        rank2.pop(0)
-        return app.response_class(
-            response=json.dumps(
-                {'url': url,
-                 'categories': list(categories),
-                 'length': len(filtrati),
-                 'preconditions': preconditions,
-                 'rank1':rank1,
-                 'rank2':rank2}),
-            status=200,
-            mimetype='application/json')
+            return app.response_class(
+                response=json.dumps(
+                    {'exists': 'false',
+                    'suggest': wikipedia.suggest(p),
+                    'maybe': wikipedia.search(p, results=5)}),
+                status=200,
+                mimetype='application/json')
 
 
 api.add_resource(WikiTEL, '/wiki')  # Route_1

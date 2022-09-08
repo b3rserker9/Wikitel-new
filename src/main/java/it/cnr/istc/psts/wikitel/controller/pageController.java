@@ -199,7 +199,7 @@ public class pageController {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
 		UserEntity userentity = credentials.getUser();
-  
+		System.out.println("USER: " + userentity.getId());
     	model.addAttribute("user",userentity);
     	model.addAttribute("role",credentials.getRole());
 		LessonEntity lezione = lessonservice.lezionePerId(id);
