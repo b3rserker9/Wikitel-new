@@ -1,0 +1,14 @@
+schermatra ruoli:
+creator   follower
+
+
+bug:
+
+
+
+
+grafico:
+modifica slider renderlo più intuitivo
+tabella: visualizza i dati in formato numerico popup
+
+filtra i nodi in base alla loro affinità con gli obiettivi: TUTTI I NODI <----> NODI PIU' RILEVANTI

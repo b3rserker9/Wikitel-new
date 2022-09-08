@@ -161,6 +161,26 @@ nodeFilterSelector.addEventListener("change", function(a) {
   console.log(edges);
   redrawAll(fiternode, edges);
 });
+
+function esplora() {
+  toastr.info("Avviata la ricerca su " + rule_selected);
+  var a = {model_id:window.location.pathname.split("/")[2], rule_id: rule_effects.rule_id, rule_name:rule_selected, rule_type:"Pagina Wikipedia"};
+  console.log(a);
+  $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", data:JSON.stringify(a), dataType:"json", success:function(b) {
+    console.log("SUCCESS : ", b);
+    toastr.info("La ricerca su " + rule_selected + "\u00e8 stata completata");
+    ajaxGet();
+  }, error:function(b) {
+    alert("Error!");
+    console.log("ERROR: ", b);
+  }});
+}
+
+
+function wiki_link() {
+  window.open("https://it.wikipedia.org/wiki/" + selected, "_blank");
+}
+
 function neighbourhoodHighlight(a) {
 	 var b = new bootstrap.Modal(document.getElementById("myModal"), {keyboard:!1});
 	 if(0 < a.nodes.length){

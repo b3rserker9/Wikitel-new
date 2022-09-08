@@ -275,11 +275,12 @@ public class MainController {
 				obj.put("type", "sug");
 				obj.put("score", sm.getScore2());
 				obj.put("max", Collections.max(max));
+				obj.put("rule_id", rule.getId());
 				nodes.add(obj);
 				ObjectNode obj2=objectMapper.createObjectNode(); 
 				obj2.put("id",sm.getPage());
 				obj2.put("parent",rule.getName());
-				
+				obj2.put("rule_id", rule.getId());
 				obj2.put("score1",sm.getScore());
 				obj2.put("score2",sm.getScore2());
 				obj2.put("type", "Suggestion");
