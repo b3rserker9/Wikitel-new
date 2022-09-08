@@ -35,13 +35,7 @@ h1 {
   text-align: center;  
 }
 
-input {
-  padding: 10px;
-  width: 100%;
-  font-size: 17px;
-  font-family: Raleway;
-  border: 1px solid #aaaaaa;
-}
+
 
 /* Mark input boxes that gets an error on validation: */
 input.invalid {
@@ -189,7 +183,7 @@ footer a:hover, footer a:focus {
 }
 
 footer .form-control {
-    background-color: ##bdbdbd91;
+    background-color: #bdbdbd91;
     box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1);
     border: none;
     resize: none;

@@ -231,6 +231,38 @@ text {
   -webkit-transition: all 300ms ease;
   transition: all 300ms ease;
 }
+.stage{
+  max-width:80%;margin:60px 10%;
+  position:relative;  
+}
+.tile{
+    border-radius: 3px;
+    display:inline-block;
+    margin-bottom: 23px;
+    text-align: center;
+    border: 1px solid #eeeeee;
+    transition: 0.2s all cubic-bezier(0.4, 0.0, 0.2, 1);
+    position: relative;
+    padding: 35px 16px 25px;
+    margin-right: 17px;
+    cursor: pointer;
+}
+.tile:hover{
+  box-shadow: 0px 7px 5px -6px rgba(0, 0, 0, 0.12);
+}
+.tile i{
+    color: #00A8FF;
+    height: 55px;
+    margin-bottom: 20px;
+    font-size: 55px;
+    display: block;
+    line-height: 54px;
+    cursor: pointer;
+}
+.tile i.mdi-file-document{
+  color:#8fd9ff;
+}
+
 </style>
 <script>
 function openNav() {
@@ -319,18 +351,31 @@ function openNav() {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+      <div class="row justify-content-between">
+       <div class="col-auto me-auto">
          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#table_modal">Table</button>
-   <label for="customRange1" class="form-label">Filtra nodi suggeriti in base al loro affinità con gli obbiettivi</label>
-<div class="range">
-  <input type="range" class="form-range"  id="customRange1" />
-  <span id="range_input"></span>
-</div>
- <label class="toggler-wrapper style-20">
+         visualizza i dati in formato numerico popup
+       </div>
+        <div class="col-auto">
+          <label class="toggler-wrapper style-20">
           <input type="checkbox" id=only_rule onchange="filter_rule()" >
           <div class="toggler-slider">
             <div class="toggler-knob"></div>
           </div>
         </label>
+        </div>
+      </div>
+      <div class="row">
+   <label for="customRange1" class="form-label">Filtra nodi suggeriti in base al loro affinità con gli obbiettivi</label>
+   <div class="row">
+   <div class="col-auto me-auto">TUTTI I NODI</div>
+   <div class="col-auto">NODI PIU' RILEVANTI</div>
+   </div>
+<div class="range">
+  <input type="range" class="form-range"  id="customRange1" />
+  <span id="range_input"></span>
+</div>
+      </div>
 
    <div id="optionsContainer"></div>
 
@@ -366,8 +411,7 @@ function openNav() {
                 <th>Name</th>
                 <th>Parent</th>
                 <th>type</th>
-                <th>Score 1</th>
-                <th>Score 2</th>
+                <th>affinità</th>
             </tr>
         </thead>
         <tfoot>
@@ -376,8 +420,7 @@ function openNav() {
                 <th>Name</th>
                 <th>Parent</th>
                 <th>type</th>
-                <th>Score 1</th>
-                <th>Score 2</th>
+                <th>affinità</th>
             </tr>
         </tfoot>
     </table>
@@ -463,7 +506,16 @@ function openNav() {
       <div class="modal-body">
       
          <button class="button" id="button_link" onclick="wiki_link()"></button>
-      <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#Add" aria-expanded="false" aria-controls="collapseExample" style="margin-top:1.5% ;">
+             <div class="form-group" id="textarea1" style="margin-top: 2%;display:none;">
+    <textarea class="form-control none" id="Testo1" rows="3"></textarea>
+  </div>
+          <div class="stage" id="all_files" style="display:none;">   
+    <div class="tile form">
+      <i class="fas fa-file-alt"></i>
+      <h3><a id="file_download" ></a></h3>
+    </div><!-- .tile.form -->
+</div>
+      <button class="btn btn-primary" id="addnodo" type="button" data-bs-toggle="collapse" data-bs-target="#Add" aria-expanded="false" aria-controls="collapseExample" style="margin-top:1.5%; display: none ;">
     Aggiungi nodo <span style="margin-left: 1%;"><i class="fas fa-plus-circle"></i></span>
   </button>
          <div class="collapse" id="Add">
@@ -478,19 +530,21 @@ function openNav() {
                   </select>
                        <div id="url" style="display: none;margin-top: 2%;margin-bottom:2%;">
                      <label for="new-rule-url">URL</label>
-                     <input type="url" class="form-control none" id="new-rule-url" placeholder="URL">
+                     <input type="url" class="form-control none" id="Pagina Web" placeholder="URL">
                      <div class="invalid-feedback">
           Please a name for your modal.
       
                   </div>
                   </div>
+          
                    <div class="form-group" id="textarea" style="margin-top: 2%;">
-    <textarea class="form-control none" id="rule_Textarea" rows="3"></textarea>
+    <textarea class="form-control none" id="Testo" rows="3"></textarea>
   </div>
   <div class="mb-3" id="file" style="display: none;">
   <label for="formFile" class="form-label"></label>
   <input class="form-control" type="file" id="formFile">
 </div>
+
 <label for="graph_rilevanza" class="col-form-label">Rilevanza</label>
  <select class="form-select" id="graph_rilevanza" aria-label="Tipo di obiettivo" onChange="update_add()">
                      <option value="1">Alternativa</option>

@@ -128,6 +128,16 @@ public class ModelService {
     }
 
 	@Transactional
+    public String getText(Long id) {
+        return this.rulerepository.findNameBytext(id);
+    }
+	
+	@Transactional
+    public String getFile(Long id) {
+        return this.rulerepository.findNameByfile(id);
+    }
+	
+	@Transactional
 	public RuleEntity getRule(Long id) {
 		Optional<RuleEntity> result = this.rulerepository.findById(id);
 		return result.orElse(null);

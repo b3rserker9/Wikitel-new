@@ -16,5 +16,9 @@ public interface RuleRepository extends  CrudRepository<RuleEntity, Long> {
 	@Query(value = "Select name from rule_entity where id= ?", nativeQuery = true)
 	public String findNameById(Long id);
 
+	@Query(value = "select text from rule_entity where id=?" , nativeQuery = true)
+	public String findNameBytext(Long id);
 	
+	@Query(value = "select src from rule_entity where id=?" , nativeQuery = true)
+	public String findNameByfile(Long id);
 }

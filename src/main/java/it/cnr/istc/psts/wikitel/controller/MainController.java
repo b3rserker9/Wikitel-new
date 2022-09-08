@@ -129,6 +129,8 @@ public class MainController {
 	
 	private ModelEntity m;
 	
+	private Long Fileid;
+	
 	  @Autowired
 	    private ObjectMapper objectMapper;
 	
@@ -202,7 +204,8 @@ public class MainController {
 				rule.setLength(r.getLength());
 				rule.setId(r.getId());
 				rule.setName(r.getName()); 
-				rule.getSuggestionm().addAll(this.modelservice.getsuggestion(r.getSuggestions()).getSuggestion());
+				if(r.getSuggestions()!= null)
+					rule.getSuggestionm().addAll(this.modelservice.getsuggestion(r.getSuggestions()).getSuggestion());
 				re.add(rule);
 			
 				
@@ -219,6 +222,7 @@ public class MainController {
 		Set<ObjectNode> nodes = new HashSet<>();
 		Set<ObjectNode> edges = new HashSet<>();
 		Set<ObjectNode> nodes2 = new HashSet<>();
+		Set<ObjectNode> nodes50 = new HashSet<>();
 		Set<ObjectNode> rules = new HashSet<>();
 		
 		
@@ -229,7 +233,21 @@ public class MainController {
 			robgr.put("label",rule.getName()); 
 			robgr.put("group", i);
 			robgr.put("type", "rule");
+			if (rule instanceof WikiRuleEntity)
+			robgr.put("rule_type", "wiki");
+			else if (rule instanceof TextRuleEntity) {
+				robgr.put("rule_type", "text");
+				robgr.put("rule_text", this.modelservice.getText(rule.getId()));
+			}
+			else if (rule instanceof WebRuleEntity)
+				robgr.put("rule_type", "web");
+			else if (rule instanceof FileRuleEntity) {
+				robgr.put("rule_type", "file");
+				
+			}
+			robgr.put("rule_id", rule.getId());
 			nodes.add(robgr);
+			nodes50.add(robgr);
 			rules.add(robgr);
 			i++;
 		}
@@ -239,12 +257,14 @@ public class MainController {
 				rule.setLength(r.getLength());
 				rule.setId(r.getId());
 				rule.setName(r.getName()); 
+				if(r.getSuggestions()!= null)
 				rule.getSuggestionm().addAll(this.modelservice.getsuggestion(r.getSuggestions()).getSuggestion());
 				re.add(rule);
 				List<Double> max = new ArrayList<>();
 				for(SuggestionMongo sm : rule.getSuggestionm()) {
 					max.add(sm.getScore2());
 				}
+				if(r.getSuggestions()!= null) {
 			for(SuggestionMongo sm : rule.getSuggestionm()) {
 				if(!containsName(nodes, sm.getPage())) {
 					
@@ -266,12 +286,22 @@ public class MainController {
 				obj2.put("label",sm.getPage()); 
 				obj2.put("group", i);
 				nodes2.add(obj2);
+				ObjectNode obj3=objectMapper.createObjectNode();
+				if( 70 * Collections.max(max) / 100 <= sm.getScore2()) {
+				obj3.put("id",sm.getPage()); 
+				obj3.put("label",sm.getPage()); 
+				obj3.put("group", i);
+				obj3.put("type", "sug");
+				obj3.put("score", sm.getScore2());
+				nodes50.add(obj2);
+				}
 				}
 				ObjectNode edge=objectMapper.createObjectNode();
 				edge.put("from",rule.getName());    
 				edge.put("to",sm.getPage()); 
 				edges.add(edge);
 			}
+		}
 			for(RuleEntity effect : r.getPreconditions()) {
 				ObjectNode edge=objectMapper.createObjectNode();
 				edge.put("from",rule.getName());    
@@ -287,6 +317,7 @@ public class MainController {
 		tot.add(1,nodes);
 		tot.add(2,nodes2);
 		tot.add(3,rules);
+		tot.add(4,nodes50);
 		return tot;
 	}
 	
@@ -358,12 +389,29 @@ public class MainController {
     	uploadfile.transferTo(new File(baseDir + file1));
     	RuleEntity rule = new FileRuleEntity();   	
      	((FileRuleEntity) rule).setSrc(baseDir +file1);
+     	
      	rule.setName(m.getName());
      	this.modelservice.saverule(rule);
      	this.m.addRule(rule);
      	this.modelservice.save(m);
     	
 		return m.getId();
+		
+	}
+	
+	@PostMapping("/uploadFileRulePre")
+	public Long uploadfilerulepre(@RequestBody MultipartFile uploadfile ) throws IllegalStateException, IOException{
+		
+		String file1 =  uploadfile.getOriginalFilename();
+    	System.out.println(file1);
+    	String baseDir=System.getProperty("user.dir")+"\\FileRule\\";
+    	System.out.println(baseDir);
+    	uploadfile.transferTo(new File(baseDir + file1));
+    	RuleEntity rule = new FileRuleEntity();   	
+     	((FileRuleEntity) rule).setSrc(baseDir +file1);
+     	this.modelservice.saverule(rule);
+     	Fileid = rule.getId();
+		return rule.getId();
 		
 	}
 	
@@ -405,6 +453,23 @@ public class MainController {
 		                .contentLength(file.length()) //
 		                .body(resource);
 		    }
+	
+	@RequestMapping("/fileRule/{id}")
+	  public ResponseEntity<InputStreamResource> downloadFile1Rule(
+			  @PathVariable("id") Long id) throws IOException {
+
+			
+	        File file = new File(this.modelservice.getFile(id));
+	        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
+
+	        return ResponseEntity.ok()
+	                // Content-Disposition
+	                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + file.getName())
+	           
+	                // Contet-Length
+	                .contentLength(file.length()) //
+	                .body(resource);
+	    }
 	
 	@RequestMapping("/riddle/{id}")
 	  public ResponseEntity<InputStreamResource> downloadFileRiddle(
@@ -527,7 +592,7 @@ public class MainController {
              break;
          case "Pagina Web":
              rule = new WebRuleEntity();
-             ((WebRuleEntity) rule).setUrl(node.get("rule_url").asText());
+             ((WebRuleEntity) rule).setUrl(node.get("rule_text").asText());
              this.modelservice.saverule(rule);
              break;
          case "Pagina Wikipedia":
@@ -615,13 +680,8 @@ public class MainController {
 			  
 			 break;     
          case "File":
-        	 rule = new FileRuleEntity();
-        	 String file1 =  uploadfile.getOriginalFilename();
-         	System.out.println(file1);
-         	String baseDir=System.getProperty("user.dir")+"\\FileRule";
-         	uploadfile.transferTo(new File(baseDir + file1));
-         	((FileRuleEntity) rule).setSrc(baseDir +file1);
-         	this.modelservice.saverule(rule);
+        	 rule = this.modelservice.getRule(Fileid);
+        	 rule.setName(name);
          	
         	 break;
     	}

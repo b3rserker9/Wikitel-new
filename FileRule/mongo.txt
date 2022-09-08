@@ -1,0 +1,28 @@
+prima prova:
+inizio procedura 11/07/2022 16:58
+-inserimento di 373 ore 17:35 
+
+seconda prova:
+-1766 17:07
+-1917 17:21    dif:152   in 14 min
+
+terza prova:
+-1917  14:29
+-2441  15:05   dif:524   in 36 min  
+-2817  15:29   dif:900   in 60 min  
+
+avviata prova nonStop 16:00 28/07/2022
+-3473  16:00
+-3528  16:16 interroto causa errore
+-3528  16:30 
+-4285  21    dif 757  causa elevato numero di precondizioni...
+
+11/08/2022
+-4651  12:13
+
+14/08
+-5035  19:07
+-
+
+15/08 
+-5268

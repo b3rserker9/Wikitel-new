@@ -15,6 +15,9 @@ function remove(a) {
   document.getElementById(a).style.display = "none";
   console.log(students_id);
 }
+
+
+
 function add(a) {
   console.log(a);
   var b = ids[a];

@@ -112,10 +112,11 @@ public class pageController {
 	
 	@RequestMapping(value = "/failure", method = RequestMethod.GET)
 	public String failure(Model model) {
-		Json_reader interests = json("/json/user_model.json",true);
-		model.addAttribute("interests", interests.getInterests());
+		//Json_reader interests = json("/json/user_model.json",true);
+		System.out.println("CISONO");
+		//model.addAttribute("interests", interests.getInterests());
 		model.addAttribute("loginError", true);
-			return "index";
+			return "redirect:/index";
 	}
 	
 	@RequestMapping(value = "/default", method = RequestMethod.GET)

@@ -254,7 +254,7 @@ function addNode() {
   AddNode.push(a);
   console.log(AddNode);
   nodesDataset.add({id:$("#Add_node_name").val(), label:$("#Add_node_name").val(), group:type});
-  edgesDataset.add({from:select, to:$("#Add_node_name").val(), arrows:arrow});
+  edgesDataset.add({from: select, to:$("#Add_node_name").val(), arrows:arrow});
 }
 $(document).ready(function() {
   ajaxGet();
