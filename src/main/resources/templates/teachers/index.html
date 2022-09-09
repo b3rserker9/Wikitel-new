@@ -245,6 +245,89 @@ body{
 .form-check-input[type=checkbox] {
     margin-right: 0px!important;
 }
+
+
+
+.wrapper{
+  display: flex;
+  background: #fff;
+  height: 16.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  flex-wrap: wrap;
+  padding: 20px 15px;
+}
+.wrapper .option{
+  background: #fff;
+  height: 4.5em;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  margin: 0 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 0 10px;
+  border: 2px solid lightgrey;
+  transition: all 0.3s ease;
+}
+.wrapper .option .dot{
+  height: 20px;
+  width: 20px;
+  background: #d9d9d9;
+  border-radius: 50%;
+  position: relative;
+}
+.wrapper .option .dot::before{
+  position: absolute;
+  content: "";
+  top: 4px;
+  left: 4px;
+  width: 12px;
+  height: 12px;
+  background: #0069d9;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(1.5);
+  transition: all 0.3s ease;
+}
+input[type="radio"]{
+  display: none;
+}
+#option-1:checked:checked ~ .option-1,
+#option-2:checked:checked ~ .option-2,
+#option-3:checked:checked ~ .option-3,
+#option-4:checked:checked ~ .option-4,
+#option-5:checked:checked ~ .option-5{
+  border-color: #0069d9;
+  background: #0069d9;
+}
+#option-1:checked:checked ~ .option-1 .dot,
+#option-2:checked:checked ~ .option-2 .dot,
+#option-3:checked:checked ~ .option-3 .dot,
+#option-4:checked:checked ~ .option-4 .dot,
+#option-5:checked:checked ~ .option-5 .dot{
+  background: #fff;
+}
+#option-1:checked:checked ~ .option-1 .dot::before,
+#option-2:checked:checked ~ .option-2 .dot::before,
+#option-3:checked:checked ~ .option-3 .dot::before,
+#option-4:checked:checked ~ .option-4 .dot::before,
+#option-5:checked:checked ~ .option-5 .dot::before{
+  opacity: 1;
+  transform: scale(1);
+}
+.wrapper .option span{
+  font-size: 20px;
+  color: #808080;
+}
+#option-1:checked:checked ~ .option-1 span,
+#option-2:checked:checked ~ .option-2 span,
+#option-3:checked:checked ~ .option-3 span,
+#option-4:checked:checked ~ .option-4 span,
+#option-5:checked:checked ~ .option-5 span{
+  color: #fff;
+}
 </style>
 <body>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
@@ -429,8 +512,8 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
     <a href="#" class="btn btn-primary">Submit</a>
   </div>   -->
   <div class="row gy-4" id="rows">
-    <div class="col-md-3 col-sm-6 item" th:each="m : ${model}">
-      <div class="card d item-card card-block" th:id="${m.getID()} ">
+    <div class="col-md-3 col-sm-6 item" th:each="m : ${model}" th:id="${m.getID()} ">
+      <div class="card d item-card card-block" >
       
       <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" th:attr="onclick=|Postsuggetion('${m.getID()}')|"  ><i class="fas fa-cog"></i></button></h4>
     
@@ -520,7 +603,7 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
       </div>
       <div class="modal-footer" style="border-top: 0px solid!important">
         <button type="button" style="background: #093d94" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-dismiss="modal">NO</button>
-        <a type="button" style="background: red"  onclick="deleteModal()" class="btn btn-primary">YES</a>
+        <a type="button" style="background: red" data-bs-dismiss="modal" onclick="deleteModal()" class="btn btn-primary">YES</a>
       </div>
     </div>
   </div>
@@ -591,7 +674,7 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
             </div>
             <div class="modal-footer">
                <!-- Button trigger modal -->
-<a type="button" class="btn btn-primary" style="background: red" id="firstDelete"  > Delete</a>
+<button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background: red" id="firstDelete"  > Delete</button>
 
                <button type="submit"  class="btn btn-primary">Save changes</button>
             </div>
@@ -600,5 +683,33 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
    </div>
    </div>
 </div>
+
+
+<div class="modal top fade" id="wikipediaNotfound" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-mdb-keyboard="true">
+  <div class="modal-dialog modal-lg ">
+    <div class="modal-content">
+      <div class="modal-header" style="text-align: center;">
+      
+       
+       <div class="container" style="margin-bottom: 1.5rem;">
+		<div class="row mb-3" style="text-align: center;"><i style="color: red;" class="fas fa-exclamation-circle fa-3x"></i></div>
+		<div class="row d-flex justify-content-center mb-1" style="font-size: 2em;">non siamo riusciti a trovare la pagina richiesta!</div>
+		<div class="row d-flex justify-content-center" style="font-size: 2em;">forse cercavi?</div>
+	</div>
+      </div>
+      <div class="modal-body"><div class="wrapper" id="wikinotradio">
+
+</div></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary" data-mdb-dismiss="modal" onclick="newSearch()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 </body>
 </html>

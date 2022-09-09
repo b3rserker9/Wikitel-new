@@ -35,9 +35,9 @@ function update() {
 function sendnode(a){
 	 $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", dataType:"json", data:JSON.stringify(a), success:function(a) {
     console.log("SUCCESS : ", a);
-      nodesDataset.add({id:$("#Add_node_name").val(), label:$("#Add_node_name").val(), group: rules.length + 1, type: "rule", rule_id:rule_effects.rule_id, color: rule_effects.color });
-  edgesDataset.add({from:select, to:$("#Add_node_name").val()});
-
+     ajaxGet();
+document.getElementById("goal").innerHTML += '<div class="form-check form-switch col"><input class="form-check-input" type="checkbox" role="switch"  th:value="${g.id}" th:name="${g.name}"> <label class="form-check-label" for="flexSwitchCheckDefault" th:text="${g.name}"></label></div>'
+   
   }, error:function(a) {
     alert("Error!");
     console.log("ERROR: ", a);

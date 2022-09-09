@@ -27,11 +27,35 @@ import it.cnr.istc.psts.wikitel.Mongodb.RuleMongo;
 import lombok.Data;
 
 @Entity
-@Data
+
 
 public class ModelEntity {
 
-    @Id
+    public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Collection<UserEntity> getTeachers() {
+		return teachers;
+	}
+
+	public Collection<RuleEntity> getRules() {
+		return rules;
+	}
+
+	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;

@@ -13,4 +13,7 @@ public class Prova {
 	private List<Float> rank1;
 	private List<Float> rank2;
 	private String url;
+	private Boolean exists;
+	private String suggest;
+	private List<String> maybe;
 }

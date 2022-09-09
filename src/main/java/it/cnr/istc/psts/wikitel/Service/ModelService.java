@@ -86,6 +86,7 @@ public class ModelService {
 	@Transactional
     public void delete(Long id, UserEntity user) {
 		ModelEntity m = this.getModel(id);
+		System.out.println(m + " " + id);
 		m.getTeachers().stream().forEach(t -> t.getModels().remove(m)); 
 		for(LessonEntity l : user.getTeaching_lessons()) {
 			if(l.getModel().getId()==id) {

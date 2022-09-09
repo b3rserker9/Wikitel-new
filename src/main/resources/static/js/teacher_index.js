@@ -88,6 +88,11 @@ function New_rule_file(){
 }
 
 
+function wikipedianotfound(i,p){
+	document.getElementById("wikinotradio").innerHTML += '<input type="radio" name="select" id="option-'+ i +'" value="'+ p +'" checked>' +
+															 '<label for="option-'+ i +'" class="option option-'+ i +'"><div class="dot"></div><span>'+p+'</span></label>'
+}
+
 
 function New_rule() {
 
@@ -112,7 +117,21 @@ function New_rule() {
 
 
         success: function(data) {
-            active(data);
+			if(data.exists){
+				active(data.data6);
+			}else{
+				var myModal = new bootstrap.Modal(document.getElementById('wikipediaNotfound'), {
+  keyboard: false
+})
+var i =1;
+data.maybe.forEach(function(l) {
+	wikipedianotfound(i,l)
+	i++;
+})
+myModal.show()
+
+			}
+            
             console.log("SUCCESS : ", data);
         },
         error: function(e) {
@@ -120,10 +139,54 @@ function New_rule() {
             console.log("ERROR: ", e);
         }
     });
+}
 
 
+function newSearch(){
+	
+	 var model = {
+
+        model_name: $("#new-model-name").val(),
+        rule_name: $("input[name=select]:checked").val(),
+        rule_type: text,
+        rule_url: $("#new-rule-url").val(),
+        rule_text: $("#rule_Textarea").val(),
+
+    }
+
+    // DO POST
+    $.ajax({
+
+        type: "POST",
+        contentType: "application/json",
+        url: "Newrule",
+        data: JSON.stringify(model),
+        dataType: "json",
 
 
+        success: function(data) {
+			if(data.exists){
+				active(data.data6);
+			}else{
+				var myModal = new bootstrap.Modal(document.getElementById('wikipediaNotfound'), {
+  keyboard: false
+})
+var i =1;
+data.maybe.forEach(function(l) {
+	wikipedianotfound(i,l)
+	i++;
+})
+myModal.show()
+
+			}
+            
+            console.log("SUCCESS : ", data);
+        },
+        error: function(e) {
+            alert("Error!")
+            console.log("ERROR: ", e);
+        }
+    });
 }
 
 function Create_model() {
@@ -168,17 +231,16 @@ function Create_model() {
 }
 
 
-function deleteModal(modal){
+function deleteModal(id){
 	 $.ajax({
 
                 type: "POST",
                 contentType: "application/json",
-                url: "Newrule",
-                data: JSON.stringify(precondition),
-                dataType: "json",
+                url: "/deletemodel/"+id,
+               
                 success: function(data) {
                     console.log("SUCCESS : ", data);
-                 
+                 document.getElementById(id).style.display="none"
 
                 },
                 error: function(e) {
@@ -279,6 +341,7 @@ function Postsuggetion(id) {
 
 }
 function precondition_setup(data,id) {
+	document.getElementById("firstDelete").setAttribute('onclick','deleteModal('+id+')');
    console.log(data)
      rules = data;
     var x = document.getElementById("rule_list");
@@ -294,7 +357,7 @@ function precondition_setup(data,id) {
     console.log(document.getElementById("rule_list").options[0]);
     var x = document.getElementById("rule_list").options[0].value;
     console.log(rules)
-document.getElementById("firstDelete").setAttribute('href','/deletemodel/'+ id );
+
    
     let rule = rules[0];
     console.log(rule.length);

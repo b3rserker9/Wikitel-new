@@ -393,6 +393,7 @@ public class MainController {
      	((FileRuleEntity) rule).setSrc(baseDir +file1);
      	
      	rule.setName(m.getName());
+     	rule.setLength((long)0);
      	this.modelservice.saverule(rule);
      	this.m.addRule(rule);
      	this.modelservice.save(m);
@@ -570,7 +571,7 @@ public class MainController {
 	
 	
 	@RequestMapping(value = "/Newrule",  method = RequestMethod.POST)
-	public Long NewModel(@RequestBody ObjectNode node,@RequestBody MultipartFile uploadfile) throws Exception{	
+	public Response NewModel(@RequestBody ObjectNode node,@RequestBody MultipartFile uploadfile) throws Exception{	
 		RestTemplate restTemplate = new RestTemplate();
 		boolean bool = true;
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -590,11 +591,13 @@ public class MainController {
     	 case "Testo":
              rule = new TextRuleEntity();
              ((TextRuleEntity) rule).setText(node.get("rule_text").asText());
+             rule.setLength((long)0);
              this.modelservice.saverule(rule);
              break;
          case "Pagina Web":
              rule = new WebRuleEntity();
              ((WebRuleEntity) rule).setUrl(node.get("rule_text").asText());
+             rule.setLength((long)0);
              this.modelservice.saverule(rule);
              break;
          case "Pagina Wikipedia":
@@ -603,6 +606,7 @@ public class MainController {
         	 if(this.modelservice.getrulemongoname(name) == null) {
              
              Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name.replace(' ','_'), Prova.class);
+             if(prova.getExists()) {
              ((WikiRuleEntity) rule).setUrl(prova.getUrl());
 			 List<RuleSuggestionRelationEntity> relations = new ArrayList<>();
 			 
@@ -645,7 +649,12 @@ public class MainController {
 			 rule.getTopics().addAll(prova.getCategories());
 			 rulemongo.setLength(prova.getLength());
 		     rulemongo.getTopics().addAll(prova.getCategories());
-			    
+        	 }
+             else {
+            	 System.out.println("ELEMENTO NON TROVATO PROVA CON " + prova.getSuggest() + " " + prova.getMaybe());
+            	 Response response = new Response(prova.getExists(),prova.getSuggest(),prova.getMaybe());
+            	 return response;
+             }
 			 }     
         	 else {
         		 bool=false;
@@ -684,7 +693,8 @@ public class MainController {
          case "File":
         	 rule = this.modelservice.getRule(Fileid);
         	 rule.setName(name);
-         	
+        	 rule.setLength((long)0);
+             this.modelservice.saverule(rule);
         	 break;
     	}
     	if (effect != null) {
@@ -711,15 +721,27 @@ public class MainController {
     	rule.setName(node.get("rule_name").asText());
     	rulemongo.setTitle(name);;
     	rulemongorep.save(rulemongo);
-		Response response = new Response("Done");
+		
     	}
     	this.modelservice.saverule(rule);
     	model.getRules().add(rule);
     	modelservice.save(model);
     	send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 1)), UserController.ONLINE.get(nuovo.getId()));
-		return model.getId();
+    	Response response = new Response(true,model.getId());
+		return response;
 		
 	}
+	
+	@RequestMapping(value =  "/deletemodel/{id}" , method = RequestMethod.POST)
+	 public String deletemodel(@PathVariable("id") Long id) {
+		 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+			UserEntity userentity = credentials.getUser();
+			this.modelservice.delete(id, userentity);
+			System.out.println("OKK");
+			return "OK";
+	 }
+	
 	
 	@RequestMapping(value = "/NewLesson",  method = RequestMethod.POST)
 	public Response Newlesson(@RequestBody ObjectNode node) throws JsonMappingException, JsonProcessingException{	
