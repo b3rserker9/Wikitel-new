@@ -69,6 +69,7 @@ function Create_new_lesson() {
     b.forEach(function(d) {
       d.checked && result.push(d.value);
     });
+    console.log(result)
     return result;
   }
   var b = document.getElementById("lesson_goal").querySelectorAll('input[type="checkbox"]');

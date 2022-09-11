@@ -167,7 +167,7 @@ public class pageController {
     	for(LessonEntity l : userentity.getFollowing_lessons()) {
     		LessonManager manager = MainController.LESSONS.get(l.getId());
     		m.add(manager);	
-    		System.out.println("MANAGER :"+manager.getCurrentTime());
+
     	}
     	model.addAttribute("manager",m);
     	model.addAttribute("teacher",true);
