@@ -167,6 +167,7 @@ public class MainController {
 		System.out.println("LIST: " + MainController.LESSONS + " " + n);
 		if(session.getLesson_id()!=null) {
 		LessonManager manager = MainController.LESSONS.get(n);
+		
 		send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(session.getLesson_id(), manager.getSolver().getTimelines())), session.getSession());
 		send.notify(Starter.mapper.writeValueAsString(new LessonManager.Tick(session.getLesson_id(), manager.getCurrentTime())), session.getSession());
 		if(manager.st!=null) {
