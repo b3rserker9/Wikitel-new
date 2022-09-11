@@ -359,9 +359,6 @@ public class MainController {
     	nuovo.setProfile(user.getProfile());
     	userservice.saveUser(nuovo);
     	Response response = new Response("Done", nuovo);
-    	ObjectMapper mapper = new ObjectMapper();
-    	List<String> profile = mapper.readValue(nuovo.getProfile(), new TypeReference<List<String>>(){});
-    	System.out.println("ciao " +profile.get(0));
 		return response;
 		
 	}
@@ -477,9 +474,11 @@ public class MainController {
 	@RequestMapping("/riddle/{id}")
 	  public ResponseEntity<InputStreamResource> downloadFileRiddle(
 			  @PathVariable("id") Long id) throws IOException {
-
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		UserEntity nuovo = credentials.getUser();
 			
-	        File file = new File(System.getProperty("user.dir")+"\\riddle\\" + id + ".rddl");
+	        File file = new File(System.getProperty("user.dir")+"\\riddle\\" + id + nuovo.getId() + ".rddl");
 	        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
 	        return ResponseEntity.ok()
