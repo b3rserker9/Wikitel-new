@@ -165,10 +165,12 @@ public class pageController {
     	model.addAttribute("user",userentity);
     	model.addAttribute("credentials",credentials);
     	for(LessonEntity l : userentity.getFollowing_lessons()) {
-    		LessonManager manager = MainController.LESSONS.get(l.getId());
+    		String n = String.valueOf(l.getId()) + String.valueOf(userentity.getId());
+    		LessonManager manager = MainController.LESSONS.get(n);
     		m.add(manager);	
 
     	}
+   
     	model.addAttribute("manager",m);
     	model.addAttribute("teacher",true);
 			return "admin/profilo";
