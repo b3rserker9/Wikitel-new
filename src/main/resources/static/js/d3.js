@@ -69,7 +69,7 @@ function New_rule_file(){
 }
 
 function addNode() {
-  var a = {model_id: document.getElementById("model_name").getAttribute("value") , rule_name:$("#Add_node_name").val(), rule_text:document.getElementById(type).value, rule_type :type,  rule_id: rule_effects.rule_id};
+  var a = {model_id: document.getElementById("model_name").getAttribute("value") ,rule_length:$("#Add_node_time").val(), rule_name:$("#Add_node_name").val(), rule_text:document.getElementById(type).value, rule_type :type,  rule_id: rule_effects.rule_id};
  if(type!="file"){
  	sendnode(a)}
   else{
@@ -159,7 +159,8 @@ nodeFilterSelector.addEventListener("change", function(a) {
   });
   console.log(fiternode);
   console.log(edges);
-  redrawAll(fiternode, edges);
+  nodesDataset = new vis.DataSet(fiternode);
+  redrawAll(nodesDataset, edgesDataset);
 });
 
 function esplora() {
@@ -184,12 +185,14 @@ function wiki_link() {
 function neighbourhoodHighlight(a) {
 	 var b = new bootstrap.Modal(document.getElementById("myModal"), {keyboard:!1});
 	 if(0 < a.nodes.length){
-	
+	console.log(a)
 	 if(nodesDataset.get(a.nodes)[0].type === "rule"){
 	  document.getElementById("addnodo").style.display= "block";
+	  
 	  document.getElementById("esploranodo").style.display= "none";
 	  }else{
 	   document.getElementById("addnodo").style.display= "none";
+	   document.getElementById("Add").style.display= "none";
 	   document.getElementById("esploranodo").style.display= "block";
 	   }
 	    if(nodesDataset.get(a.nodes)[0].rule_type === "text"){

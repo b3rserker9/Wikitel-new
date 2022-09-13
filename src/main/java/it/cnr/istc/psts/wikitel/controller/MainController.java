@@ -235,6 +235,7 @@ public class MainController {
 			robgr.put("label",rule.getName()); 
 			robgr.put("group", i);
 			robgr.put("type", "rule");
+			robgr.put("shape", "triangle");
 			if (rule instanceof WikiRuleEntity)
 			robgr.put("rule_type", "wiki");
 			else if (rule instanceof TextRuleEntity) {
@@ -591,13 +592,13 @@ public class MainController {
     	 case "Testo":
              rule = new TextRuleEntity();
              ((TextRuleEntity) rule).setText(node.get("rule_text").asText());
-             rule.setLength((long)0);
+             rule.setLength(node.get("rule_length").asLong());
              this.modelservice.saverule(rule);
              break;
          case "Pagina Web":
              rule = new WebRuleEntity();
              ((WebRuleEntity) rule).setUrl(node.get("rule_text").asText());
-             rule.setLength((long)0);
+             rule.setLength(node.get("rule_length").asLong());
              this.modelservice.saverule(rule);
              break;
          case "Pagina Wikipedia":
@@ -693,7 +694,7 @@ public class MainController {
          case "File":
         	 rule = this.modelservice.getRule(Fileid);
         	 rule.setName(name);
-        	 rule.setLength((long)0);
+        	 rule.setLength(node.get("rule_length").asLong());
              this.modelservice.saverule(rule);
         	 break;
     	}
