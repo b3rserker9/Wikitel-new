@@ -109,7 +109,7 @@ function ajaxGet() {
   }});
 }
 function filter_rule() {
-  document.getElementById("only_rule").checked ? (nodesDataset = new vis.DataSet(rules), console.log(nodesDataset)) : nodesDataset = new vis.DataSet(nodes);
+  document.getElementById("only_rule").checked ? (nodesDataset = new vis.DataSet(rules), console.log(nodesDataset)) : nodesDataset = new vis.DataSet(halfnodes);
   redrawAll(nodesDataset, edgesDataset);
 }
 function aggiorna() {
