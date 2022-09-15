@@ -292,6 +292,10 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    		        if (wsc != null)
 	    		            try {
 	    		            	send.notify(Starter.mapper.writeValueAsString(new Tick(lesson.getId(), current_time)), wsc);
+	    		            	for(UserEntity u : lesson.getFollowed_by()) {
+	    		            		if(UserController.ONLINE.containsKey(u.getId()))
+	    		            		send.notify(Starter.mapper.writeValueAsString(new Tick(lesson.getId(), current_time)), UserController.ONLINE.get(u.getId()));
+	    		            	}
 	    		            } catch (final JsonProcessingException e) {
 	    		                LOG.error("Cannot write tick message..", e);
 	    		            }

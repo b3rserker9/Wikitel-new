@@ -162,6 +162,7 @@ public class MainController {
 	@MessageMapping("/register")
 	public void prova(@Payload Session session, SimpMessageHeaderAccessor headerAccessor ) throws JsonProcessingException {
 		UserController.ONLINE.put(session.getUser_id(), session.getSession());
+		System.out.println(UserController.ONLINE);
 		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(session.getUser_id()));
 		String n = String.valueOf(session.getLesson_id()) + String.valueOf(session.getUser_id());
 		System.out.println("LIST: " + MainController.LESSONS + " " + n);
@@ -515,14 +516,25 @@ public class MainController {
 	
 	@PostMapping("/play")
 	public Response PlayLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
-    	LESSONS.get(node.get("id").asLong()).play();
+		
+		for(UserEntity u : this.lessonservice.lezionePerId(node.get("id").asLong()).getFollowed_by()) {
+		String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+		System.out.println(n);
+		System.out.println(LESSONS);
+    	LESSONS.get(n).play();
+		}
     	Response response = new Response("Done");
 		return response;
 		
 	}
 	@PostMapping("/pause")
 	public Response pauseLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
-    	LESSONS.get(node.get("id").asLong()).pause();
+		for(UserEntity u : this.lessonservice.lezionePerId(node.get("id").asLong()).getFollowed_by()) {
+			String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+			System.out.println(n);
+			System.out.println(LESSONS);
+	    	LESSONS.get(n).pause();
+			}
    
   
     	Response response = new Response("Done");
@@ -532,8 +544,12 @@ public class MainController {
 	
 	@PostMapping("/stop")
 	public Response stopLesson(@RequestBody ObjectNode node ) throws IllegalStateException, IOException{
-
-		LESSONS.get(node.get("id").asLong()).stop();
+		for(UserEntity u : this.lessonservice.lezionePerId(node.get("id").asLong()).getFollowed_by()) {
+			String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+			System.out.println(n);
+			System.out.println(LESSONS);
+	    	LESSONS.get(n).stop();
+			}
 
     
     	Response response = new Response("Done");
