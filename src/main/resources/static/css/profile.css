@@ -85,7 +85,7 @@
 .images{
 	display: flex;
     flex-wrap: wrap;
-    max-height: 650px;
+    max-height: 390px;
     max-width: 100%;
     justify-content: center;
     padding: 10px;

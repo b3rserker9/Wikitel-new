@@ -114,7 +114,7 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	    	final StringBuilder sb = new StringBuilder();
 	    	        to_string(sb, lesson);
 	    	        
-	    	        final File lesson_file = new File(System.getProperty("user.dir")+"\\riddle\\" + lesson.getId() + user + ".rddl");
+	    	        final File lesson_file = new File(System.getProperty("user.dir")+"//riddle//" + lesson.getId() + user + ".rddl");
 	    	        try {
 	    	            if (lesson_file.createNewFile()) {
 	    	                System.out.println("File created: " + lesson_file.getName());
