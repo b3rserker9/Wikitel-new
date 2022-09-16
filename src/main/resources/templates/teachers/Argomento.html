@@ -263,6 +263,23 @@ text {
   color:#8fd9ff;
 }
 
+.card-title{  
+  font-size:15px;
+  transition:1s;
+  cursor:pointer;
+}
+.card-title i{  
+  font-size:15px;
+  transition:1s;
+  cursor:pointer;
+  color:#ffa710
+}
+.card-title i:hover{
+  transform: scale(1.25) rotate(100deg); 
+  color:#18d4ca;
+  
+}
+
 </style>
 <script>
 function openNav() {
@@ -321,13 +338,14 @@ function openNav() {
 
 <div class="container">
   <div class="row" id="row">
-			<div class="col-xs-12 col-md-4" th:each="m : ${lesson}">
+			<div class="col-xs-12 col-md-4" th:each="m : ${lesson}" th:id="${m.getId()}">
 				<div class="color-block-wrapper">
 					<div class="color-block color-block-lblue color-block-icon-list">
 						
 						<div class="color-block-text" th>
 							<h3 th:text="${m.name}"></h3>
 						</div>
+						<h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;background-color: #005bb7!important;" th:attr="onclick=|lessionopt('${m.getId()}')|" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button></h4>
 						<div class="color-block-head" >
 							N° Studenti: <span th:text="${m.getFollowed_by().size()}"></span>
 						</div>
@@ -382,10 +400,6 @@ function openNav() {
 <div id="mynetwork"></div><div id="loadingBar">
    
   </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
@@ -611,6 +625,22 @@ function openNav() {
   </div>
 </div>
 
+
+<div class="modal fade" id="lezioneopt" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">...</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" style="background-color: red;" id="lessenDelete" data-mdb-dismiss="modal">Delete</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

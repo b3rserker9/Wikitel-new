@@ -481,7 +481,7 @@ public class MainController {
     	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
 		UserEntity nuovo = credentials.getUser();
 			
-	        File file = new File(System.getProperty("user.dir")+"\\riddle\\" + id + nuovo.getId() + ".rddl");
+	        File file = new File(System.getProperty("user.dir")+"//riddle//" + id + nuovo.getId() + ".rddl");
 	        InputStreamResource resource = new InputStreamResource(new FileInputStream(file));
 
 	        return ResponseEntity.ok()
@@ -755,6 +755,16 @@ public class MainController {
 			Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
 			UserEntity userentity = credentials.getUser();
 			this.modelservice.delete(id, userentity);
+			System.out.println("OKK");
+			return "OK";
+	 }
+	
+	@RequestMapping(value =  "/deletelesson/{id}" , method = RequestMethod.POST)
+	 public String deletelesson(@PathVariable("id") Long id) {
+		 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+			UserEntity userentity = credentials.getUser();
+			this.lessonservice.delete(this.lessonservice.lezionePerId(id));
 			System.out.println("OKK");
 			return "OK";
 	 }

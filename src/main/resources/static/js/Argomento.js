@@ -16,7 +16,19 @@ function remove(a) {
   console.log(students_id);
 }
 
+function deletelesson(id){
+	$.ajax({type:"POST", contentType:"application/json", url:"/deletelesson/"+id,  success:function(a) {
+    console.log("SUCCESS : ", a);
+    document.getElementById(id).style.display="none"
+  }, error:function(a) {
+    alert("Error! " + a);
+    console.log("ERROR: ", a);
+  }});
+}
 
+function lessionopt(id){
+	document.getElementById("lessenDelete").setAttribute('onclick','deletelesson('+id+')');
+}
 
 function add(a) {
   console.log(a);
@@ -83,7 +95,7 @@ function Create_new_lesson() {
     $.ajax({type:"POST", contentType:"application/json", url:"/NewLesson", data:JSON.stringify(c), dataType:"json", success:function(d) {
       $("#new-lesson-modal").modal("hide");
       console.log("SUCCESS : ", d);
-      document.getElementById("row").innerHTML += '<div class="col-xs-12 col-md-4" th:each="m : ${lesson}"> <div class="color-block-wrapper"> <div class="color-block color-block-lblue color-block-icon-list"> <div class="color-block-text" th> <h3 >' + d.data4.name + '</h3> </div> <div class="color-block-head"> N\u00b0 Studenti: ' + d.data4.followed_by.length + ' </div> </div> <div class="color-block-bottom"> <a href="/lezione/' + d.data4.id + '" class="btncard btncard-transparent-lblue">Visita</a> </div> </div> </div>';
+      document.getElementById("row").innerHTML += '<div class="col-xs-12 col-md-4" > <div class="color-block-wrapper"> <div class="color-block color-block-lblue color-block-icon-list"> <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;background-color: #005bb7!important;" attr="onclick=lessionopt('+ d.data4.id +')" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button></h4><div class="color-block-text" th> <h3 >' + d.data4.name + '</h3> </div> <div class="color-block-head"> N\u00b0 Studenti: ' + d.data4.followed_by.length + ' </div> </div> <div class="color-block-bottom"> <a href="/lezione/' + d.data4.id + '" class="btncard btncard-transparent-lblue">Visita</a> </div> </div> </div>';
       students_id = [];
       document.getElementById("chips").innerHTML = "";
     }, error:function(d) {

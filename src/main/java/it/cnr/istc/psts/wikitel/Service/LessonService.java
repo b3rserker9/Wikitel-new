@@ -27,6 +27,13 @@ public class LessonService {
 	
 	@Transactional
     public void delete(LessonEntity lesson) {
+		for(UserEntity u : lesson.getFollowed_by()) {
+			u.getFollowing_lessons().remove(lesson);
+		}
+		lesson.getFollowed_by().clear();
+		lesson.getTeacher().getTeaching_lessons().remove(lesson);
+		lesson.setTeacher(null);
+		lesson.getGoals().clear();
         this.lessonsrepository.deleteById(lesson.getId());
     }
 	
