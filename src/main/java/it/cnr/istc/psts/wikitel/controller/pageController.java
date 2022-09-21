@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,10 +131,19 @@ public class pageController {
     	model.addAttribute("interests", interests.getInterests());
     	model.addAttribute("user",userentity);
     	model.addAttribute("Teachers",userservice.getTeacher(userentity.TEACHER_ROLE));
-    	//se e' admin
+    	
     	if (credentials.getRole().equals(UserEntity.STUDENT_ROLE)) {
-    		System.out.println("username:PIPPO");
-    		
+    		HashMap<String,ArrayList<LessonEntity>> t = new HashMap<>();
+    		for(LessonEntity l : userentity.getFollowing_lessons()) {
+    			if(t.containsKey(l.getTeacher().getFirst_name() + " " + l.getTeacher().getLast_name() )) {
+    				t.get(l.getTeacher().getFirst_name() + " " + l.getTeacher().getLast_name()).add(l);
+    			}else {
+    				t.put(l.getTeacher().getFirst_name() + " " + l.getTeacher().getLast_name(), new ArrayList<>());
+    				t.get(l.getTeacher().getFirst_name() + " " + l.getTeacher().getLast_name()).add(l);
+    			}
+    		}
+    		System.out.println(t);
+    		model.addAttribute("lessons", t);
             return "admin/hello";
         }
     	//se non lo e'
@@ -168,8 +178,7 @@ public class pageController {
     		String n = String.valueOf(l.getId()) + String.valueOf(userentity.getId());
     		LessonManager manager = MainController.LESSONS.get(n);
     		m.add(manager);	
-
-    	}
+   	}
    
     	model.addAttribute("manager",m);
     	model.addAttribute("teacher",true);

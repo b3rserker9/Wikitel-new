@@ -132,7 +132,7 @@ function redrawAll(a, c) {
   var e = document.getElementById("mynetwork"), b = {nodes:a, edges:c};
   console.log(a.length);
   if (900 > a.length) {
-    var d = {nodes:{shape:"dot", scaling:{min:10, max:30, label:{min:8, max:30, drawThreshold:12, maxVisible:20,},}, font:{size:12, face:"Tahoma",},}, edges:{width:0.15, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:!1, solver:"repulsion", repulsion:{nodeDistance:400}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:!1}};
+    var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, font:{size:12, face:"Tahoma",},}, edges:{width:0.15, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:!1, solver:"repulsion", repulsion:{nodeDistance:400}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:!1}};
     console.log("sonoqui");
   } else {
     console.log("slpkd"), d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, font:{size:12, face:"Tahoma",},}, edges:{smooth:!1}, physics: {

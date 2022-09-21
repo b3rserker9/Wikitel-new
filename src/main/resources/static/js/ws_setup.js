@@ -1,6 +1,7 @@
 import * as lesson from "./lesson.js";
-import {timeline} from "./timeline.js";
-
+import {timeline,type} from "./timeline.js";
+import {addNewLesson} from "./lessonadd.js";
+let u= null;
 
 $(document).ready(
     function() {
@@ -32,8 +33,14 @@ function setup_ws(msg) {
 
         const c_msg = JSON.parse(msg);
         switch (c_msg.type) {
+			case 'lesson':
+			addNewLesson(c_msg.id_Lesson,c_msg.name_lesson,c_msg.teacher_lesson,c_msg.teacher_id)
             case 'online':
              console.log("online");
+                break;
+            case 'user':
+             type(c_msg.id)
+             u=c_msg.id
                 break;
             case 'follower':
             toastr.info("sei stato aggiunto " + c_msg.state);
@@ -59,6 +66,7 @@ function setup_ws(msg) {
               console.log("Graph");
                 break;
             case 'StartedSolving':
+            toastr.info("solving the problem..");
                 console.log("solving the problem..");
                 break;
             case 'SolutionFound':
@@ -99,7 +107,7 @@ function setup_ws(msg) {
             localStorage.setItem("horizon",c_msg.timelines[0].horizon);
              lesson.horizon(c_msg.timelines[0].horizon);
              console.log(c_msg)
-             timeline(c_msg.timelines[0].values)
+             timeline(c_msg.timelines[0].values,u)
        break;
             case 'Tick':
             console.log(msg);

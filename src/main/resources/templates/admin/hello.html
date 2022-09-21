@@ -35,6 +35,7 @@
 		<link th:href="@{/css/hello.css}" rel="stylesheet">
 		
 		<script  language="javascript" src="/js/hello.js"></script>
+		<script type="module" src="/js/lessonadd.js"></script>
 		<script type="module" src="/js/ws_setup.js"></script>
 		
 		    <link href="https://fonts.googleapis.com/css2?family=Titillium+Web:wght@300&display=swap" rel="stylesheet">
@@ -77,10 +78,14 @@ button.accordion:hover, button.accordion.is-open {
 }
 
 .accordion-content {
+	display: flex;
+ 
+    flex-wrap: wrap;
+    gap: 12px;
   background-color: white;
   border-left: 1px solid whitesmoke;
   border-right: 1px solid whitesmoke;
-  padding: 0 20px;
+  padding: 8px 8px;
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.2s ease-in-out;
@@ -222,11 +227,11 @@ function openNav() {
 <div th:each="t : ${Teachers}">
     <button class="accordion" th:text="${t.last_name} + ' ' + ${t.first_name}"></button>
     <div class="accordion-content">
-    <div th:each="l : ${t.teaching_lessons}">
-    <button type="button"  class="btn btn-light" data-bs-toggle="modal" style="margin-top:2%;" data-bs-target="#Enrol" th:text="${l.name}" th:value="${l.id}" th:name="${l.name}" onclick="pippo(this.name, this.value)">
+   
+    <button th:each="l : ${t.teaching_lessons}" type="button"  class="btn btn-light" data-bs-toggle="modal" style="margin-top:2%;" data-bs-target="#Enrol" th:text="${l.name}" th:value="${l.id}" th:name="${l.name}" onclick="pippo(this.name, this.value)">
  			 
 		</button>
-    </div>
+   
     </div>
 </div>
   </div>
@@ -238,8 +243,12 @@ function openNav() {
   
   <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"><h1>Welcome <span th:text="${user.first_name}"></span></h1>
   <div class="container mt-5 mb-3">
-    <div class="row">
-        <div class="col-md-4" th:each="l : ${user.following_lessons}">
+    <div class="row" th:each="t : ${lessons.keySet()}">
+    <a class="h1" data-bs-toggle="collapse" th:href="'#a' + ${tStat.index} " role="button" aria-expanded="false" aria-controls="collapseExample" th:text="${t}">
+  </a>
+  <div class="collapse" th:id="'a'+${tStat.index} ">
+  <div class="card card-body" style="flex-wrap: wrap;flex-direction: inherit!important;" th:id="${lessons.get(t)[0].teacher.id}">
+    <div class="col-md-4" th:each="l : ${lessons.get(t)}">
             <div class="card cardv p-3 mb-2">
                 <div class="d-flex justify-content-between">
                     <div class="d-flex flex-row align-items-center">
@@ -261,6 +270,9 @@ function openNav() {
                 </div>
             </div>
         </div>
+  </div>
+</div>
+        
    
     </div>
 </div>

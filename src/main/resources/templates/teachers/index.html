@@ -344,30 +344,7 @@ function openNav() {
 }
 }
 
-YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
 
-    // Create a new instance of calendar, placing it in
-    // #mycalendar container, setting its width to 340px,
-    // the flags for showing previous and next month's
-    // dates in available empty cells to true, and setting
-    // the date to today's date.
-    var calendar = new Y.Calendar({
-      contentBox: "#mycalendar",
-      width:'300px',
-      height:'300px',
-      showPrevMonth: true,
-      showNextMonth: true,
-      date: new Date()}).render();
-
-    // Get a reference to Y.DataType.Date
-    var dtdate = Y.DataType.Date;
-
-    // Listen to calendar's selectionChange event.
- 
-
-
-    
-});
 
 </script>
 
@@ -380,15 +357,11 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse  justify-content-center" id="navbarNav">
-    <ul class="nav nav-pills" id="pills-tab" role="tablist">
-  <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
-  </li>
-  <li class="nav-item" role="presentation">
-    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Lezioni</button>
-  </li>
+   
+ 
+ 
   
-</ul>
+
    
   </div>
   <ul class="nav navbar-nav navbar-right">
@@ -427,85 +400,9 @@ YUI().use('calendar', 'datatype-date', 'cssbutton',  function(Y) {
 </div>
 
  <div id="main">
-<div class="tab-content" id="pills-tabContent">
-  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-  <div class="page">
-  	<div class="section1">
-  	<h1>Welcome Prof. <span th:text="${user.first_name}"></span></h1>
-  	<div class=card_container>
 
-<div class="card-item">
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <button type="button" class="btn btn-primary">Button</button>
-  </div>
-</div>
-</div>
+  
 
-<div class="card-item">
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <button type="button" class="btn btn-primary">Button</button>
-  </div>
-</div>
-</div>
-
-<div class="card-item">
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <button type="button" class="btn btn-primary">Button</button>
-  </div>
-</div>
-</div>
-  	</div>
-  <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-  	</div>
-  	<div class="section2">
-  	    <div class="col-12 pt-3 pb-3">
-        <div class="card ">
-            <div class="card-body ">
-                <div class="d-sm-flex align-items-center">
-                    <div class="mr-auto">
-                        	<div class="calendar">
-  	<div id="demo" class="yui3-skin-sam yui3-g"> <!-- You need this skin class -->
-
-  <div id="leftcolumn" class="yui3-u">
-     <!-- Container for the calendar -->
-     <div id="mycalendar"></div>
-  </div>
-  <div id="rightcolumn" class="yui3-u">
-   <div id="links" style="padding-left:20px;">
-   </div>
-  </div>
-</div>
-  	</div></div>                       
-                </div>              
-            </div>
-        </div>
-    </div>
-   <div class="col-12 pt-3 pb-3">
-        <div class="card ">
-            <div class="card-body ">
-                <div class="d-sm-flex align-items-center">
-                    <div class="mr-auto">
-                        	<h5 class="card-title">Upcoming events</h5>
-      <p class="card-text">There are no upcoming events</p>
-       <a href="#" class="card-link">Go to calendar...</a>
-      <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p></div>                       
-                </div>              
-            </div>
-        </div>
-    </div>
-  </div>
-  </div>
-  </div>
-  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
   		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new_lesson1">Nuovo Argomento</button>
   <div class="container mt-2">
 <!--   <div class="card card-block mb-2">

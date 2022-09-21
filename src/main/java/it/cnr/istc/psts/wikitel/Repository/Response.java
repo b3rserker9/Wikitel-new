@@ -1,6 +1,7 @@
 package it.cnr.istc.psts.wikitel.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 
@@ -24,7 +25,7 @@ public class Response {
 	private Long data6;
 	private ModelEntity data7;
 	private List<ModelEntity> data8;
-	private Boolean exists; String suggest; List<String> maybe ;  
+	private Boolean exists; String suggest; List<String> maybe ; Set<String> topics;   
 	public Response(String status, User user) {
 		this.status=status;
 		this.data=user;
@@ -65,7 +66,10 @@ public class Response {
 		this.status=status2;
 	}
 	
-	
+	public Response(String id ,Set<String> maybe) {
+		this.status=id;
+		this.topics=maybe;
+	} 
 	
 	public Response(Boolean exits, String suggest, List<String> maybe) {
 		this.exists=exits;

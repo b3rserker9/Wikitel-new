@@ -1,16 +1,44 @@
 let rows=[];
 let name;
- 
- 
- 
-    export function timeline(array){
+let user=null;
+let users = [];
+let one=true;
+
+
+ 	export function type(u){
+	users.push(u)
+	user = u
+	console.log(user)
 	
+}
+ 
+    export function timeline(array,u){
+
 	
        google.charts.load("current", {packages:["timeline"]});
     google.charts.setOnLoadCallback(drawChart);
     
  function drawChart() {
-      var container = document.getElementById('timeline');
+		
+	
+		
+	
+		
+	
+	rows =[];
+	array.forEach(function(s) {
+		getName(s.atom.predicate);
+		
+	rows.push(['rule', name , new Date(0,0,0,0,0,s.from),new Date(0,0,0,0,0,s.to)  ])
+	});
+	if(u!=null){
+	var container = document.getElementById('timeline'+u);}
+	else{
+		var container = document.getElementById('timeline');
+	}
+
+      console.log(container)
+      
       var chart = new google.visualization.Timeline(container);
       var dataTable = new google.visualization.DataTable();
       dataTable.addColumn({ type: 'string', id: 'Room' });
@@ -21,11 +49,18 @@ let name;
 
       var options = {
         timeline: { showRowLabels: false },
-        avoidOverlappingGridLines: false,
+        avoidOverlappingGridLines: false, rowLabelStyle: { fontSize: 24, color: '#603913' },
+                     barLabelStyle: {  fontSize: 14 } 
       };
 
       chart.draw(dataTable, options);
+      
+      
     }
+   
+	
+	
+	
 	
 	function getName(link){
 		console.log(link.substring(3,link.length));
@@ -52,16 +87,10 @@ let name;
 	}
 	
 	
-	console.log(array);
-	rows =[];
-	array.forEach(function(s) {
-		getName(s.atom.predicate);
-		console.log(name);
-	rows.push(['rule', name , new Date(0,0,0,0,0,s.from),new Date(0,0,0,0,0,s.to)  ])
-	});
-	
-	drawChart(rows)
+
+
 }
+
 
 
   

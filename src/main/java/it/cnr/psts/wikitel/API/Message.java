@@ -26,7 +26,9 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
         @Type(value = Message.Stimulus.TextStimulus.class, name = "text-stimulus"),
         @Type(value = Message.Stimulus.QuestionStimulus.class, name = "question-stimulus"),
         @Type(value = Message.Stimulus.URLStimulus.class, name = "url-stimulus"),
-        @Type(value = Message.Searching.class, name = "searching")})
+        @Type(value = Message.Searching.class, name = "searching"),
+        @Type(value = Message.User.class, name = "user"),
+        @Type(value = Message.Lesson.class, name = "lesson")})
 public abstract class Message {
 
     /**
@@ -482,4 +484,57 @@ public abstract class Message {
             return status;
         }
     }
+    
+    public static class User extends Message {
+
+        private final Long id_user;
+
+        @JsonCreator
+        public User(@JsonProperty("id_user") final Long id_user) {
+            this.id_user = id_user;
+        }
+
+        /**
+         * @return the lesson_id
+         */
+        public Long getId() {
+            return id_user;
+        }
+
+    }
+    
+    public static class Lesson extends Message {
+
+        private final Long id_Lesson;
+        private final String name_lesson;
+        private final String teacher_lesson; 
+        private final Long teacher_id;
+        @JsonCreator
+        public Lesson(@JsonProperty("id_Lesson") final Long id_Lesson, @JsonProperty("name_lesson") final String name_lesson ,@JsonProperty("teacher_lesson") final String teacher_lesson, @JsonProperty("teacher_lesson") final Long teacher_id) {
+            this.id_Lesson = id_Lesson;
+            this.name_lesson = name_lesson;
+            this.teacher_lesson= teacher_lesson;
+            this.teacher_id = teacher_id;
+        }
+
+        /**
+         * @return the lesson_id
+         */
+        public Long getid_Lesson() {
+            return id_Lesson;
+        }
+        public Long getteacher_id() {
+            return teacher_id;
+        }
+        
+        public String getteacher_lesson() {
+            return teacher_lesson;
+        }
+        
+        public String getname_lesson() {
+            return name_lesson;
+        }
+
+    }
+    
 }

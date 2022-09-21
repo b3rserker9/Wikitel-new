@@ -279,7 +279,51 @@ text {
   color:#18d4ca;
   
 }
+.c-details span {
+    font-weight: 300;
+    font-size: 13px
+}
 
+.icon {
+    width: 50px;
+    height: 50px;
+    background-color: #eee;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 39px
+}
+
+.badge span {
+    background-color: #fffbec;
+    width: 60px;
+    height: 25px;
+    padding-bottom: 3px;
+    border-radius: 5px;
+    display: flex;
+    color: #fed85d;
+    justify-content: center;
+    align-items: center
+}
+
+.progress {
+    height: 10px;
+    border-radius: 10px
+}
+
+.progress div {
+    background-color: red
+}
+
+.text1 {
+    font-size: 14px;
+    font-weight: 600
+}
+
+.text2 {
+    color: #a5aec0
+}
 </style>
 <script>
 function openNav() {
@@ -336,27 +380,32 @@ function openNav() {
 </button>
   
 
-<div class="container">
-  <div class="row" id="row">
-			<div class="col-xs-12 col-md-4" th:each="m : ${lesson}" th:id="${m.getId()}">
-				<div class="color-block-wrapper">
-					<div class="color-block color-block-lblue color-block-icon-list">
-						
-						<div class="color-block-text" th>
-							<h3 th:text="${m.name}"></h3>
-						</div>
-						<h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;background-color: #005bb7!important;" th:attr="onclick=|lessionopt('${m.getId()}')|" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button></h4>
-						<div class="color-block-head" >
-							N° Studenti: <span th:text="${m.getFollowed_by().size()}"></span>
-						</div>
-					</div>
-					<div class="color-block-bottom">
- <a th:href="'/lezione/' + ${m.id}" class="btncard btncard-transparent-lblue">Visita</a>
-					</div>
-				</div>
-			</div>
-			
-		</div>
+<div class="container mt-5 mb-3">
+    <div class="row" id="row">
+        <div class="col-md-4" th:each="m : ${lesson}" th:id="${m.getId()}">
+            <div class="card cardv p-3 mb-2">
+                <div class="d-flex justify-content-between">
+                    <div class="d-flex flex-row align-items-center">
+                        <div class="icon"> <i class="bx bxl-mailchimp"></i> </div>
+                        <div class="ms-2 c-details">
+                            <h6 class="mb-0" th:text="${m.model.name}"></h6> N° Studenti: <span th:text="${m.getFollowed_by().size()}"></span>
+                        </div>
+                    </div><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" th:attr="onclick=|lessionopt('${m.getId()}')|" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button>
+              
+                </div>
+                <div class="mt-5">
+                    <a style="font-size: 19px;" class="h2" th:href="@{'/lezione/' +${m.id}} " th:text="${m.name}"></a>
+                    <div class="mt-5">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+   
+    </div>
 </div>
 
 
@@ -633,7 +682,9 @@ function openNav() {
         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
         <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body">...</div>
+      <div class="modal-body" id="modalprecondition">
+      
+      </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger"  id="lessenDelete" data-bs-dismiss="modal">Delete</button>
         <button type="button" data-bs-dismiss="modal" class="btn btn-primary">Close</button>

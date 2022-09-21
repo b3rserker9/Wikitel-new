@@ -1,6 +1,7 @@
 package it.cnr.istc.psts.wikitel.controller;
 
 
+
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +48,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-
+import io.netty.handler.codec.MessageAggregationException;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
@@ -161,19 +162,33 @@ public class MainController {
 	}
 	@MessageMapping("/register")
 	public void prova(@Payload Session session, SimpMessageHeaderAccessor headerAccessor ) throws JsonProcessingException {
+		
 		UserController.ONLINE.put(session.getUser_id(), session.getSession());
-		System.out.println(UserController.ONLINE);
+		
 		List<LessonEntity> lesson = this.lessonservice.getlesson(this.userservice.getUserId(session.getUser_id()));
-		String n = String.valueOf(session.getLesson_id()) + String.valueOf(session.getUser_id());
-		System.out.println("LIST: " + MainController.LESSONS + " " + n);
+
 		if(session.getLesson_id()!=null) {
+			System.out.println(this.credentialservice.getCredentialsUser(session.getUser_id()).getRole());
+			if(this.credentialservice.getCredentialsUser(session.getUser_id()).getRole().equals("TEACHER")) {
+				for(UserEntity u : this.lessonservice.lezionePerId(session.getLesson_id()).getFollowed_by()) {
+					String n = String.valueOf(session.getLesson_id()) + String.valueOf(u.getId());
+					LessonManager manager = MainController.LESSONS.get(n);
+					send.notify(Starter.mapper.writeValueAsString(new Message.User(u.getId())), session.getSession());
+					send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(session.getLesson_id(), manager.getSolver().getTimelines())), session.getSession());
+					send.notify(Starter.mapper.writeValueAsString(new LessonManager.Tick(session.getLesson_id(), manager.getCurrentTime())), session.getSession());
+				}
+			}else {
+				
+				String n = String.valueOf(session.getLesson_id()) + String.valueOf(session.getUser_id());
 		LessonManager manager = MainController.LESSONS.get(n);
 		
 		send.notify(Starter.mapper.writeValueAsString( new LessonManager.Timelines(session.getLesson_id(), manager.getSolver().getTimelines())), session.getSession());
 		send.notify(Starter.mapper.writeValueAsString(new LessonManager.Tick(session.getLesson_id(), manager.getCurrentTime())), session.getSession());
+			
 		if(manager.st!=null) {
 		send.notify(Starter.mapper.writeValueAsString(MainController.LESSONS.get(n).st), UserController.ONLINE.get(session.getUser_id()));	
 		}
+			}
 		}
 		
 		
@@ -769,6 +784,13 @@ public class MainController {
 			return "OK";
 	 }
 	
+	@RequestMapping(value =  "/getrulecat/{id}" , method = RequestMethod.GET)
+	 public Collection<RuleEntity> getrulecat(@PathVariable("id") Long id) {
+
+			
+			return this.lessonservice.lezionePerId(id).getGoals();
+	 }
+	
 	
 	@RequestMapping(value = "/NewLesson",  method = RequestMethod.POST)
 	public Response Newlesson(@RequestBody ObjectNode node) throws JsonMappingException, JsonProcessingException{	
@@ -798,12 +820,9 @@ public class MainController {
     	userservice.saveUser(nuovo);
 		Response response = new Response("Ciao",lesson);
 		
-		
+		System.out.println(UserController.ONLINE);
 	
-		for(UserEntity u : lesson.getFollowed_by()) {
-			if(UserController.ONLINE.get(u.getId())!=null)
-			send.notify(Starter.mapper.writeValueAsString(new Message.Subscribe(lesson.getId(), lesson.getName())), UserController.ONLINE.get(u.getId()));
-		}
+		
 		long[] map = Starter.mapper.readValue(node.get("students").asText(), long[].class);
 		List<UserEntity> u = new ArrayList<>();
     	for(long id : map) {
@@ -822,6 +841,15 @@ public class MainController {
     	}
     	lesson.getFollowed_by().addAll(u);
     	lessonservice.save(lesson);
+    	
+    	for(UserEntity user : lesson.getFollowed_by()) {
+			System.out.println("1");
+			if(UserController.ONLINE.get(user.getId())!=null)
+				System.out.println("2");
+			send.notify(Starter.mapper.writeValueAsString(new Message.Lesson(lesson.getId(), lesson.getName(), lesson.getTeacher().getFirst_name()+ " " + lesson.getTeacher().getLast_name(),lesson.getTeacher().getId())), UserController.ONLINE.get(user.getId()));
+			send.notify(Starter.mapper.writeValueAsString(new Message.Subscribe(lesson.getId(), lesson.getName())), UserController.ONLINE.get(user.getId()));
+			System.out.println("3");
+		}
 		return response;
 		
 	}

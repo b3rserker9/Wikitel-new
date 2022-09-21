@@ -28,6 +28,23 @@ function deletelesson(id){
 
 function lessionopt(id){
 	document.getElementById("lessenDelete").setAttribute('onclick','deletelesson('+id+')');
+		$.ajax({type:"GET", contentType:"application/json", url:"/getrulecat/"+id,  success:function(a) {
+    console.log("SUCCESS : ", a);
+    document.getElementById("modalprecondition").innerHTML = ' '
+    a.forEach(function(c) {
+	let s = '<ol class="gradient-list"> '
+	c.topics.forEach(function(b){
+		s += '<li>'+b+'</li>'
+	});
+	s+='</ol>'
+    document.getElementById("modalprecondition").innerHTML += '<a class="btn btn-primary list-group-item" data-bs-toggle="collapse" href="#c'+c.id +'" role="button" aria-expanded="false" >'+ c.name+'</a><div class="collapse" id="c'+c.id+'"> <div class="card card-body" > '+s+'  </div> </div>'
+   
+  });
+   
+  }, error:function(a) {
+    alert("Error! " + a);
+    console.log("ERROR: ", a);
+  }});
 }
 
 function add(a) {
@@ -65,7 +82,7 @@ function GetStudent() {
   $.ajax({type:"GET", contentType:"application/json", url:"/getstudents", dataType:"json", success:function(a) {
     console.log("SUCCESS : ", a);
     for (var b = 0; b < a.length; b++) {
-      dd = JSON.stringify(a), students[b] = a[b].first_name + " " + a[b].last_name, ids[a[b].id] = a[b], student[students[b]] = a[b], create_card_profile(a[b]), console.log("stud: " + dd);
+      dd = JSON.stringify(a), students[b] = a[b].first_name + " " + a[b].last_name, ids[a[b].id] = a[b], student[students[b]] = a[b], create_card_profile(a[b]);
     }
   }, error:function(a) {
     alert("Error!");
@@ -95,7 +112,7 @@ function Create_new_lesson() {
     $.ajax({type:"POST", contentType:"application/json", url:"/NewLesson", data:JSON.stringify(c), dataType:"json", success:function(d) {
       $("#new-lesson-modal").modal("hide");
       console.log("SUCCESS : ", d);
-      document.getElementById("row").innerHTML += '<div class="col-xs-12 col-md-4" > <div class="color-block-wrapper"> <div class="color-block color-block-lblue color-block-icon-list"> <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;background-color: #005bb7!important;" attr="onclick=lessionopt('+ d.data4.id +')" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button></h4><div class="color-block-text" th> <h3 >' + d.data4.name + '</h3> </div> <div class="color-block-head"> N\u00b0 Studenti: ' + d.data4.followed_by.length + ' </div> </div> <div class="color-block-bottom"> <a href="/lezione/' + d.data4.id + '" class="btncard btncard-transparent-lblue">Visita</a> </div> </div> </div>';
+      document.getElementById("row").innerHTML += '<div class="container mt-5 mb-3"> <div class="row"> <div class="col-md-4"  id="'+ d.data4.id+'"> <div class="card cardv p-3 mb-2"> <div class="d-flex justify-content-between"> <div class="d-flex flex-row align-items-center"> <div class="icon"> <i class="bx bxl-mailchimp"></i> </div> <div class="ms-2 c-details"> <h6 class="mb-0" ">'+d.data4.model.name+'</h6> N° Studenti: <span > '+d.data4.followed_by.length +'</span> </div> </div> <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" th:attr="onclick=|lessionopt('+d.data4.id+')" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button> </div> <div class="mt-5"> <a style="font-size:19px" class="h2" href="/lezione/'+ d.data4.id+' " > '+d.data4.name+'</a> <div class="mt-5"> <div class="progress"> <div class="progress-bar" role="progressbar" style="width:50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div> </div> </div> </div> </div> </div> </div> </div>';
       students_id = [];
       document.getElementById("chips").innerHTML = "";
     }, error:function(d) {
