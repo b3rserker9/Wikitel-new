@@ -766,9 +766,11 @@ public class MainController {
 	
 	@RequestMapping(value =  "/deletemodel/{id}" , method = RequestMethod.POST)
 	 public String deletemodel(@PathVariable("id") Long id) {
+		System.out.println("OKK1");
 		 UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
 			UserEntity userentity = credentials.getUser();
+			System.out.println(userentity);
 			this.modelservice.delete(id, userentity);
 			System.out.println("OKK");
 			return "OK";
@@ -820,7 +822,7 @@ public class MainController {
     	userservice.saveUser(nuovo);
 		Response response = new Response("Ciao",lesson);
 		
-		System.out.println(UserController.ONLINE);
+		
 	
 		
 		long[] map = Starter.mapper.readValue(node.get("students").asText(), long[].class);
@@ -841,14 +843,15 @@ public class MainController {
     	}
     	lesson.getFollowed_by().addAll(u);
     	lessonservice.save(lesson);
-    	
-    	for(UserEntity user : lesson.getFollowed_by()) {
+    	System.out.println(UserController.ONLINE);
+    	for(UserEntity us : lesson.getFollowed_by()) {
 			System.out.println("1");
-			if(UserController.ONLINE.get(user.getId())!=null)
+			if(UserController.ONLINE.get(us.getId())!=null) {
 				System.out.println("2");
-			send.notify(Starter.mapper.writeValueAsString(new Message.Lesson(lesson.getId(), lesson.getName(), lesson.getTeacher().getFirst_name()+ " " + lesson.getTeacher().getLast_name(),lesson.getTeacher().getId())), UserController.ONLINE.get(user.getId()));
-			send.notify(Starter.mapper.writeValueAsString(new Message.Subscribe(lesson.getId(), lesson.getName())), UserController.ONLINE.get(user.getId()));
+			send.notify(Starter.mapper.writeValueAsString(new Message.Lesson(lesson.getId(), lesson.getName(), lesson.getTeacher().getFirst_name()+ " " + lesson.getTeacher().getLast_name(),lesson.getTeacher().getId())), UserController.ONLINE.get(us.getId()));
+			send.notify(Starter.mapper.writeValueAsString(new Message.Subscribe(lesson.getId(), lesson.getName())), UserController.ONLINE.get(us.getId()));
 			System.out.println("3");
+			}
 		}
 		return response;
 		

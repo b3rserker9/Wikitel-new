@@ -35,6 +35,7 @@ function update() {
 function sendnode(a){
 	 $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", dataType:"json", data:JSON.stringify(a), success:function(a) {
     console.log("SUCCESS : ", a);
+        $('#example').DataTable().clear().destroy();
      ajaxGet();
 document.getElementById("goal").innerHTML += '<div class="form-check form-switch col"><input class="form-check-input" type="checkbox" role="switch"  th:value="${g.id}" th:name="${g.name}"> <label class="form-check-label" for="flexSwitchCheckDefault" th:text="${g.name}"></label></div>'
    
@@ -170,6 +171,7 @@ function esplora() {
   $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", data:JSON.stringify(a), dataType:"json", success:function(b) {
     console.log("SUCCESS : ", b);
     toastr.info("La ricerca su " + rule_selected + "\u00e8 stata completata");
+    $('#example').DataTable().clear().destroy();
     ajaxGet();
   }, error:function(b) {
     alert("Error!");

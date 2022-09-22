@@ -534,10 +534,15 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    		            sb.append("\n{\n");
 	    		            sb.append("  goal st").append(goal.getId()).append(" = new l_").append(lesson_entity.getId()).append(".St_")
 	    		                    .append(goal.getId()).append("(u:u);\n");
-	    		            sb.append("} or {\n");
-	    		            for (String topic : goal.getTopics())
-	    		                sb.append("  !u.").append(to_id(topic)).append(";\n");
-	    		            sb.append("}\n");
+	    		            if(!goal.getTopics().isEmpty()) {
+	    		            	sb.append("} or {\n");
+		    		            for (String topic : goal.getTopics())
+		    		                sb.append("  !u.").append(to_id(topic)).append(";\n");
+		    		            sb.append("}\n");
+		    		        }else {
+		    		        	sb.append("    }");
+		    		        }
+	    		            
 	    		        }
 	    		    }
 	    		 
@@ -574,10 +579,14 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    		                sb.append("      st").append(pre.getId()).append(".start >= end;\n");
 	    		            else
 	    		                sb.append("      st").append(pre.getId()).append(".end <= start;\n");
+	    		            if(!pre.getTopics().isEmpty()) {
 	    		            sb.append("    } or {\n");
 	    		            for (String topic : pre.getTopics())
 	    		                sb.append("      !u.").append(to_id(topic)).append(";\n");
 	    		            sb.append("    }\n");
+	    		        }else {
+	    		        	sb.append("    }");
+	    		        }
 	    		        }
 	    		        sb.append("  }\n");
 	    		    }

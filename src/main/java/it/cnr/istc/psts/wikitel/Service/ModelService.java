@@ -1,5 +1,6 @@
 package it.cnr.istc.psts.wikitel.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,12 +89,16 @@ public class ModelService {
 		ModelEntity m = this.getModel(id);
 		System.out.println(m + " " + id);
 		m.getTeachers().stream().forEach(t -> t.getModels().remove(m)); 
+		ArrayList<Long> n = new ArrayList<Long>();
 		for(LessonEntity l : user.getTeaching_lessons()) {
 			if(l.getModel().getId()==id) {
-				l.setModel(null);
-				this.lessonservice.delete(l);
-				
+				n.add(l.getId());
 			}
+		}
+		for(Long i : n) {
+			LessonEntity lesson = this.lessonservice.lezionePerId(i);
+			lesson.setModel(null);
+			this.lessonservice.delete(lesson);
 		}
 		userservice.saveUser(user);
          this.modelRepository.deleteById(id);

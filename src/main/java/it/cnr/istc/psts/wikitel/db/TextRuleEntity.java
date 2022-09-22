@@ -1,10 +1,12 @@
 package it.cnr.istc.psts.wikitel.db;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
 public class TextRuleEntity extends RuleEntity {
 
+	@Column(columnDefinition = "TEXT")
     private String text;
 
     public String getText() {
