@@ -119,7 +119,16 @@ export function loading(v){
 }
 
 export function new_stimuli(src){
+	document.getElementById("textarea").style.display="none"
+	document.getElementById("iframe").style.display="block"
 	document.getElementById("iframe").setAttribute("src",src);
+	
+}
+
+export function new_stimulitext(text){
+	document.getElementById("textarea").style.display="block"
+		document.getElementById("iframe").style.display="none"
+	document.getElementById("textarea").value = text;
 }
 
 

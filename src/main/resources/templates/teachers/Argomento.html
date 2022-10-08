@@ -144,9 +144,7 @@ text {
   text-align: center;
 }
 
-.toggler-wrapper.style-20 input[type="checkbox"]:checked+.toggler-slider .toggler-knob {
-  background-image: url(../img/check-fill.svg);
-}
+
 
 .toggler-wrapper.style-20 input[type="checkbox"]:checked+.toggler-slider .toggler-knob:before {
   opacity: 0.4;
@@ -163,7 +161,6 @@ text {
 .toggler-wrapper.style-20 .toggler-knob {
   position: relative;
   height: 100%;
-  background-image: url(../img/close-fill.svg);
   background-repeat: no-repeat;
   background-position: center;
   width: 35px;
@@ -324,6 +321,48 @@ text {
 .text2 {
     color: #a5aec0
 }
+.tooltips {
+  
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltiptext {
+	text-transform: none;
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  width: 120px;
+  top: 120%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltips .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;  /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltips:hover .tooltiptext {
+  visibility: visible;
+}
 </style>
 <script>
 function openNav() {
@@ -372,10 +411,10 @@ function openNav() {
 </div>
 </div>
  <div id="main">
- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-lesson-modal">Nuova Lezione</button>
+ <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal" data-bs-target="#new-lesson-modal"><span class="tooltiptext">Crea una nuova lezione</span>Nuova Lezione</button>
  
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#graph">
+<button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal" data-bs-target="#graph"><span class="tooltiptext">Visualizzazione del modello in formato grafico</span>
   Grafico<span><i class="fas fa-project-diagram"></i></span>
 </button>
   
@@ -393,8 +432,8 @@ function openNav() {
                     </div><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" th:attr="onclick=|lessionopt('${m.getId()}')|" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button>
               
                 </div>
-                <div class="mt-5">
-                    <a style="font-size: 19px;" class="h2" th:href="@{'/lezione/' +${m.id}} " th:text="${m.name}"></a>
+                <div class="mt-4">
+                    <a style="font-size: 25px;" class="h2" th:href="@{'/lezione/' +${m.id}} " th:text="${m.name}"></a>
                     <div class="mt-5">
                         <div class="progress">
                             <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
@@ -420,8 +459,7 @@ function openNav() {
       <div class="modal-body">
       <div class="row justify-content-between">
        <div class="col-auto me-auto">
-         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#table_modal">Table</button>
-         visualizza i dati in formato numerico popup
+         <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal" data-bs-target="#table_modal">Table <span class="tooltiptext">Visualizza i dati in formato numerico</span></button>
        </div>
         <div class="col-auto">
           <label class="toggler-wrapper style-20">

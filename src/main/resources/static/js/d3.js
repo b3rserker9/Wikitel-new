@@ -133,10 +133,10 @@ function redrawAll(a, c) {
   var e = document.getElementById("mynetwork"), b = {nodes:a, edges:c};
   console.log(a.length);
   if (900 > a.length) {
-    var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, font:{size:12, face:"Tahoma",},}, edges:{width:0.15, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:!1, solver:"repulsion", repulsion:{nodeDistance:400}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:!1}};
+    var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, size: 16,}, edges:{width:0.15, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:!1, solver:"repulsion", repulsion:{nodeDistance:250,springLength:10}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:!1}};
     console.log("sonoqui");
   } else {
-    console.log("slpkd"), d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, font:{size:12, face:"Tahoma",},}, edges:{smooth:!1}, physics: {
+    console.log("slpkd"), d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, size: 16,}, edges:{smooth:!1}, physics: {
     enabled: true,
     solver: "forceAtlas2Based",
     stabilization: {
@@ -153,13 +153,12 @@ function redrawAll(a, c) {
 nodeFilterSelector.addEventListener("change", function(a) {
   fiternode = [];
   nodeFilterValue = a.target.value;
-  console.log(nodeFilterValue);
+
   nodes.forEach(function(c) {
     "rule" == c.type && fiternode.push(c);
     nodeFilterValue * c.max / 100 <= c.score && fiternode.push(c);
   });
-  console.log(fiternode);
-  console.log(edges);
+
   nodesDataset = new vis.DataSet(fiternode);
   redrawAll(nodesDataset, edgesDataset);
 });
@@ -186,6 +185,7 @@ function wiki_link() {
 
 function neighbourhoodHighlight(a) {
 	 var b = new bootstrap.Modal(document.getElementById("myModal"), {keyboard:!1});
+	 console.log(a.nodes.length)
 	 if(0 < a.nodes.length){
 	console.log(a)
 	 if(nodesDataset.get(a.nodes)[0].type === "rule"){
@@ -215,8 +215,8 @@ function neighbourhoodHighlight(a) {
 	 	document.getElementById("file_download").textContent=nodesDataset.get(a.nodes)[0].id
 	 	document.getElementById("file_download").setAttribute('href',"/fileRule/"+nodesDataset.get(a.nodes)[0].rule_id);
 	   }
-	 0 < a.nodes.length && (rule_effects = nodesDataset.get(a.nodes)[0], console.log(rule_effects), rule_selected = nodesDataset.get(a.nodes)[0].label, a.event = "[original event]", select = a.nodes[0], selected = a.nodes[0].replaceAll(" ", "_"), b.show()),document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected;
   if (0 < a.nodes.length) {
+	rule_effects = nodesDataset.get(a.nodes)[0], console.log(rule_effects), rule_selected = nodesDataset.get(a.nodes)[0].label, a.event = "[original event]", select = a.nodes[0], selected = a.nodes[0].replaceAll(" ", "_"), b.show(),document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected;
     highlightActive = !0;
     var c, e = a.nodes[0], b;
     for (b in allNodes) {

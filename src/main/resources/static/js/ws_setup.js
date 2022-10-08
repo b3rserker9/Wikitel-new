@@ -56,6 +56,8 @@ function setup_ws(msg) {
                toastr.info("lesson-state-update " + c_msg.state);
                 break;
             case 'text-stimulus':
+            lesson.new_stimulitext(c_msg.name)
+            break;
             case 'question-stimulus':
             case 'url-stimulus':
 				

@@ -38,6 +38,7 @@ function update() {
     switch (option.value) {
         case '2':
             document.getElementById('url').style.display = "block";
+            document.getElementById('Add_node_times').style.display = "block";
             document.getElementById('textarea').style.display = "none";
             document.getElementById('file').style.display = "none";
             document.getElementById('question').style.display = "none";
@@ -45,12 +46,14 @@ function update() {
         case '1':
             document.getElementById('url').style.display = "none";
             document.getElementById('textarea').style.display = "block";
+            document.getElementById('Add_node_times').style.display = "block";
             document.getElementById('file').style.display = "none";
             document.getElementById('question').style.display = "none";
             break;
         case '3':
             document.getElementById('url').style.display = "none";
             document.getElementById('textarea').style.display = "none";
+            document.getElementById('Add_node_times').style.display = "none";
             document.getElementById('file').style.display = "none";
             document.getElementById('question').style.display = "none";
             break;
@@ -58,7 +61,8 @@ function update() {
             document.getElementById('url').style.display = "none";
             document.getElementById('textarea').style.display = "none";
             document.getElementById('file').style.display = "block";
-            document.getElementById('question').style.display = "block";
+            document.getElementById('Add_node_times').style.display = "block";
+            document.getElementById('question').style.display = "none";
 
             break;
     }
@@ -96,6 +100,28 @@ function wikipedianotfound(i,p){
 
 function New_rule() {
 
+if(text!= "Pagina Wikipedia"){
+	 var model = {
+
+        model_name: $("#new-model-name").val(),
+        rule_name: $("#new-model-name").val(),
+        rule_type: text,
+        rule_length:$("#Add_node_time").val(),
+        rule_url: $("#new-rule-url").val(),
+        rule_text: $("#rule_Textarea").val(),
+
+    }
+}else{
+	 var model = {
+
+        model_name: $("#new-model-name").val(),
+        rule_name: $("#new-model-name").val(),
+        rule_type: text,
+        rule_url: $("#new-rule-url").val(),
+        rule_text: $("#rule_Textarea").val(),
+
+    }
+}
     var model = {
 
         model_name: $("#new-model-name").val(),
@@ -332,6 +358,7 @@ function Postsuggetion(id) {
         },
         error: function(e) {
             alert("Error!")
+            document.getElementById("firstDelete").setAttribute('onclick','deleteModal('+id+')');
             console.log("ERROR: ", e);
         }
     });

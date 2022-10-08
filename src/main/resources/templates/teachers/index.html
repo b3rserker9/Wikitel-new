@@ -330,6 +330,49 @@ input[type="radio"]{
 #option-5:checked:checked ~ .option-5 span{
   color: #fff;
 }
+
+.tooltips {
+  
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
+
+/* Tooltip text */
+.tooltiptext {
+	text-transform: none;
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+  width: 120px;
+  top: 120%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltips .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;  /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltips:hover .tooltiptext {
+  visibility: visible;
+}
 </style>
 <body>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
@@ -403,7 +446,7 @@ function openNav() {
 
   
 
-  		<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new_lesson1">Nuovo Argomento</button>
+  		<button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal" data-bs-target="#new_lesson1" ><span class="tooltiptext">Crea un nuovo modello per la lezione</span>Nuovo Argomento</button>
   <div class="container mt-2">
 <!--   <div class="card card-block mb-2">
     <h4 class="card-title">Card 1</h4>
@@ -414,7 +457,7 @@ function openNav() {
     <div class="col-md-3 col-sm-6 item" th:each="m : ${model}" th:id="${m.getID()} ">
       <div class="card d item-card card-block" >
       
-      <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" th:attr="onclick=|Postsuggetion('${m.getID()}')|"  ><i class="fas fa-cog"></i></button></h4>
+      <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config " style="border:none;color:black;" data-bs-toggle="modal" data-bs-target="#exampleModal" th:attr="onclick=|Postsuggetion('${m.getID()}')|"  ><i class="fas fa-cog"></i></button></h4>
     
         <a th:id="${m.getID()} + 'a'" th:href="'/Argomento/' + ${m.getID()}"><h5 class="item-card-title mt-3 mb-3" style="text-align: center; font-size: 1.75rem!important;" th:text="${m.getName()}"></h5></a>
       
@@ -469,6 +512,7 @@ function openNav() {
       
                   </div>
                   </div>
+               
                    <div class="form-group" id="textarea" style="margin-top: 2%;">
     <textarea class="form-control" id="rule_Textarea" rows="3"></textarea>
   </div>
@@ -476,6 +520,9 @@ function openNav() {
   <label for="formFile" class="form-label"></label>
   <input class="form-control" type="file" id="formFile">
 </div>
+<div id="Add_node_times">
+   <label for="Add_node_time" class="col-form-label">Durata lezione(in Secondi)</label>
+  <input type="number" class="form-control none" id="Add_node_time" placeholder="Time" required></div>
 <div class="questions" id="question" style="display: none;">
 
 </div>
@@ -600,10 +647,10 @@ function openNav() {
 
 </div></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
           Close
         </button>
-        <button type="button" class="btn btn-primary" data-mdb-dismiss="modal" onclick="newSearch()">Save changes</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="newSearch()">Search</button>
       </div>
     </div>
   </div>

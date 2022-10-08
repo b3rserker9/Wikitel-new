@@ -246,7 +246,7 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	            
 	    	            if (rule_entity instanceof TextRuleEntity)
 	    	                st = new Message.Stimulus.TextStimulus(lesson.getId(), rule_id, current_time, false,
-	    	                        rule_entity.getName());
+	    	                        ((TextRuleEntity) rule_entity).getText());
 	    	            else if (rule_entity instanceof WebRuleEntity)
 	    	                st = new Message.Stimulus.URLStimulus(lesson.getId(), rule_id, current_time, false,
 	    	                        rule_entity.getName(), ((WebRuleEntity) rule_entity).getUrl());

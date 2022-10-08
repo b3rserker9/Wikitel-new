@@ -86,6 +86,7 @@ import it.cnr.istc.psts.wikitel.Service.RuleSuggestionRelationService;
 import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
 import it.cnr.psts.wikitel.API.Message;
+import it.cnr.psts.wikitel.API.Lesson.LessonState;;
 
 @RestController
 public class MainController {
@@ -324,8 +325,10 @@ public class MainController {
 		}
 			for(RuleEntity effect : r.getPreconditions()) {
 				ObjectNode edge=objectMapper.createObjectNode();
-				edge.put("from",rule.getName());    
+				edge.put("from",r.getName());    
 				edge.put("to",effect.getName()); 
+				edge.put("arrows","to"); 
+				edge.put("width","3"); 
 				edges.add(edge);
 			}
 			i++;
@@ -536,7 +539,9 @@ public class MainController {
 		String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
 		System.out.println(n);
 		System.out.println(LESSONS);
+		if(LESSONS.get(n).getState() != LessonState.Running) {
     	LESSONS.get(n).play();
+		}
 		}
     	Response response = new Response("Done");
 		return response;
@@ -548,7 +553,9 @@ public class MainController {
 			String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
 			System.out.println(n);
 			System.out.println(LESSONS);
-	    	LESSONS.get(n).pause();
+			if(LESSONS.get(n).getState() != LessonState.Paused) {
+		    	LESSONS.get(n).pause();
+				}
 			}
    
   
@@ -563,7 +570,9 @@ public class MainController {
 			String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
 			System.out.println(n);
 			System.out.println(LESSONS);
-	    	LESSONS.get(n).stop();
+			if(LESSONS.get(n).getState() != LessonState.Stopped) {
+		    	LESSONS.get(n).stop();
+				}
 			}
 
     

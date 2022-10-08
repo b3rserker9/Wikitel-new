@@ -198,7 +198,62 @@ justify-content: center;
     padding: 0px;
 }
 }
+textarea {
+  width: 100%;
+  height: 100%;
+  padding: 12px 20px;
+  box-sizing: border-box;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  background-color: #f8f8f8;
+  font-size: 16px;
+  resize: none;
+  color: black;
+    font-size: 22px;
+    font-family: none;
+}
+.tooltips {
+  
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+}
 
+/* Tooltip text */
+.tooltiptext {
+	text-transform: none;
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 3;
+  width: 120px;
+  top: 120%;
+  left: 50%;
+  margin-left: -60px;
+}
+
+.tooltips .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  bottom: 100%;  /* At the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltips:hover .tooltiptext {
+  visibility: visible;
+}
 </style>
 <script>
 function openNav() {
@@ -215,14 +270,17 @@ function openNav() {
 <body>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
 <div id="lesson_id" th:value="${lezione.id}" hidden></div>
-<nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;">
+<nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;padding: 0 15px;">
 	<span style="font-size:25px;cursor:pointer;margin-right: 2%;" onclick="openNav()"><i class="fas fa-bars"></i></span>
-  <a class="navbar-brand" href="/default"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+  <a class="navbar-brand" href="#"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
                 WikiTEL</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse  justify-content-center" id="navbarNav">
+   
+ 
+<div class="collapse navbar-collapse  justify-content-center" id="navbarNav">
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
   <li class="nav-item" role="presentation">
     <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Home</button>
@@ -234,30 +292,22 @@ function openNav() {
 </ul>
    
   </div>
-  <ul th:if="${role}=='STUDENT'" class="nav nav-item" style="width: 70px;">
-  <button class="btn btn-primary position-relative" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+  
 
-  <i class="fas fa-comment-alt"></i>
-    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-    99+
-    <span class="visually-hidden">unread messages</span>
-  </span>
-</button>
-  </ul>
-  <ul class="nav navbar-nav navbar-right">
-     <div class="btn-group">
-  <button type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span style="font-size: 18px;"><i class="fas fa-user"></i></span>
-  </button>
-  <div class="dropdown-menu dropdown-menu-right">
-    <a class="dropdown-item" th:href="@{/profile}">Profile</a></li>
-    <button class="dropdown-item" type="button">Another action</button>
-    <a class="dropdown-item" type="button" th:href="@{/logout}"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a>
+   
   </div>
+  <ul class="nav navbar-nav navbar-right">
+	<div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" style="background-color:#1266f1" aria-expanded="false">
+    <i class="fas fa-user"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" th:href="@{profile}">Profile</a></li>
+    <li> <a class="dropdown-item" type="button" th:href="@{logout}"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+  </ul>
 </div>
     </ul>
 </nav>
-
 
 <div id="mySidebar" class="sidebar">
   <a href="#">Dashboard</a>
@@ -285,7 +335,7 @@ function openNav() {
                     <div class="mr-auto">
                         <div class="page-context-header "><div class="page-header-headings "><h1 th:text="'AA'+${anno} + ' - '+ ${lezione.name} + ' - ' + ${lezione.id} + ' (' + ${lezione.teacher.first_name} + ' ' + ${lezione.teacher.last_name} + ')'"></h1></div></div>
                     </div>   
-                    <a class="down" th:href="@{'/riddle/' + ${lezione.id}}" id="download"><span><i class="fas fa-download"></i></span></a>   
+                    <a class="down tooltips" th:href="@{'/riddle/' + ${lezione.id}}" id="download"><span class="tooltiptext">Scarica il file riddle della lezione</span><span><i class="fas fa-download"></i></span></a>   
                                 
                 </div>    
                   	<section th:if="${role}=='TEACHER'">
@@ -486,6 +536,7 @@ function openNav() {
       </div>
       <div class="modal-body">
         <iframe th:if="${role}=='STUDENT'" id="iframe" src="url" title="description" style="width: 100%;height: 100%;"></iframe>
+        <textarea id="textarea" disabled></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
