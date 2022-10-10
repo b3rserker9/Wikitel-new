@@ -328,7 +328,7 @@ public class MainController {
 				edge.put("from",r.getName());    
 				edge.put("to",effect.getName()); 
 				edge.put("arrows","to"); 
-				edge.put("width","3"); 
+				edge.put("width","2");  
 				edges.add(edge);
 			}
 			i++;
