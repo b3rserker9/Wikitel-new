@@ -114,6 +114,31 @@ function ajaxGet() {
     });
 }
 
+function NewPassword(){
+	
+	 var password = {
+                password: $("#new_password").val(),
+            }
+            $.ajax({
+
+                type: "POST",
+                contentType: "application/json",
+                url: "/changePassword",
+                data: JSON.stringify(password),
+                dataType: "json",
+                success: function(data) {
+                    console.log("SUCCESS : ", data);
+                },
+                error: function(e) {
+                    alert("Error!")
+                    console.log("ERROR: ", e);
+                }
+            });
+
+
+
+}
+
 
 $(document).ready(
 

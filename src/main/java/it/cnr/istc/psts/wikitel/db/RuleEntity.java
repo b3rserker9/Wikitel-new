@@ -1,7 +1,9 @@
 package it.cnr.istc.psts.wikitel.db;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -52,10 +54,10 @@ public class RuleEntity {
 	    private String suggestions;
 	    
 	    @Transient
-	    private Set<SuggestionMongo> suggestionm = new HashSet<>();
+	    private List<SuggestionMongo> suggestionm = new ArrayList<>();
 
 	    
-	    public Set<SuggestionMongo> getSuggestionm() {
+	    public List<SuggestionMongo> getSuggestionm() {
 	        return suggestionm;
 	    }
 	    
@@ -136,6 +138,9 @@ public class RuleEntity {
 	    public void removeEffect(final RuleEntity effect) {
 	        effects.remove(effect);
 	    }
+
+
+	
 
 	   
 

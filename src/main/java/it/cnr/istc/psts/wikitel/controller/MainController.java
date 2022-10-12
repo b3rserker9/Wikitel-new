@@ -56,7 +56,7 @@ import org.springframework.core.io.InputStreamResource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -213,18 +213,21 @@ public class MainController {
 	
 	
 	@PostMapping("/findsuggestion")
-	public Set<RuleEntity> GetSuggestion(@RequestBody ObjectNode node) {
+	public List<RuleEntity> GetSuggestion(@RequestBody ObjectNode node) {
 		System.out.println(node.get("ids").asLong());
 		ModelEntity model = this.modelservice.getModel(node.get("ids").asLong());
 		
-		Set<RuleEntity> re = new HashSet<>();
+		List<RuleEntity> re = new ArrayList<>();
 		for(RuleEntity r : model.getRules()) {
+			List<SuggestionMongo> sug = new ArrayList<>();
 			RuleEntity rule = new RuleEntity();
 				rule.setLength(r.getLength());
 				rule.setId(r.getId());
 				rule.setName(r.getName()); 
 				if(r.getSuggestions()!= null)
-					rule.getSuggestionm().addAll(this.modelservice.getsuggestion(r.getSuggestions()).getSuggestion());
+					sug = this.modelservice.getsuggestion(r.getSuggestions()).getSuggestion();
+				Collections.sort(sug);
+					rule.getSuggestionm().addAll(sug);
 				re.add(rule);
 			
 				
@@ -252,17 +255,23 @@ public class MainController {
 			robgr.put("label",rule.getName()); 
 			robgr.put("group", i);
 			robgr.put("type", "rule");
-			robgr.put("shape", "triangle");
-			if (rule instanceof WikiRuleEntity)
+			
+			if (rule instanceof WikiRuleEntity) {
 			robgr.put("rule_type", "wiki");
+			robgr.put("shape", "triangle");
+			}
 			else if (rule instanceof TextRuleEntity) {
 				robgr.put("rule_type", "text");
 				robgr.put("rule_text", this.modelservice.getText(rule.getId()));
+				robgr.put("shape", "hexagon");
 			}
-			else if (rule instanceof WebRuleEntity)
+			else if (rule instanceof WebRuleEntity) {
 				robgr.put("rule_type", "web");
+				robgr.put("shape", "hexagon");
+			}
 			else if (rule instanceof FileRuleEntity) {
 				robgr.put("rule_type", "file");
+				robgr.put("shape", "hexagon");
 				
 			}
 			robgr.put("rule_id", rule.getId());
@@ -364,6 +373,15 @@ public class MainController {
 		
 	}
 	
+	@PostMapping("/changePassword")
+	public String edit(@RequestBody ObjectNode node){
+		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		credentials.setPassword(this.passwordEncoder.encode(node.get("password").asText()));
+		this.credentialservice.save(credentials);
+		return "OK";
+		
+	}
 	
 	@PostMapping("/ciao")
 	public String edit4(){
@@ -655,34 +673,15 @@ public class MainController {
 			 for (String pre : prova.getPreconditions()) { 
 				 i++;
 				 SuggestionMongo sugmongo = new SuggestionMongo();
-			//	 RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
-					
-			   //  WikiSuggestionEntity suggestion = null;
 		
-			     
-			    	// suggestion = new WikiSuggestionEntity();
-					//	suggestion.setPage(pre);
 						sugmongo.setPage(pre);
-						
- 
-			    
-			     
-			  //   relation.setRule(rule);
-			   //  relation.setSuggestion(suggestion);
-			    
-			   //  relation.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
-			   //  relation.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
+		
 			     sugmongo.setScore( Math.round((prova.getRank1().get(i).doubleValue())*100.0)/100.0);
 			     sugmongo.setScore2(Math.round((prova.getRank2().get(i).doubleValue())*100.0)/100.0);
-			   //  relations.add(relation); 
-			   
-			    
-			    // relationservice.saverelation(relation);
+	
 			     rulemongo.getSuggestions().add(sugmongo);
 			     sm.getSuggestion().add(sugmongo);
-			     
-			   //  rule.getSuggestions().add(relation);
-			     
+		
 			 }
 			 this.modelservice.savesm(sm);
 			 rule.setSuggestion(sm.getId());
@@ -706,19 +705,7 @@ public class MainController {
         		 rule.setName(name);
         		 for (SuggestionMongo s : m.getSuggestions()) {
         			 sm.getSuggestion().add(s);
-        			 //RuleSuggestionRelationEntity relation = new RuleSuggestionRelationEntity();
-        			 //WikiSuggestionEntity suggestion = new WikiSuggestionEntity();
-        			 //suggestion.setPage(s.getPage());
-        			 //modelservice.savewikisuggestion(suggestion);
-        			 //relation.setRule(rule);
-        			 //relation.setSuggestion(suggestion);
-        			 //relation.setScore(s.getScore());
-        			 //relation.setScore2(s.getScore2());
-        			 //relations.add(relation);
-        			 //relationservice.saverelation(relation);
-        			 //rule.getSuggestions().add(relation);
-        			 
-        			 
+        
         		 }
         		 
         		 this.modelservice.savesm(sm);

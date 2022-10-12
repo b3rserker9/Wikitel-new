@@ -210,9 +210,11 @@ body{
                  
                   <hr>
                   <div class="row">
-                    <div class="col-sm-12">
+                    <div class="col-sm-6">
                       <button th:if="${teacher}" type="button" class="btn btn-info" id="edit">Edit</button>
+                       <button th:if="${teacher}" type="button" class="btn btn-info" id="change_password" data-bs-toggle="modal" data-bs-target="#changePassword">Change password</button>
                     </div>
+                 
                   </div>
                 </div>
               </div>
@@ -313,7 +315,7 @@ body{
     <form id="edit_interests">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel">Interessi</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -334,7 +336,7 @@ body{
       </div>
       
        <div class="modal-footer">
-       <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="submit" class="btn btn-info" >Save changes</button>
         
       </div>
@@ -410,6 +412,28 @@ body{
         <button type="submit" class="btn btn-primary">Save changes</button>
       </div>
     </formm>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="changePassword" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header"  style="border-bottom: 0px solid!important">
+        <h5 class="modal-title" id="exampleModalLabel">Change Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">New Password</label>
+    <input type="password" class="form-control" id="new_password" aria-describedby="emailHelp">
+    <div id="emailHelp" class="form-text">We'll never share your Password with anyone else.</div>
+  </div>
+      </div>
+      <div class="modal-footer" style="border-top: 0px solid!important">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" onclick="NewPassword()" class="btn btn-primary">Save changes</button>
+      </div>
     </div>
   </div>
 </div>
