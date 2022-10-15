@@ -255,23 +255,32 @@ public class MainController {
 			robgr.put("label",rule.getName()); 
 			robgr.put("group", i);
 			robgr.put("type", "rule");
-			
+			ObjectNode  icon= objectMapper.createObjectNode();
+			icon.put("face", "'FontAwesome'");
+			icon.put("size", "50");
 			if (rule instanceof WikiRuleEntity) {
 			robgr.put("rule_type", "wiki");
 			robgr.put("shape", "triangle");
+			
 			}
 			else if (rule instanceof TextRuleEntity) {
 				robgr.put("rule_type", "text");
 				robgr.put("rule_text", this.modelservice.getText(rule.getId()));
-				robgr.put("shape", "hexagon");
+				icon.put("code", "\uf031");
+				robgr.put("shape", "icon");
+				robgr.put("icon", icon);
 			}
 			else if (rule instanceof WebRuleEntity) {
 				robgr.put("rule_type", "web");
-				robgr.put("shape", "hexagon");
+				icon.put("code", "\uf26b");
+				robgr.put("shape", "icon");
+				robgr.put("icon", icon);
 			}
 			else if (rule instanceof FileRuleEntity) {
 				robgr.put("rule_type", "file");
-				robgr.put("shape", "hexagon");
+				icon.put("code", "\uf15b");
+				robgr.put("shape", "icon");
+				robgr.put("icon", icon);
 				
 			}
 			robgr.put("rule_id", rule.getId());
