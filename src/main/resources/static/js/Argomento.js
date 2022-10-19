@@ -105,7 +105,11 @@ function Create_new_lesson() {
   console.log(a());
   if (0 == students_id.length) {
     document.getElementById("error_student").innerText = "Please insert at least one student";
-  } else {
+  }else if(document.getElementById("new-lesson-name").value.length == 0){
+	document.getElementById("error_name").innerText = "Inserisci il nome della lezione";
+}else if(a().length == 0){
+	document.getElementById("error_goal").innerText = "Inserisci almeno un obiettivo";
+} else {
     var c = {name:$("#new-lesson-name").val(), models:document.getElementById("model_name").getAttribute("value"), students:JSON.stringify(students_id), goals:JSON.stringify(a()), activeor:$("input[name=roles]:checked").val()};
     console.log(document.getElementById("model_name").getAttribute("value"));
     console.log(students_id);
@@ -122,6 +126,7 @@ function Create_new_lesson() {
   }
 }
 $(document).ready(function() {
+
   $("#students").autocomplete({source:students});
   var a = window.location.pathname.split("/");
   console.log(a[2]);

@@ -33,8 +33,7 @@ public class ModelService {
 	 @Autowired
 	 private WikiSuggestionRepository wikisuggestionrepository;
 	 
-	 @Autowired
-	 private RuleRepository rulerepository;
+
 	 
 	 @Autowired
 	 private RuleMongoRepository rulemongorep;
@@ -128,30 +127,5 @@ public class ModelService {
         return this.wikisuggestionrepository.save(wikisugg);
     }
 	
-	@Transactional
-    public RuleEntity saverule(RuleEntity rule) {
-        return this.rulerepository.save(rule);
-    }
 
-	@Transactional
-    public String getText(Long id) {
-        return this.rulerepository.findNameBytext(id);
-    }
-	
-	@Transactional
-    public String getFile(Long id) {
-        return this.rulerepository.findNameByfile(id);
-    }
-	
-	@Transactional
-	public RuleEntity getRule(Long id) {
-		Optional<RuleEntity> result = this.rulerepository.findById(id);
-		return result.orElse(null);
-	}
-	
-	@Transactional
-	public String getRuleName(Long id) {
-		
-		return this.rulerepository.findNameById(id);
-	}
 }

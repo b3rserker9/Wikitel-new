@@ -272,7 +272,7 @@ function openNav() {
 <div id="lesson_id" th:value="${lezione.id}" hidden></div>
 <nav class="navbar navbar-expand-lg navbar-light bg-light" style="z-index: 1030;padding: 0 15px;">
 	<span style="font-size:25px;cursor:pointer;margin-right: 2%;" onclick="openNav()"><i class="fas fa-bars"></i></span>
-  <a class="navbar-brand" href="#"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+  <a class="navbar-brand" href="/default"><img src="/images/wikitel.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
                 WikiTEL</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
@@ -302,7 +302,7 @@ function openNav() {
     <i class="fas fa-user"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-    <li><a class="dropdown-item" th:href="@{profile}">Profile</a></li>
+    <li><a class="dropdown-item" th:href="@{/profile}">Profile</a></li>
     <li> <a class="dropdown-item" type="button" th:href="@{logout}"><i style="color: red;" class="fas fa-sign-out-alt"></i> Sign Out</a></li>
   </ul>
 </div>

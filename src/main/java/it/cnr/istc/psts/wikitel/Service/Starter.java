@@ -48,6 +48,9 @@ public class Starter implements CommandLineRunner {
 	UserService userservice;
 	
 	@Autowired
+	RuleService ruleservice;
+	
+	@Autowired
 	private Sending send;
 	
 	public static final ObjectMapper mapper = new ObjectMapper();
@@ -68,7 +71,7 @@ public class Starter implements CommandLineRunner {
 			for(UserEntity u : user) {	
 				l.getFollowed_by().add(u);
 			System.out.println("added lesson:  " + l.getName());
-			LessonManager manager = new LessonManager(l,send,modelservice,userservice);
+			LessonManager manager = new LessonManager(l,send,modelservice,userservice,ruleservice);
 			String n = String.valueOf(l.getId()) + String.valueOf(u.getId());
 			MainController.LESSONS.put(n,manager);
 			manager.Solve();

@@ -70,6 +70,9 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	ModelService modelservice;
 	    	
 	    	@Autowired
+	    	RuleService ruleservice;
+	    	
+	    	@Autowired
 	    	UserService userservice;
 	    	
 	    	@Autowired
@@ -95,10 +98,11 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	    
 	    	    
 	    	    
-	    	    public LessonManager(final LessonEntity lesson, final Sending send, final ModelService modelservice, final UserService userservice ) {
+	    	    public LessonManager(final LessonEntity lesson, final Sending send, final ModelService modelservice, final UserService userservice,final RuleService ruleservice ) {
 	    	        this.lesson = lesson;
 	    	        this.send=send;
 	    	        this.modelservice = modelservice;
+	    	        this.ruleservice = ruleservice;
 	    	        this.userservice = userservice;
 	    	        for (final UserEntity student : lesson.getFollowed_by()) {
 	    	            stimuli.put(student.getId(), new ArrayList<>());
@@ -213,7 +217,7 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	            if (atom.getType().getName().equals("Use"))
 	    	                continue;
 	    	            final long rule_id = Long.parseLong(atom.getType().getName().substring(3));
-	    	            final RuleEntity rule_entity = modelservice.getRule(rule_id);
+	    	            final RuleEntity rule_entity = ruleservice.getRule(rule_id);
 
 	    	            try {
 	    	                final long student_id = atom.get("u").getName().equals("u")
@@ -241,7 +245,7 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	            if (atom.getType().getName().equals("Use"))
 	    	                continue;
 	    	            final long rule_id = Long.parseLong(atom.getType().getName().substring(3));
-	    	            final RuleEntity rule_entity = this.modelservice.getRule(rule_id);
+	    	            final RuleEntity rule_entity = this.ruleservice.getRule(rule_id);
 
 	    	            
 	    	            if (rule_entity instanceof TextRuleEntity)

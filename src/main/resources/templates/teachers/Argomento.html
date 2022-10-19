@@ -556,8 +556,9 @@ function openNav() {
                </div>
                <div class="form-floating my-1">
                   <input type="text" class="form-controls" id="new-lesson-name" placeholder="Nome" required>
-                  
+                   
                </div>
+               <span style="color: red;" id="error_name"></span>
                <hr />
                <div class="rubrica">
                <button type="button" class="btn btn-primary pos" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -582,6 +583,7 @@ function openNav() {
                </div>
                <hr />
                <h6>Obiettivi didattici</h6>
+               <span style="color: red;" id="error_goal"></span>
                <div class="form-check" id="lesson_goal">
                    <div th:each="g : ${goal}" id="goal">
                             <div class="form-check form-switch col">
@@ -592,7 +594,7 @@ function openNav() {
                </div>
             </div>
             <div class="modal-footer">
-               <button type="button" onclick="Create_new_lesson()" class="btn btn-sm btn-primary" id="create-new-lesson">Crea</button>
+               <button type="button" onclick="Create_new_lesson()" class="btn btn-primary btn-block mb-4" id="create-new-lesson">Crea</button>
             </div>
          </form>
       </div>
@@ -604,7 +606,7 @@ function openNav() {
   <div class="modal-dialog right">
     <div class="modal-content">
       <div class="modal-header">
-       
+       	<button type="button" class="btn btn-danger" id="deleteRule" data-bs-dismiss="modal" onclick="deleteRule()" >Delete  <span><i class="fas fa-trash-alt"></i></span> </button>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -720,8 +722,8 @@ function openNav() {
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+        <h5 class="modal-title" id="exampleModalLabel">Categorie obiettivi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body" id="modalprecondition">
       

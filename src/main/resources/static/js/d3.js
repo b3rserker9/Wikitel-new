@@ -1,6 +1,5 @@
-var network, allNodes, highlightActive = !1, nodestable, nodes ,halfnodes , table, edges, rules, type = "Testo", AddNode = [], edgesDataset ;
 highlightActive = !1;
-var nodesDataset, fiternode = [], nodeFilterValue = -1, nodeFilterSelector = document.getElementById("customRange1");
+var nodesDataset, fiternode = [], nodeFilterValue = -1, nodeFilterSelector = document.getElementById("customRange1"),rule_effects,type="Testo";
 
 
 function update() {
@@ -59,7 +58,7 @@ function New_rule_file(){
                     cache: false,
                     success: function(res) {
                         console.log("SUCCESS : ", res);
-                        var a = {model_id: document.getElementById("model_name").getAttribute("value") , rule_name:$("#Add_node_name").val(), rule_type :"File",  rule_id: rule_effects.rule_id};
+                        var a = {model_id: document.getElementById("model_name").getAttribute("value") , rule_name:$("#Add_node_name").val(), rule_type :"File",  rule_id: rule_effects.rule_id,rule_length:$("#Add_node_time").val()};
                         sendnode(a)
                     },
                     error: function(err) {
@@ -70,7 +69,7 @@ function New_rule_file(){
 }
 
 function addNode() {
-  var a = {model_id: document.getElementById("model_name").getAttribute("value") ,rule_length:$("#Add_node_time").val(), rule_name:$("#Add_node_name").val(), rule_text:document.getElementById(type).value, rule_type :type,  rule_id: rule_effects.rule_id};
+  var a = {model_id: document.getElementById("model_name").getAttribute("value") ,rule_length:$("#Add_node_time").val(), rule_name:$("#Add_node_name").val(), rule_text: document.getElementById(type).value, rule_type :type,  rule_id: rule_effects.rule_id};
  if(type!="file"){
  	sendnode(a)}
   else{
@@ -132,17 +131,30 @@ $(document).ready(function() {
 function redrawAll(a, c) {
   var e = document.getElementById("mynetwork"), b = {nodes:a, edges:c};
   console.log(a.length);
-  if (900 > a.length) {
-    var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, size: 16,}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:!1, solver:"repulsion", repulsion:{nodeDistance:350}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:!1}};
+  if (700 > a.length) {
+    var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, size: 16,shapeProperties: {
+    interpolation: false    // 'true' for intensive zooming
+  }}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:!1
+     , solver:"repulsion", repulsion:{nodeDistance:400}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:false}, groups:{file:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf15b", size:50, color:"#000000",},}, text:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf031", size:50, color:"#000000",},},}};
     console.log("sonoqui");
   } else {
-    console.log("slpkd"), d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, size: 16,}, edges:{smooth:!1}, physics: {
-    enabled: true,
+     d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, size: 16,}, edges:{smooth:!1}, physics: {
+    forceAtlas2Based: {
+      gravitationalConstant: -126,
+      springLength: 200,
+      springConstant: 0.01
+    },
+    maxVelocity: 50,
     solver: "forceAtlas2Based",
-    stabilization: {
-      enabled: false // This is here just to see what's going on from the very beginning.
-    }
-  }, layout:{improvedLayout:!1}};
+    timestep: 0.35,
+    stabilization: true
+  },
+  interaction: {
+    tooltipDelay: 200,
+    hideEdgesOnDrag: true,
+    hideEdgesOnZoom: true
+  }
+  , layout:{improvedLayout:!1}};
   }
   network = new vis.Network(e, b, d);
   network.fit();
@@ -180,19 +192,49 @@ function esplora() {
 
 
 function wiki_link() {
+	console.log(rule_effects.rule_type == "web")
+	if(rule_effects.rule_type=="web"){
+		if(!rule_effects.rule_web.match(/^https?:\/\//i)){
+		var url = 'http://' + rule_effects.rule_web;
+		window.open(url, "_blank");
+		}
+		window.open(rule_effects.rule_web, "_blank");
+	}else{
   window.open("https://it.wikipedia.org/wiki/" + selected, "_blank");
+  }
+}
+
+function deleteRule(){
+	
+		var d = {model:window.location.pathname.split("/")[2] , rule: rule_effects.rule_id}
+	  $.ajax({type:"POST", contentType:"application/json", url:"/deleterule", data:JSON.stringify(d), dataType:"json", success:function(b) {
+    console.log("SUCCESS : ", b);
+    $('#example').DataTable().clear().destroy();
+    ajaxGet();
+
+  }, error:function(b) {
+    alert("Error!"+ b);
+    console.log("ERROR: ", b);
+  }});
+	
+	
 }
 
 function neighbourhoodHighlight(a) {
 	 var b = new bootstrap.Modal(document.getElementById("myModal"), {keyboard:!1});
-	 console.log(a.nodes.length)
-	 if(0 < a.nodes.length){
-	console.log(a)
+	
+	
+  if (0 < a.nodes.length) {
+	rule_effects = nodesDataset.get(a.nodes)[0], console.log(rule_effects), rule_selected = nodesDataset.get(a.nodes)[0].label, a.event = "[original event]", select = a.nodes[0], selected = a.nodes[0].replaceAll(" ", "_"), b.show(),document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected;
+    
+    
 	 if(nodesDataset.get(a.nodes)[0].type === "rule"){
 	  document.getElementById("addnodo").style.display= "block";
-	  
+	  document.getElementById("Add").style.display= "block";
 	  document.getElementById("esploranodo").style.display= "none";
+	  document.getElementById("deleteRule").style.display= "block";
 	  }else{
+		document.getElementById("deleteRule").style.display= "none";
 	   document.getElementById("addnodo").style.display= "none";
 	   document.getElementById("Add").style.display= "none";
 	   document.getElementById("esploranodo").style.display= "block";
@@ -203,7 +245,7 @@ function neighbourhoodHighlight(a) {
 	  	document.getElementById("Testo1").value = nodesDataset.get(a.nodes)[0].rule_text
 	  	document.getElementById("button_link").style.display="none"}
 	  else if (nodesDataset.get(a.nodes)[0].rule_type === "wiki" || nodesDataset.get(a.nodes)[0].type === "Suggestion"){
-		console.log("WOOOOE")
+		
 		document.getElementById("textarea1").style.display= "none"
 		document.getElementById("all_files").style.display="none"
 		document.getElementById("button_link").style.display="block"
@@ -212,11 +254,16 @@ function neighbourhoodHighlight(a) {
 	 	document.getElementById("textarea1").style.display= "none"
 	 	document.getElementById("button_link").style.display="none"
 	 	document.getElementById("all_files").style.display="block"}
+	 	else if (nodesDataset.get(a.nodes)[0].rule_type === "web"){
+		document.getElementById("textarea1").style.display= "none"
+		document.getElementById("all_files").style.display="none"
+		document.getElementById("button_link").style.display="block"
+		document.getElementById("button_link").textContent = nodesDataset.get(a.nodes)[0].rule_web;
+	}
 	 	document.getElementById("file_download").textContent=nodesDataset.get(a.nodes)[0].id
 	 	document.getElementById("file_download").setAttribute('href',"/fileRule/"+nodesDataset.get(a.nodes)[0].rule_id);
-	   }
-  if (0 < a.nodes.length) {
-	rule_effects = nodesDataset.get(a.nodes)[0], console.log(rule_effects), rule_selected = nodesDataset.get(a.nodes)[0].label, a.event = "[original event]", select = a.nodes[0], selected = a.nodes[0].replaceAll(" ", "_"), b.show(),document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected;
+    
+    
     highlightActive = !0;
     var c, e = a.nodes[0], b;
     for (b in allNodes) {
@@ -226,7 +273,7 @@ function neighbourhoodHighlight(a) {
     for (a = 1; 2 > a; a++) {
       for (c = 0; c < d.length; c++) {
         f = f.concat(network.getConnectedNodes(d[c]));
-        console.log(network.getConnectedNodes(d[c]));
+    
       }
     }
     for (a = 0; a < f.length; a++) {
