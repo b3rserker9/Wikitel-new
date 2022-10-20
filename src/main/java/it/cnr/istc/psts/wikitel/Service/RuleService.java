@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import it.cnr.istc.psts.Websocket.Sending;
+import it.cnr.istc.psts.wikitel.Mongodb.SuggestionM;
+import it.cnr.istc.psts.wikitel.Mongodb.SuggestionMongo;
 import it.cnr.istc.psts.wikitel.Repository.RuleRepository;
 import it.cnr.istc.psts.wikitel.controller.LessonManager;
 import it.cnr.istc.psts.wikitel.controller.MainController;
@@ -43,17 +45,53 @@ public class RuleService {
 	    }
 
 		
+		public List<Long> rulesprecondition(RuleEntity r, List<Long> l){
+			if(r.getPreconditions().isEmpty())return l;
+			else {
+				for(RuleEntity rule : r.getPreconditions()) {
+					l.add(rule.getId());
+					rulesprecondition(rule,l);
+				}
+			}
+			return l;
+		}
+		
+		
 		@Transactional
 	    public void delete(Long m, Long r) {
 			ModelEntity model = this.modelservice.getModel(m);
-			RuleEntity rule = this.getRule(r);
-			model.getRules().remove(rule);
-			for(RuleEntity ru : model.getRules()) {
-				if(ru.getPreconditions().contains(rule)) {
-					ru.removePrecondition(rule);
+			RuleEntity rule_first = this.getRule(r);
+			
+			List<Long> list_start = new ArrayList<>();
+			List<Long> list = rulesprecondition(rule_first ,list_start);
+			list.add( rule_first.getId());
+			
+			for(Long num : list) {
+				
+				RuleEntity rule = this.getRule(num);
+				System.out.println(list);
+				System.out.println(rule.getName());
+				rule.getPreconditions().clear();
+				for(RuleEntity effect: rule.getEffects()) {
+					effect.removePrecondition(rule);
+					
+					SuggestionM sm =  this.modelservice.getsuggestion(effect.getSuggestions());
+					   SuggestionMongo sugmongo = new SuggestionMongo();
+
+			            sugmongo.setPage(rule.getName());
+
+			            sugmongo.setScore((double) 1);
+			            sugmongo.setScore2((double) 1);
+			            sm.getSuggestion().add(sugmongo);
+			            this.modelservice.savesm(sm);
+					this.saverule(effect);
 				}
-			}
-			this.modelservice.save(model);
+				rule.getEffects().clear();
+				model.getRules().remove(rule);
+			
+			
+			
+			
 			List<UserEntity> user = new ArrayList<>();
 			for(LessonEntity l : this.lessonservice.getlessonbymodel(model)) {
 				if(l.getGoals().contains(rule)) {
@@ -76,8 +114,10 @@ public class RuleService {
 				l.getFollowed_by().addAll(user);
 				}
 			}
+			this.saverule(rule);
+			};
 			
-			rulerepository.deleteById(r);
+			this.modelservice.save(model);
 	    }
 		
 		@Transactional

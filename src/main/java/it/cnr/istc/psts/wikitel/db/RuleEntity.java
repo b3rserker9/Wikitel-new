@@ -116,7 +116,7 @@ public class RuleEntity {
 	    }
 
 	    public Set<RuleEntity> getPreconditions() {
-	        return Collections.unmodifiableSet(preconditions);
+	        return this.preconditions;
 	    }
 
 	    public void addPrecondition(final RuleEntity precondition) {
@@ -128,7 +128,7 @@ public class RuleEntity {
 	    }
 
 	    public Set<RuleEntity> getEffects() {
-	        return Collections.unmodifiableSet(effects);
+	        return this.effects;
 	    }
 
 	    public void addEffect(final RuleEntity effect) {

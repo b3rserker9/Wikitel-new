@@ -100,6 +100,7 @@ public class ModelService {
 			this.lessonservice.delete(lesson);
 		}
 		userservice.saveUser(user);
+		m.getRules().clear();
          this.modelRepository.deleteById(id);
     }
 	
