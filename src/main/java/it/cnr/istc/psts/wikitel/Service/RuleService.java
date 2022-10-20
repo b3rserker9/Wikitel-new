@@ -80,8 +80,8 @@ public class RuleService {
 
 			            sugmongo.setPage(rule.getName());
 
-			            sugmongo.setScore((double) 1);
-			            sugmongo.setScore2((double) 1);
+			            sugmongo.setScore((double) 0.5);
+			            sugmongo.setScore2((double) 0.5);
 			            sm.getSuggestion().add(sugmongo);
 			            this.modelservice.savesm(sm);
 					this.saverule(effect);
@@ -114,7 +114,7 @@ public class RuleService {
 				l.getFollowed_by().addAll(user);
 				}
 			}
-			this.saverule(rule);
+			this.rulerepository.deleteById(rule.getId());
 			};
 			
 			this.modelservice.save(model);
