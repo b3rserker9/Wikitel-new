@@ -44,6 +44,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.netty.handler.codec.MessageAggregationException;
@@ -135,6 +136,8 @@ public class MainController {
   private ModelEntity m;
 
   private Long Fileid;
+  
+  public Map<Long, ArrayList<String>> ricerca = new HashMap<>();
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -603,13 +606,32 @@ public class MainController {
     ModelEntity model = new ModelEntity();
     model.setName(Model);
     model.addTeacher(nuovo);
-
+    
     modelservice.save(model);
     nuovo.getModels().add(model);
+    ricerca.put(model.getId(), new ArrayList<>());
     this.m = model;
     Response response = new Response("Done", model);
     return response;
 
+  }
+  
+  public Boolean checkName(ModelEntity m, String name) {
+	for(RuleEntity r : m.getRules()) {
+		if(r instanceof WikiRuleEntity ) {
+		List<SuggestionMongo> s = this.modelservice.getsuggestion(r.getSuggestions()).getSuggestion();
+		 for(SuggestionMongo sm : s) {
+			 if(sm.getPage().equals(name) || r.getName().equals(name))
+				 return false;
+		 }
+		}else {
+			if(r.getName().equals(name))
+				return false;
+		}
+		 
+	}
+	  
+	  return true;  
   }
 
   @RequestMapping(value = "/Newrule", method = RequestMethod.POST)
@@ -623,24 +645,38 @@ public class MainController {
     ModelEntity model = this.m;
     final String name = node.get("rule_name").asText();
     JsonNode effect = node.get("rule_id");
+    
     if (effect != null)
       model = this.modelservice.getModel(node.get("model_id").asLong());
     RuleMongo rulemongo = new RuleMongo();
     RuleEntity rule = null;
-
+    if(ricerca.get(model.getId())==null) {
+    	ricerca.put(model.getId(), new ArrayList<>());
+    }
+    ricerca.get(model.getId()).add(name);
     send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 0)), UserController.ONLINE.get(nuovo.getId()));
     switch (node.get("rule_type").asText()) {
     case "Testo":
       rule = new TextRuleEntity();
+      if(checkName(model, name)) {
       ((TextRuleEntity) rule).setText(node.get("rule_text").asText());
       rule.setLength(node.get("rule_length").asLong());
       this.ruleservice.saverule(rule);
+      }else {
+    	  Response response = new Response("NO");
+    	  return response;
+      }
       break;
     case "Pagina Web":
+    	 if(checkName(model, name)) {
       rule = new WebRuleEntity();
       ((WebRuleEntity) rule).setUrl(node.get("rule_text").asText());
       rule.setLength(node.get("rule_length").asLong());
       this.ruleservice.saverule(rule);
+    	 }else {
+    		 Response response = new Response("NO");
+       	  return response;
+    	 }
       break;
     case "Pagina Wikipedia":
       rule = new WikiRuleEntity();
@@ -699,10 +735,16 @@ public class MainController {
 
       break;
     case "File":
+    	 if(checkName(model, name)) {
       rule = this.ruleservice.getRule(Fileid);
       rule.setName(name);
       rule.setLength(node.get("rule_length").asLong());
       this.ruleservice.saverule(rule);
+    	 }
+    	 else {
+    		 Response response = new Response("NO");
+       	  return response;
+    	 }
       break;
     }
     if (effect != null) {
@@ -734,10 +776,37 @@ public class MainController {
     model.getRules().add(rule);
     modelservice.save(model);
     send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 1)), UserController.ONLINE.get(nuovo.getId()));
-    Response response = new Response(true, model.getId());
+    ricerca.get(model.getId()).remove(name);
+    Response response = new Response(true, model.getId(), rule.getId(), rule.getName());
     return response;
   }
 
+  @RequestMapping(value = "/ricerca/{id}", method = RequestMethod.POST)
+  public ArrayList<String> ricerche(@PathVariable("id") Long id) {
+	  System.out.println("CIAOOOO");
+	  if(!ricerca.containsKey(id)) {
+		  return new ArrayList<>();
+	  }
+    return ricerca.get(id);
+  }
+  
+  @RequestMapping(value = "/ricerchetot", method = RequestMethod.GET)
+  public ObjectNode ricerchetot() {
+	  ObjectMapper mapper = new ObjectMapper();
+	  ObjectNode ricerche = objectMapper.createObjectNode();
+	  ObjectNode array = objectMapper.createObjectNode();
+	 
+	  for(Long l : ricerca.keySet()) {	
+		  ArrayNode arrayNode = mapper.createArrayNode();
+		  for(String s : ricerca.get(l))
+		  arrayNode.add(s);
+		  
+	 ricerche.put(l.toString(), arrayNode);
+	  }
+	  
+    return ricerche;
+  }
+  
   @RequestMapping(value = "/deletemodel/{id}", method = RequestMethod.POST)
   public String deletemodel(@PathVariable("id") Long id) {
     System.out.println("OKK1");

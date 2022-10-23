@@ -1,5 +1,5 @@
 highlightActive = !1;
-var nodesDataset, fiternode = [], nodeFilterValue = -1, nodeFilterSelector = document.getElementById("customRange1"),rule_effects,type="Testo";
+var nodesDataset, fiternode = [], nodeFilterValue = -1, nodeFilterSelector = document.getElementById("customRange1"),rule_effects,type="Testo",table;
 
 
 function update() {
@@ -31,17 +31,69 @@ function update() {
   }
 }
 
+function checkAddNode(){
+	 send=true;
+	
+		if(document.getElementById("Add_node_name").value.length == 0){
+		document.getElementById("error_name_rule").innerText = "Nome non inserito";
+		send=false;
+		} else{
+		document.getElementById("error_name_rule").innerText = '';
+	}
+	if (document.getElementById("Add_node_time").value.length == 0){
+		document.getElementById("error_time").innerText = "Durata lezione non inserita";
+		send=false;
+	}else{
+		document.getElementById("error_time").innerText = '';
+	}
+	if(document.getElementById("Pagina Web").value.length == 0 && type == "web"){
+		document.getElementById("error_web").innerText = "Url non inserito";
+		send=false;
+	}else{
+		document.getElementById("error_web").innerText = '';
+	}
+	
+	if(document.getElementById("Testo").value.length == 0 && type == "Testo"){
+		document.getElementById("error_add_text").innerText = "Testo non inserito";
+		send=false;
+	}else{
+		document.getElementById("error_add_text").innerText = '';
+	}
+	if(document.getElementById("formFile").files.length == 0 && type == "file"){
+		document.getElementById("error_add_file").innerText = "File non inserito";
+		send=false;
+	}else{
+		document.getElementById("error_add_file").innerText = '';
+	}
+	return send;
+}
+
+
 function sendnode(a){
+
+
+	console.log(document.getElementById("formFile").files.length)
+
 	 $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", dataType:"json", data:JSON.stringify(a), success:function(a) {
     console.log("SUCCESS : ", a);
+    if(a.status == 'NO'){
+	document.getElementById("error_name_rule").innerText = "Errore nome dupplicato";
+}else{
+	document.getElementById("model_name").value = ''
+document.getElementById("Testo").value = ''
+document.getElementById("Pagina Web").value = ''
+document.getElementById("Add_node_name").value = ''
+document.getElementById("Add_node_time").value = ''
+
         $('#example').DataTable().clear().destroy();
      ajaxGet();
-document.getElementById("goal").innerHTML += '<div class="form-check form-switch col"><input class="form-check-input" type="checkbox" role="switch"  th:value="${g.id}" th:name="${g.name}"> <label class="form-check-label" for="flexSwitchCheckDefault" th:text="${g.name}"></label></div>'
-   
+document.getElementById("goal").innerHTML += '<div class="form-check form-switch col"><input class="form-check-input" type="checkbox" role="switch"  value="'+a.data6 +'>'+a.rule_name+' <label class="form-check-label" for="flexSwitchCheckDefault" ">'+a.rule_name+'</label></div>'
+   }
   }, error:function(a) {
     alert("Error!");
     console.log("ERROR: ", a);
   }});
+
 }
 
 function New_rule_file(){
@@ -70,14 +122,15 @@ function New_rule_file(){
 
 function addNode() {
   var a = {model_id: document.getElementById("model_name").getAttribute("value") ,rule_length:$("#Add_node_time").val(), rule_name:$("#Add_node_name").val(), rule_text: document.getElementById(type).value, rule_type :type,  rule_id: rule_effects.rule_id};
+
+ if(checkAddNode()){
  if(type!="file"){
  	sendnode(a)}
   else{
 	New_rule_file()
 }
-document.getElementById("model_name").value = ''
-document.getElementById("Testo").value = ''
-document.getElementById("Pagina Web").value = ''
+}
+
 }
 
 
@@ -91,15 +144,16 @@ function ajaxGet() {
     rules = a[3];
     nodes = a[1];
     halfnodes = a[4];
+    console.log(Object.keys(nodes[0]))
     
     table = $("#example").DataTable({autoWidth:!1, data:nodestable, columns:[{data:"id"}, {data:"parent"}, {data:"type"}, {data:"score2"}]});
+    
     $("#example tbody").on("click", "tr", function() {
       $(this).toggleClass("selected");
-      console.log(table.rows(".selected").data());
+      
     });
-    $("#button").click(function() {
-      alert(table.rows(".selected").data().length + " row(s) selected");
-    });
+    
+    
     nodesDataset = new vis.DataSet(halfnodes);
     
     redrawAll(nodesDataset, edgesDataset);
@@ -112,11 +166,59 @@ function filter_rule() {
   document.getElementById("only_rule").checked ? (nodesDataset = new vis.DataSet(rules), console.log(nodesDataset)) : nodesDataset = new vis.DataSet(halfnodes);
   redrawAll(nodesDataset, edgesDataset);
 }
+function MultiSearch(){
+	 for (var a = 0; a < table.rows(".selected").data().length; a++) {
+		elem = table.rows(".selected").data()[a]
+		  toastr.info("è in corso la ricerca su " + elem.id);
+           	if(document.getElementsByClassName("flexing").length == 0)
+           		document.getElementById("Search_container").innerHTML= ''
+           		
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+elem.id+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+elem.id.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+          
+          var precondition = {
+                model_id: window.location.pathname.split("/")[2],
+                rule_id: elem.rule_id,
+                rule_name: elem.id,
+                rule_type: "Pagina Wikipedia",
+            }
+          
+          
+            $.ajax({
+
+                type: "POST",
+                contentType: "application/json",
+                url: "/Newrule",
+                data: JSON.stringify(precondition),
+                dataType: "json",
+                success: function(data) {
+                    console.log("SUCCESS : ", data);
+                    ricerca =  document.getElementsByClassName("ricerca");
+                    for(i = 0;i<ricerca.length;i++){
+						if(ricerca[i].textContent==item.name){
+							r = remove_spaces(item.name);
+							document.getElementById(r).innerHTML = '<i class="fas fa-check fa-2x"></i>';
+							document.getElementById(r).classList.remove('spinner-border')
+							document.getElementById(r).classList.remove('text-primary')
+							document.getElementById(r).classList.add('ico')
+							
+						}
+}
+                   
+
+                },
+                error: function(e) {
+                    alert("Error!")
+                    console.log("ERROR: ", e);
+                }
+            });
+  }
+}
+
 function aggiorna() {
   node = [];
   console.log(table.rows(".selected").data().length);
   for (var a = 0; a < table.rows(".selected").data().length; a++) {
-    node.push(table.rows(".selected").data()[a]), console.log(node);
+    node.push(table.rows(".selected").data()[a]), console.log(table.rows(".selected").data()[a].rule_id);
   }
   rules.forEach(function(c) {
     node.push(c);
@@ -135,7 +237,7 @@ function redrawAll(a, c) {
     var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, size: 16,shapeProperties: {
     interpolation: false    // 'true' for intensive zooming
   }}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:!1
-     , solver:"repulsion", repulsion:{nodeDistance:400}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:false}, groups:{file:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf15b", size:50, color:"#000000",},}, text:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf031", size:50, color:"#000000",},},}};
+     , solver:"repulsion", repulsion:{nodeDistance:500}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:false}, groups:{file:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf15b", size:50, color:"#000000",},}, text:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf031", size:50, color:"#000000",},},}};
     console.log("sonoqui");
   } else {
      d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, size: 16,}, edges:{smooth:!1}, physics: {
@@ -176,14 +278,23 @@ nodeFilterSelector.addEventListener("change", function(a) {
 });
 
 function esplora() {
+	 document.getElementById("graph_search").style.display="block";
+	 	if(document.getElementsByClassName("flexing").length == 0)
+           		document.getElementById("Search_container").innerHTML= ''
+           		
+	             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+rule_selected+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+rule_selected.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+
   toastr.info("Avviata la ricerca su " + rule_selected);
-  var a = {model_id:window.location.pathname.split("/")[2], rule_id: rule_effects.rule_id, rule_name:rule_selected, rule_type:"Pagina Wikipedia"};
+  var a = {model_id:window.location.pathname.split("/")[2], rule_id: rule_effects.rule_id, rule_name: rule_selected, rule_type:"Pagina Wikipedia"};
   console.log(a);
   $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", data:JSON.stringify(a), dataType:"json", success:function(b) {
     console.log("SUCCESS : ", b);
+          
     toastr.info("La ricerca su " + rule_selected + "\u00e8 stata completata");
+    
     $('#example').DataTable().clear().destroy();
     ajaxGet();
+  	document.getElementById("graph_search").style.display="none";
   }, error:function(b) {
     alert("Error!");
     console.log("ERROR: ", b);
@@ -209,7 +320,7 @@ function deleteRule(){
 		var d = {model:window.location.pathname.split("/")[2] , rule: rule_effects.rule_id}
 	  $.ajax({type:"POST", contentType:"application/json", url:"/deleterule", data:JSON.stringify(d), dataType:"json", success:function(b) {
     console.log("SUCCESS : ", b);
-    $('#example').DataTable().clear().destroy();
+    $('#example').DataTable().destroy();
     ajaxGet();
 
   }, error:function(b) {
@@ -229,13 +340,11 @@ function neighbourhoodHighlight(a) {
     
     
 	 if(nodesDataset.get(a.nodes)[0].type === "rule"){
-	  document.getElementById("addnodo").style.display= "block";
 	  document.getElementById("Add").style.display= "block";
 	  document.getElementById("esploranodo").style.display= "none";
 	  document.getElementById("deleteRule").style.display= "block";
 	  }else{
 		document.getElementById("deleteRule").style.display= "none";
-	   document.getElementById("addnodo").style.display= "none";
 	   document.getElementById("Add").style.display= "none";
 	   document.getElementById("esploranodo").style.display= "block";
 	   }
@@ -297,3 +406,8 @@ function neighbourhoodHighlight(a) {
   nodesDataset.update(a);
 }
 ;
+$(document).ready(function() {
+	
+	
+	
+	});

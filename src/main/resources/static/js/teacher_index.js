@@ -19,6 +19,7 @@ let first = true;
 var clone;
 let rules = [];
 let close = false;
+const map = new Map();
 
 function active(name) {
 	console.log(name)
@@ -144,7 +145,7 @@ if(text!= "Pagina Wikipedia"){
 
         success: function(data) {
 			if(data.exists){
-				active(data.data6);
+				active(data.model);
 			}else{
 				var myModal = new bootstrap.Modal(document.getElementById('wikipediaNotfound'), {
   keyboard: false
@@ -192,7 +193,7 @@ function newSearch(){
 
         success: function(data) {
 			if(data.exists){
-				active(data.data6);
+				active(data.model);
 			}else{
 				var myModal = new bootstrap.Modal(document.getElementById('wikipediaNotfound'), {
   keyboard: false
@@ -276,10 +277,16 @@ function deleteModal(id){
             });
 }
 
+function remove_spaces(s){
+	return s.replace(/\s/g, '');
+}
+
 function Create_new_precondition() {
+	
     console.log(current_rule);
     var itemForm = document.getElementById('suggested-preconditions-list');
     var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]');
+    
     // this function will get called when the save button is clicked
     result = [];
     checkBoxes.forEach(item => { // loop all the checkbox item
@@ -290,7 +297,12 @@ function Create_new_precondition() {
                 rule_name: item.name,
                 rule_type: "Pagina Wikipedia",
             }
-            console.log(precondition);
+          toastr.info("è in corso la ricerca su " + item.name);
+           	if(document.getElementsByClassName("flexing").length == 0)
+           		document.getElementById("Search_container").innerHTML= ''
+           		
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+item.name+' (<small class="w-100" style="text-align: center;" >'+current_model+'</small>)</div><div id="'+remove_spaces(item.name)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+          
             $.ajax({
 
                 type: "POST",
@@ -307,6 +319,18 @@ function Create_new_precondition() {
                         '<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button></div>' +
                         '<div class="toast-body"> ' + item.name + ' è stato trovato </div></div>'
                     time(item.name);
+                    ricerca =  document.getElementsByClassName("ricerca");
+                    for(i = 0;i<ricerca.length;i++){
+						if(ricerca[i].textContent==item.name){
+							r = remove_spaces(item.name);
+							document.getElementById(r).innerHTML = '<i class="fas fa-check fa-2x"></i>';
+							document.getElementById(r).classList.remove('spinner-border')
+							document.getElementById(r).classList.remove('text-primary')
+							document.getElementById(r).classList.add('ico')
+							
+						}
+}
+                   
 
                 },
                 error: function(e) {
@@ -463,7 +487,7 @@ function add(model) {
         document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/' + model.id + '">' + model.name + '</a></div>'
     } else {
 
-        document.getElementById("rows").innerHTML += '<div class="col-md-3 col-sm-6 item"> <div class="card item-card card-block" style="z-index:-60;background-color: #aba6a626" id="' + model.id + '"><div class="spinner-border text-primary" role="status" id="'+model.id+'s"> <span class="visually-hidden">Loading...</span> </div> <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion(' + model.id + ')"><i class="fas fa-cog"></i></button></h4> <a id=" ' + model.name + 'a" href="/Argomento/' + model.id + '"><h5 class="item-card-title mt-3 mb-3" style="text-align:center;font-size:1.75rem!important" >'+ model.name + '</h5></a> </div> </div>'
+        document.getElementById("rows").innerHTML += '<div class="col-md-3 col-sm-6 item"> <div class="card item-card card-block" style="z-index:-60;background-color: #aba6a626" id="' + model.id + '"><div class="spinner-border spinner-borders text-primary" role="status" id="'+model.id+'s"> <span class="visually-hidden">Loading...</span> </div> <h4 class="card-title text-right"><button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="Postsuggetion(' + model.id + ')"><i class="fas fa-cog"></i></button></h4> <a id=" ' + model.name + 'a" href="/Argomento/' + model.id + '"><h5 class="item-card-title mt-3 mb-3" style="text-align:center;font-size:1.75rem!important" >'+ model.name + '</h5></a> </div> </div>'
         document.getElementById("collapse").innerHTML += '<div class="card card-body" id="side-bar"><a style="font-size: 19px;"href="/Argomento/' + model.id + '">' + model.name + '</a></div>'
     }
     a.push(model);
@@ -482,7 +506,6 @@ function resetformat() {
 
 $(document).ready(
     function() {
-   
           clone = document.getElementById("clone").cloneNode(true);
         questions();
         prep_modal();
@@ -709,3 +732,39 @@ console.log(pages.length);
     });
 }
 
+
+
+function ricerchetot(){
+	   $.ajax({
+
+        type: "Get",
+        contentType: "application/json",
+        url: "/ricerchetot",
+        dataType: "json",
+        
+
+        success: function(data) {
+
+            console.log("SUCCESS : ", data);
+		Object.keys(data).forEach(function(le) {
+			console.log(data[le])
+			data[le].forEach(function(s){
+				document.getElementById("Search_container").innerHTML = '';
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+le+'</small>)</div><div id="'+remove_spaces(s)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+			})
+		
+		})
+        
+
+
+        },
+        error: function(e) {
+            alert("Error!")
+            console.log("ERROR: ", e);
+        }
+    });
+}
+$(document).ready(function() {
+	console.log("ciaosk")
+ ricerchetot()
+});

@@ -14,7 +14,7 @@ import lombok.Data;
 
 @Data
 public class Response {
-
+	private String rule_name;
 	private String status;
 	private Long rule;
 	private Long model;
@@ -53,10 +53,16 @@ public class Response {
 		this.status=status;
 		this.data5=lessons;
 	}
+	public Response(Boolean status2, Long id, Long rule_id, String rule_name) {
+		this.exists=status2;
+		this.data6=rule_id;
+		this.model= id;
+		this.rule_name=rule_name;
+	}    
 	public Response(String status2, Long id) {
 		this.status=status2;
 		this.data6=id;
-	}    
+	}   
 	public Response(Boolean status2, Long id) {
 		this.exists=status2;
 		this.data6=id;

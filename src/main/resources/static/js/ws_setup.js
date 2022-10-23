@@ -33,8 +33,20 @@ function setup_ws(msg) {
 
         const c_msg = JSON.parse(msg);
         switch (c_msg.type) {
+			case 'searching':
+			if(c_msg.status == 1){
+			toastr.success(c_msg.name + " è stato trovato");
+			var st = c_msg.name.replace(/\s/g, '');
+			document.getElementById(st).innerHTML = '<i class="fas fa-check fa-2x"></i>';
+			document.getElementById(st).classList.remove('spinner-border')
+			document.getElementById(st).classList.remove('text-primary')
+			document.getElementById(st).classList.add('ico')
+			
+			}
+			break;
 			case 'lesson':
 			addNewLesson(c_msg.id_Lesson,c_msg.name_lesson,c_msg.teacher_lesson,c_msg.teacher_id)
+			break;
             case 'online':
              console.log("online");
                 break;

@@ -125,7 +125,37 @@ function Create_new_lesson() {
     }});
   }
 }
+
+ function ricerca(){
+	  $.ajax({
+
+        type: "POST",
+        contentType: "application/json",
+        url: "/ricerca/"+window.location.pathname.split("/")[2],
+        dataType: "json",
+        
+
+        success: function(data) {
+
+            console.log("SUCCESS : ", data);
+            
+			data.forEach(function(s){
+					if(document.getElementsByClassName("flexing").length == 0)
+           		document.getElementById("Search_container").innerHTML= ''
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+s.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+			})
+        },
+        error: function(e) {
+            alert("Error!")
+            console.log("ERROR: ", e);
+        }
+    });
+}
+
 $(document).ready(function() {
+
+
+
 
   $("#students").autocomplete({source:students});
   var a = window.location.pathname.split("/");
@@ -162,4 +192,5 @@ $(document).ready(function() {
     }
     document.getElementById("students").value = "";
   });
+   ricerca()
 });
