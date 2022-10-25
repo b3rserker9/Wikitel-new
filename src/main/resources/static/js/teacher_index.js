@@ -132,18 +132,27 @@ if(text!= "Pagina Wikipedia"){
         rule_text: $("#rule_Textarea").val(),
 
     }
+    
+    if(document.getElementsByClassName("flexing").length == 0)
+           		document.getElementById("Search_container").innerHTML= ''
+           		
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+$("#new-model-name").val()+' (<small class="w-100" style="text-align: center;" >'+$("#new-model-name").val()+'</small>)</div><div id="'+$("#new-model-name").val().replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+          
+	
 
     // DO POST
     $.ajax({
 
         type: "POST",
         contentType: "application/json",
-        url: "Newrule",
+        url: "/Newrule",
         data: JSON.stringify(model),
         dataType: "json",
 
 
         success: function(data) {
+		
+	
 			if(data.exists){
 				active(data.model);
 			}else{
@@ -186,7 +195,7 @@ function newSearch(){
 
         type: "POST",
         contentType: "application/json",
-        url: "Newrule",
+        url: "/Newrule",
         data: JSON.stringify(model),
         dataType: "json",
 
@@ -287,6 +296,8 @@ function Create_new_precondition() {
     var itemForm = document.getElementById('suggested-preconditions-list');
     var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]');
     
+    
+    
     // this function will get called when the save button is clicked
     result = [];
     checkBoxes.forEach(item => { // loop all the checkbox item
@@ -298,38 +309,25 @@ function Create_new_precondition() {
                 rule_type: "Pagina Wikipedia",
             }
           toastr.info("è in corso la ricerca su " + item.name);
-           	if(document.getElementsByClassName("flexing").length == 0)
+          if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
            		
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+item.name+' (<small class="w-100" style="text-align: center;" >'+current_model+'</small>)</div><div id="'+remove_spaces(item.name)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+item.name+' (<small class="w-100" style="text-align: center;" >'+current_model+'</small>)</div><div id="'+item.name.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
           
+	
             $.ajax({
 
                 type: "POST",
                 contentType: "application/json",
-                url: "Newrule",
+                url: "/Newrule",
                 data: JSON.stringify(precondition),
                 dataType: "json",
+                async: true,
                 success: function(data) {
                     console.log("SUCCESS : ", data);
-                    document.getElementById("notification").innerHTML += '<div class="toast show" role="alert" aria-live="assertive" id="' + item.name + '" aria-atomic="true">' +
-                        '<div class="toast-header">' +
-                        '<strong class="me-auto">Nuovo obiettivo trovato</strong>' +
-                        '<small class="text-muted">just now</small>' +
-                        '<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button></div>' +
-                        '<div class="toast-body"> ' + item.name + ' è stato trovato </div></div>'
+                   
                     time(item.name);
-                    ricerca =  document.getElementsByClassName("ricerca");
-                    for(i = 0;i<ricerca.length;i++){
-						if(ricerca[i].textContent==item.name){
-							r = remove_spaces(item.name);
-							document.getElementById(r).innerHTML = '<i class="fas fa-check fa-2x"></i>';
-							document.getElementById(r).classList.remove('spinner-border')
-							document.getElementById(r).classList.remove('text-primary')
-							document.getElementById(r).classList.add('ico')
-							
-						}
-}
+        
                    
 
                 },
@@ -749,7 +747,8 @@ function ricerchetot(){
 		Object.keys(data).forEach(function(le) {
 			console.log(data[le])
 			data[le].forEach(function(s){
-				document.getElementById("Search_container").innerHTML = '';
+				if(document.getElementsByClassName("flexing").length == 0)
+           		document.getElementById("Search_container").innerHTML= ''
              document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+le+'</small>)</div><div id="'+remove_spaces(s)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
 			})
 		

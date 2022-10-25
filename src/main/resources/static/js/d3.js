@@ -85,9 +85,9 @@ document.getElementById("Pagina Web").value = ''
 document.getElementById("Add_node_name").value = ''
 document.getElementById("Add_node_time").value = ''
 
-        $('#example').DataTable().clear().destroy();
+        table.destroy();
      ajaxGet();
-document.getElementById("goal").innerHTML += '<div class="form-check form-switch col"><input class="form-check-input" type="checkbox" role="switch"  value="'+a.data6 +'>'+a.rule_name+' <label class="form-check-label" for="flexSwitchCheckDefault" ">'+a.rule_name+'</label></div>'
+document.getElementById("lesson_goal").innerHTML += '<div style="padding-right:10px" id="'+a.data6+'"> <div class="form-check form-switch col"> <input class="form-check-input" type="checkbox" role="switch" value="'+a.data6+'" name="'+a.rule_name+'"> <label class="form-check-label" for="flexSwitchCheckDefault">'+a.rule_name+'</label> </div> </div>'
    }
   }, error:function(a) {
     alert("Error!");
@@ -136,7 +136,7 @@ function addNode() {
 
 
 function ajaxGet() {
-  $.ajax({type:"POST", contentType:"application/json", url:"/findsuggestiontot", dataType:"json", data:JSON.stringify({ids:document.getElementById("model_name").getAttribute("value")}), success:function(a) {
+  $.ajax({type:"POST", contentType:"application/json", url:"/findsuggestiontot",async:false, dataType:"json", data:JSON.stringify({ids:document.getElementById("model_name").getAttribute("value")}), success:function(a) {
     console.log("SUCCESS : ", a);
     edges = a[0];
     edgesDataset = new vis.DataSet(a[0]);
@@ -146,12 +146,13 @@ function ajaxGet() {
     halfnodes = a[4];
     console.log(Object.keys(nodes[0]))
     
+   
     table = $("#example").DataTable({autoWidth:!1, data:nodestable, columns:[{data:"id"}, {data:"parent"}, {data:"type"}, {data:"score2"}]});
+	
+   
+  
     
-    $("#example tbody").on("click", "tr", function() {
-      $(this).toggleClass("selected");
-      
-    });
+ 
     
     
     nodesDataset = new vis.DataSet(halfnodes);
@@ -192,17 +193,8 @@ function MultiSearch(){
                 dataType: "json",
                 success: function(data) {
                     console.log("SUCCESS : ", data);
-                    ricerca =  document.getElementsByClassName("ricerca");
-                    for(i = 0;i<ricerca.length;i++){
-						if(ricerca[i].textContent==item.name){
-							r = remove_spaces(item.name);
-							document.getElementById(r).innerHTML = '<i class="fas fa-check fa-2x"></i>';
-							document.getElementById(r).classList.remove('spinner-border')
-							document.getElementById(r).classList.remove('text-primary')
-							document.getElementById(r).classList.add('ico')
-							
-						}
-}
+                    table.clear();
+       				 ajaxGet();
                    
 
                 },
@@ -229,6 +221,12 @@ function aggiorna() {
 }
 $(document).ready(function() {
   ajaxGet();
+  table.on("click", "tr", function() {
+      $(this).toggleClass("selected");
+      console.log("ciaoo")
+      console.log(table.rows(".selected").data().length)
+      
+    });
 });
 function redrawAll(a, c) {
   var e = document.getElementById("mynetwork"), b = {nodes:a, edges:c};
@@ -292,7 +290,7 @@ function esplora() {
           
     toastr.info("La ricerca su " + rule_selected + "\u00e8 stata completata");
     
-    $('#example').DataTable().clear().destroy();
+   table.destroy()
     ajaxGet();
   	document.getElementById("graph_search").style.display="none";
   }, error:function(b) {
@@ -408,6 +406,7 @@ function neighbourhoodHighlight(a) {
 ;
 $(document).ready(function() {
 	
+	 
 	
 	
 	});

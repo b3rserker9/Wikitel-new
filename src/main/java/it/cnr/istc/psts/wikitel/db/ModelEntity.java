@@ -65,7 +65,7 @@ public class ModelEntity {
     private final Collection<UserEntity> teachers = new ArrayList<>();
     
     
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany
     @JsonManagedReference
     private final Collection<RuleEntity> rules = new ArrayList<>();
 

@@ -1,6 +1,9 @@
 package it.cnr.istc.psts.wikitel.Service;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +19,8 @@ import it.cnr.istc.psts.wikitel.Repository.ModelRepository;
 import it.cnr.istc.psts.wikitel.Repository.RuleRepository;
 import it.cnr.istc.psts.wikitel.Repository.RuleSuggestionRelationRepository;
 import it.cnr.istc.psts.wikitel.Repository.WikiSuggestionRepository;
+import it.cnr.istc.psts.wikitel.controller.LessonManager;
+import it.cnr.istc.psts.wikitel.controller.MainController;
 import it.cnr.istc.psts.wikitel.db.LessonEntity;
 import it.cnr.istc.psts.wikitel.db.ModelEntity;
 import it.cnr.istc.psts.wikitel.db.RuleEntity;
@@ -40,6 +45,9 @@ public class ModelService {
 	 
 	 @Autowired
 	 private LessonService lessonservice;
+	 
+	 @Autowired
+	 private RuleService ruleservice;
 	 
 	 @Autowired
 	 private UserService userservice;
@@ -86,21 +94,35 @@ public class ModelService {
 	@Transactional
     public void delete(Long id, UserEntity user) {
 		ModelEntity m = this.getModel(id);
-		System.out.println(m + " " + id);
+		
 		m.getTeachers().stream().forEach(t -> t.getModels().remove(m)); 
-		ArrayList<Long> n = new ArrayList<Long>();
-		for(LessonEntity l : user.getTeaching_lessons()) {
-			if(l.getModel().getId()==id) {
-				n.add(l.getId());
+		List<LessonEntity> les = new ArrayList<>();
+		for(LessonEntity l : this.lessonservice.getlessonbymodel(m)) {
+				les.add(l);
+				l.setModel(null);
+			for(UserEntity u : l.getFollowed_by()) {	
+
+				File lesson_file = new File(System.getProperty("user.dir")+"//riddle//" + l.getId() + u.getId() + ".rddl");
+				lesson_file.delete();
+
+			String string = String.valueOf(l.getId()) + String.valueOf(u.getId());
+			MainController.LESSONS.remove(string);
 			}
+				
+			}
+		for(LessonEntity d : les) {
+			this.lessonservice.delete(d);
 		}
-		for(Long i : n) {
-			LessonEntity lesson = this.lessonservice.lezionePerId(i);
-			lesson.setModel(null);
-			this.lessonservice.delete(lesson);
+		
+		System.out.println(m.getRules());
+		Collection<RuleEntity> rules = new ArrayList<RuleEntity>();
+		rules.addAll(m.getRules());
+		for(RuleEntity r : rules) {
+			if(!r.getPreconditions().isEmpty() && r.getEffects().isEmpty())
+				this.ruleservice.delete(id, r.getId());
 		}
-		userservice.saveUser(user);
 		m.getRules().clear();
+		
          this.modelRepository.deleteById(id);
     }
 	

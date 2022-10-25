@@ -650,10 +650,13 @@ public class MainController {
       model = this.modelservice.getModel(node.get("model_id").asLong());
     RuleMongo rulemongo = new RuleMongo();
     RuleEntity rule = null;
+    
     if(ricerca.get(model.getId())==null) {
     	ricerca.put(model.getId(), new ArrayList<>());
     }
-    ricerca.get(model.getId()).add(name);
+    System.out.println(ricerca);
+    if(!ricerca.get(model.getId()).contains(name)) { 
+    	 ricerca.get(model.getId()).add(name);
     send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 0)), UserController.ONLINE.get(nuovo.getId()));
     switch (node.get("rule_type").asText()) {
     case "Testo":
@@ -681,7 +684,6 @@ public class MainController {
     case "Pagina Wikipedia":
       rule = new WikiRuleEntity();
       SuggestionM sm = new SuggestionM();
-      if(!model.getRules().stream().filter(o -> o.getName().equals(name)).findFirst().isPresent()) {
       if (this.modelservice.getrulemongoname(name) == null) {
         Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name.replace(' ', '_'), Prova.class);
         if (prova.getExists()) {
@@ -731,7 +733,7 @@ public class MainController {
         ((WikiRuleEntity) rule).setUrl("https://it.wikipedia.org/wiki/" + name);
 
       }
-      }
+    
 
       break;
     case "File":
@@ -747,6 +749,7 @@ public class MainController {
     	 }
       break;
     }
+    
     if (effect != null) {
       final RuleEntity effect_entity = this.ruleservice.getRule(effect.asLong());
       if (effect_entity == null)
@@ -774,11 +777,17 @@ public class MainController {
     }
     this.ruleservice.saverule(rule);
     model.getRules().add(rule);
-    modelservice.save(model);
+    System.out.println("SONOQUIII");
+    System.out.println(model.getRules());
+    this.modelservice.save(model);
     send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 1)), UserController.ONLINE.get(nuovo.getId()));
     ricerca.get(model.getId()).remove(name);
     Response response = new Response(true, model.getId(), rule.getId(), rule.getName());
     return response;
+  }
+    Response response = new Response("Exist");
+	return response;
+	  
   }
 
   @RequestMapping(value = "/ricerca/{id}", method = RequestMethod.POST)
@@ -795,8 +804,8 @@ public class MainController {
 	  ObjectMapper mapper = new ObjectMapper();
 	  ObjectNode ricerche = objectMapper.createObjectNode();
 	  ObjectNode array = objectMapper.createObjectNode();
-	 
 	  for(Long l : ricerca.keySet()) {	
+		  
 		  ArrayNode arrayNode = mapper.createArrayNode();
 		  for(String s : ricerca.get(l))
 		  arrayNode.add(s);
@@ -815,6 +824,7 @@ public class MainController {
     UserEntity userentity = credentials.getUser();
     System.out.println(userentity);
     this.modelservice.delete(id, userentity);
+    ricerca.remove(id);
     System.out.println("OKK");
     return "OK";
   }
