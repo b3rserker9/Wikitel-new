@@ -170,7 +170,7 @@ function filter_rule() {
 function MultiSearch(){
 	 for (var a = 0; a < table.rows(".selected").data().length; a++) {
 		elem = table.rows(".selected").data()[a]
-		  toastr.info("è in corso la ricerca su " + elem.id);
+
            	if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
            		
@@ -282,13 +282,12 @@ function esplora() {
            		
 	             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+rule_selected+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+rule_selected.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
 
-  toastr.info("Avviata la ricerca su " + rule_selected);
+  
   var a = {model_id:window.location.pathname.split("/")[2], rule_id: rule_effects.rule_id, rule_name: rule_selected, rule_type:"Pagina Wikipedia"};
   console.log(a);
   $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", data:JSON.stringify(a), dataType:"json", success:function(b) {
     console.log("SUCCESS : ", b);
-          
-    toastr.info("La ricerca su " + rule_selected + "\u00e8 stata completata");
+ 
     
    table.destroy()
     ajaxGet();

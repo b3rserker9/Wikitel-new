@@ -35,13 +35,16 @@ function setup_ws(msg) {
         switch (c_msg.type) {
 			case 'searching':
 			if(c_msg.status == 1){
-			toastr.success(c_msg.name + " è stato trovato");
+			toastr.success(c_msg.name + " è stato aggiunto");
 			var st = c_msg.name.replace(/\s/g, '');
+			console.log(st)
 			document.getElementById(st).innerHTML = '<i class="fas fa-check fa-2x"></i>';
 			document.getElementById(st).classList.remove('spinner-border')
 			document.getElementById(st).classList.remove('text-primary')
 			document.getElementById(st).classList.add('ico')
 			
+			}else{
+				toastr.info("Avviata la ricerca su " + c_msg.name);
 			}
 			break;
 			case 'lesson':

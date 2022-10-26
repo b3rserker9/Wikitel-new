@@ -308,7 +308,7 @@ function Create_new_precondition() {
                 rule_name: item.name,
                 rule_type: "Pagina Wikipedia",
             }
-          toastr.info("è in corso la ricerca su " + item.name);
+          
           if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
            		

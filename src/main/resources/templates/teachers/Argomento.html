@@ -401,7 +401,7 @@ function openNav() {
 	
 <div class="dropdown-container" style="position: relative;">
 <button type="button" class="btn btn-info dropdown-toggle" style="margin-right: 2px;" data-bs-toggle="dropdown" aria-expanded="false">
-   <span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>
+   <span class="spinner-border spinner-border-sm text-primary" role="status" aria-hidden="true"></span>
   <span >Ricerca obiettivi</span>
   </button>
 <div class="dropdown-menu dropdown-menu-end  p-4 " style="max-width: 300px;position: absolute;" >
@@ -438,7 +438,7 @@ function openNav() {
 <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal" data-bs-target="#graph"><span class="tooltiptext">Visualizzazione del modello in formato grafico</span>
   Grafico<span><i class="fas fa-project-diagram"></i></span>
 </button>
-  
+
 
 <div class="container mt-5 mb-3">
     <div class="row" id="row">
@@ -628,12 +628,12 @@ function openNav() {
   <div class="modal-dialog right">
     <div class="modal-content">
       <div class="modal-header">
-       	<button type="button" class="btn btn-danger" id="deleteRule" data-bs-dismiss="modal" onclick="deleteRule()" >Delete  <span><i class="fas fa-trash-alt"></i></span> </button>
+       	<button type="button" class="btn btn-danger" id="deleteRule" data-bs-toggle="modal" data-bs-target="#delete_conf" data-bs-dismiss="modal" >Delete  <span><i class="fas fa-trash-alt"></i></span> </button>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
      
-<div id="Add">
+<div id="Add" style="margin-bottom:24px ;">
       <button class="btn btn-primary" id="addnodo" type="button" data-bs-toggle="collapse" data-bs-target="#Adds" aria-expanded="false" aria-controls="collapseExample" style="margin-top:1.5%;">
     Aggiungi nodo <span style="margin-left: 1%;"><i class="fas fa-plus-circle"></i></span>
   </button>
@@ -673,7 +673,7 @@ function openNav() {
     </div>
          </div>
 </div>
-<button type="button" class="btn btn-primary" id="esploranodo" onclick="esplora()" style="margin-top: 1%;">Esplora nodo</button>
+<button type="button" class="btn btn-primary" id="esploranodo" onclick="esplora()" style="margin-top: 1%;margin-bottom:24px ;">Esplora nodo</button>
        
          <button class="button" id="button_link" onclick="wiki_link()"></button>
              <div class="form-group" id="textarea1" style="margin-top: 2%;display:none;">
@@ -761,6 +761,32 @@ function openNav() {
     </div>
   </div>
 </div>
+
+<div class="modal fade" id="delete_conf" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header" style="border-bottom: none;position: relative;flex-direction: column!important;">
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="icon-box" style="
+    margin: 0 auto;
+    z-index: 9;
+    text-align: center;">
+					<i class="fas fa-exclamation-circle fa-5x" style="color: red;"></i>
+				</div>						
+				<h4 class="modal-title w-100" style="text-align: center;    margin: 30px 0 -10px;">Sei sicuro di voler cancellare il nodo?</h4>	
+
+      </div>
+      <div class="modal-body" style="color: #999;text-align: center;font-size: 18px;">
+        <p>Cancellando questo nodo verranno anche cancellati tutti i nodi collegati ad esso.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-target="#myModal">Close</button>
+        <button type="button" class="btn btn-danger" onclick="deleteRule()" data-bs-dismiss="modal">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 </body>
 </html>
