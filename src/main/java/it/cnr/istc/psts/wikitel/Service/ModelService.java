@@ -114,15 +114,7 @@ public class ModelService {
 			this.lessonservice.delete(d);
 		}
 		
-		System.out.println(m.getRules());
-		Collection<RuleEntity> rules = new ArrayList<RuleEntity>();
-		rules.addAll(m.getRules());
-		for(RuleEntity r : rules) {
-			if(!r.getPreconditions().isEmpty() && r.getEffects().isEmpty())
-				this.ruleservice.delete(id, r.getId());
-		}
-		m.getRules().clear();
-		
+	
          this.modelRepository.deleteById(id);
     }
 	

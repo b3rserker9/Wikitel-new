@@ -144,7 +144,6 @@ function ajaxGet() {
     rules = a[3];
     nodes = a[1];
     halfnodes = a[4];
-    console.log(Object.keys(nodes[0]))
     
    
     table = $("#example").DataTable({autoWidth:!1, data:nodestable, columns:[{data:"id"}, {data:"parent"}, {data:"type"}, {data:"score2"}]});
