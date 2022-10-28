@@ -419,8 +419,8 @@ public class MainController {
 
   }
 
-  @PostMapping("/uploadFileRule")
-  public Long uploadfilerule(@RequestBody MultipartFile uploadfile) throws IllegalStateException, IOException {
+  @PostMapping("/uploadFileRule/{time}")
+  public Long uploadfilerule(@RequestBody MultipartFile uploadfile,@PathVariable("time") Long time ) throws IllegalStateException, IOException {
 
     String file1 = uploadfile.getOriginalFilename();
     System.out.println(file1);
@@ -431,7 +431,7 @@ public class MainController {
     ((FileRuleEntity) rule).setSrc(baseDir + file1);
 
     rule.setName(m.getName());
-    rule.setLength((long) 0);
+    rule.setLength((long) time);
     this.ruleservice.saverule(rule);
     this.m.addRule(rule);
     this.modelservice.save(m);
@@ -636,6 +636,7 @@ public class MainController {
 
   @RequestMapping(value = "/Newrule", method = RequestMethod.POST)
   public Response NewModel(@RequestBody ObjectNode node, @RequestBody MultipartFile uploadfile) throws Exception {
+	  
     RestTemplate restTemplate = new RestTemplate();
     boolean bool = true;
     UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -645,7 +646,7 @@ public class MainController {
     ModelEntity model = this.m;
     final String name = node.get("rule_name").asText();
     JsonNode effect = node.get("rule_id");
-    
+    try {
     if (effect != null)
       model = this.modelservice.getModel(node.get("model_id").asLong());
     RuleMongo rulemongo = new RuleMongo();
@@ -656,8 +657,7 @@ public class MainController {
     }
     System.out.println(ricerca);
     if(!ricerca.get(model.getId()).contains(name)) { 
-    	 ricerca.get(model.getId()).add(name);
-    send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 0)), UserController.ONLINE.get(nuovo.getId()));
+    	
     switch (node.get("rule_type").asText()) {
     case "Testo":
       rule = new TextRuleEntity();
@@ -685,6 +685,8 @@ public class MainController {
       rule = new WikiRuleEntity();
       SuggestionM sm = new SuggestionM();
       if (this.modelservice.getrulemongoname(name) == null) {
+    	  ricerca.get(model.getId()).add(name);
+    	    send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 0)), UserController.ONLINE.get(nuovo.getId()));
         Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name.replace(' ', '_'), Prova.class);
         if (prova.getExists()) {
           ((WikiRuleEntity) rule).setUrl(prova.getUrl());
@@ -712,7 +714,7 @@ public class MainController {
           rulemongo.getTopics().addAll(prova.getCategories());
         } else {
           System.out.println("ELEMENTO NON TROVATO PROVA CON " + prova.getSuggest() + " " + prova.getMaybe());
-          Response response = new Response(prova.getExists(), prova.getSuggest(), prova.getMaybe());
+          Response response = new Response(prova.getExists(), prova.getSuggest(), prova.getMaybe(),model.getId());
           return response;
         }
       } else {
@@ -787,7 +789,13 @@ public class MainController {
   }
     Response response = new Response("Exist");
 	return response;
-	  
+	}
+	  catch (Exception e) {
+		  if(!ricerca.get(model.getId()).contains(name)) { 
+			  ricerca.get(model.getId()).remove(name);
+		  }
+		}
+	  return new Response("Error Rule");
   }
 
   @RequestMapping(value = "/ricerca/{id}", method = RequestMethod.POST)
@@ -817,15 +825,18 @@ public class MainController {
   }
   
   @RequestMapping(value = "/deletemodel/{id}", method = RequestMethod.POST)
-  public String deletemodel(@PathVariable("id") Long id) {
+  public String deletemodel(@PathVariable("id") Long id) throws JsonProcessingException {
     System.out.println("OKK1");
     UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
     UserEntity userentity = credentials.getUser();
     System.out.println(userentity);
+    for(RuleEntity r : this.modelservice.getModel(id).getRules())
+        send.notify(Starter.mapper.writeValueAsString(new Message.Searching(r.getName(), -1)), UserController.ONLINE.get(userentity.getId()));
     this.modelservice.delete(id, userentity);
     ricerca.remove(id);
     System.out.println("OKK");
+   
     return "OK";
   }
 

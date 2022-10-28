@@ -148,13 +148,7 @@ function ajaxGet() {
     
    
     table = $("#example").DataTable({autoWidth:!1, data:nodestable, columns:[{data:"id"}, {data:"parent"}, {data:"type"}, {data:"score2"}]});
-	
-   
-  
-    
- 
-    
-    
+
     nodesDataset = new vis.DataSet(halfnodes);
     
     redrawAll(nodesDataset, edgesDataset);
@@ -218,6 +212,7 @@ function aggiorna() {
   console.log(node);
   nodesDataset = new vis.DataSet(node);
   redrawAll(nodesDataset, edgesDataset);
+  
 }
 $(document).ready(function() {
   ajaxGet();
@@ -229,14 +224,15 @@ $(document).ready(function() {
     });
 });
 function redrawAll(a, c) {
+	 document.getElementById("loadingBar").style.display = "block";
+	 document.getElementById("loadingBar").style.opacity = 1;
   var e = document.getElementById("mynetwork"), b = {nodes:a, edges:c};
   console.log(a.length);
   if (700 > a.length) {
     var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, size: 16,shapeProperties: {
     interpolation: false    // 'true' for intensive zooming
-  }}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:!1
+  }}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:true
      , solver:"repulsion", repulsion:{nodeDistance:500}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:false}, groups:{file:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf15b", size:50, color:"#000000",},}, text:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf031", size:50, color:"#000000",},},}};
-    console.log("sonoqui");
   } else {
      d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, size: 16,}, edges:{smooth:!1}, physics: {
     forceAtlas2Based: {
@@ -257,11 +253,35 @@ function redrawAll(a, c) {
   , layout:{improvedLayout:!1}};
   }
   network = new vis.Network(e, b, d);
-  network.fit();
-  network.stabilize();
+
   allNodes =  nodesDataset.get({returnType:"Object"});
+    network.fit();
+  network.stabilize();
   network.on("click", neighbourhoodHighlight);
+  
+  network.on("stabilizationProgress", function (params) {
+    var maxWidth = 496;
+    var minWidth = 20;
+    var widthFactor = params.iterations / params.total;
+    var width = Math.max(minWidth, maxWidth * widthFactor);
+
+    document.getElementById("bar").style.width = width + "px";
+    document.getElementById("text").innerText =
+      Math.round(widthFactor * 100) + "%";
+  });
+  network.once("stabilizationIterationsDone", function () {
+    document.getElementById("text").innerText = "100%";
+    document.getElementById("bar").style.width = "496px";
+    document.getElementById("loadingBar").style.opacity = 0;
+    // really clean the dom element
+    setTimeout(function () {
+      document.getElementById("loadingBar").style.display = "none";
+    }, 500);
+  });
 }
+
+  
+  
 nodeFilterSelector.addEventListener("change", function(a) {
   fiternode = [];
   nodeFilterValue = a.target.value;
@@ -270,10 +290,13 @@ nodeFilterSelector.addEventListener("change", function(a) {
     "rule" == c.type && fiternode.push(c);
     nodeFilterValue * c.max / 100 <= c.score && fiternode.push(c);
   });
-
+document.getElementById("only_rule").checked = false
+  console.log(document.getElementById("only_rule").checked)
   nodesDataset = new vis.DataSet(fiternode);
   redrawAll(nodesDataset, edgesDataset);
 });
+
+
 
 function esplora() {
 	 document.getElementById("graph_search").style.display="block";
@@ -300,15 +323,16 @@ function esplora() {
 
 
 function wiki_link() {
-	console.log(rule_effects.rule_type == "web")
 	if(rule_effects.rule_type=="web"){
 		if(!rule_effects.rule_web.match(/^https?:\/\//i)){
 		var url = 'http://' + rule_effects.rule_web;
-		window.open(url, "_blank");
+		document.getElementById("iframe").setAttribute("src",url);
+		}else{
+			document.getElementById("iframe").setAttribute("src",rule_effects.rule_web);
 		}
-		window.open(rule_effects.rule_web, "_blank");
 	}else{
-  window.open("https://it.wikipedia.org/wiki/" + selected, "_blank");
+		document.getElementById("iframe").setAttribute("src","https://it.wikipedia.org/wiki/" + selected);
+
   }
 }
 
@@ -333,8 +357,8 @@ function neighbourhoodHighlight(a) {
 	
 	
   if (0 < a.nodes.length) {
-	rule_effects = nodesDataset.get(a.nodes)[0], console.log(rule_effects), rule_selected = nodesDataset.get(a.nodes)[0].label, a.event = "[original event]", select = a.nodes[0], selected = a.nodes[0].replaceAll(" ", "_"), b.show(),document.getElementById("button_link").textContent = "https://it.wikipedia.org/wiki/" + selected;
-    
+	rule_effects = nodesDataset.get(a.nodes)[0], console.log(rule_effects), rule_selected = nodesDataset.get(a.nodes)[0].label, a.event = "[original event]", select = a.nodes[0], selected = a.nodes[0].replaceAll(" ", "_"), b.show(),document.getElementById("right_title").textContent = a.nodes[0];
+  
     
 	 if(nodesDataset.get(a.nodes)[0].type === "rule"){
 	  document.getElementById("Add").style.display= "block";

@@ -409,7 +409,7 @@ function openNav() {
 	
 <div class="dropdown-container" style="position: relative;">
 <button type="button" class="btn btn-info dropdown-toggle" style="margin-right: 2px;" data-bs-toggle="dropdown" aria-expanded="false">
-   <span class="spinner-grow spinner-grow-sm text-primary" role="status" aria-hidden="true"></span>
+   <span class="spinner-grow spinner-grow-sm text-primary" style="display: none;" id="ricerca_obiettivi" role="status" aria-hidden="true"></span>
   <span >Ricerca obiettivi</span>
   </button>
 <div class="dropdown-menu dropdown-menu-end  p-4 " style="max-width: 300px;position: absolute;" >
@@ -515,11 +515,8 @@ function openNav() {
                   </select>
                   <div id="url" style="display: none;margin-top: 2%;">
                      <label for="new-rule-url">URL</label>
-                     <input type="url" class="form-control" id="new-rule-url" placeholder="URL">
-                     <div class="invalid-feedback">
-           			Name your modal.
-      
-                  </div>
+                     <input type="text" class="form-control" id="new-rule-url" placeholder="URL">
+                   
                   </div>
                
                    <div class="form-group" id="textarea" style="margin-top: 2%;">
@@ -529,9 +526,13 @@ function openNav() {
   <label for="formFile" class="form-label"></label>
   <input class="form-control" type="file" id="formFile">
 </div>
+<span style="color: red;" id="error_text"></span>
+<span style="color: red;" id="error_web"></span>
+<span style="color: red;" id="error_type"></span>
 <div id="Add_node_times">
    <label for="Add_node_time" class="col-form-label">Durata lezione(in Secondi)</label>
-  <input type="number" class="form-control none" id="Add_node_time" placeholder="Time" ></div>
+  <input type="number" class="form-control none" id="Add_node_time" placeholder="Time" >
+  <span style="color: red;" id="error_time"></span></div>
 <div class="questions" id="question" style="display: none;">
 
 </div>
@@ -656,10 +657,10 @@ function openNav() {
 
 </div></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-danger" id="deletemodal" data-bs-dismiss="modal">
           Close
         </button>
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="newSearch()">Search</button>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal" onclick="newSearch()">Search</button>
       </div>
     </div>
   </div>

@@ -42,9 +42,13 @@ function setup_ws(msg) {
 			document.getElementById(st).classList.remove('spinner-border')
 			document.getElementById(st).classList.remove('text-primary')
 			document.getElementById(st).classList.add('ico')
-			
-			}else{
+			document.getElementById("ricerca_obiettivi").style.display="none"
+			}else if(c_msg.status == -1){
+				document.getElementById('r' + st).remove();
+			}
+			else{
 				toastr.info("Avviata la ricerca su " + c_msg.name);
+				document.getElementById("ricerca_obiettivi").style.display="block"
 			}
 			break;
 			case 'lesson':

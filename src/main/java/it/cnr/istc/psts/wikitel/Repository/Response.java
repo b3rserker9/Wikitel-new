@@ -77,10 +77,11 @@ public class Response {
 		this.topics=maybe;
 	} 
 	
-	public Response(Boolean exits, String suggest, List<String> maybe) {
+	public Response(Boolean exits, String suggest, List<String> maybe,Long model) {
 		this.exists=exits;
 		this.suggest=suggest;
 		this.maybe = maybe;
+		this.model = model;
 	}  
 	
 	

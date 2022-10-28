@@ -140,9 +140,12 @@ function Create_new_lesson() {
             console.log("SUCCESS : ", data);
             
 			data.forEach(function(s){
-					if(document.getElementsByClassName("flexing").length == 0)
+					if(document.getElementsByClassName("flexing").length == 0){
            		document.getElementById("Search_container").innerHTML= ''
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+s.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+           		document.getElementById("ricerca_obiettivi").style.display="none"
+           		}
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+item.name+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+s.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+			 document.getElementById("ricerca_obiettivi").style.display="block"
 			})
         },
         error: function(e) {
@@ -154,7 +157,10 @@ function Create_new_lesson() {
 
 $(document).ready(function() {
 
-
+var myModal = new bootstrap.Modal(document.getElementById('graph'), {
+  keyboard: false
+})
+myModal.show()
 
 
   $("#students").autocomplete({source:students});

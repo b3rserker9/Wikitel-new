@@ -44,7 +44,6 @@ public class LessonEntity {
     @JsonBackReference
     private UserEntity teacher;
     @ManyToMany
-    
     @JsonManagedReference
     private final Collection<UserEntity> followed_by = new ArrayList<>();
     @ManyToMany
@@ -52,6 +51,7 @@ public class LessonEntity {
     
     @Transient
     private Collection<RuleMongo> rule;
+    
     
     @ManyToMany
     private List<Files> files = new ArrayList<>();
@@ -64,7 +64,7 @@ public class LessonEntity {
         followed_by.remove(student);
     }
 
- 
+    
    
     public void addGoal(final RuleEntity goal) {
         goals.add(goal);

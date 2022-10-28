@@ -8,7 +8,7 @@ var question = [
     ["visivo", "verbale", "visivo? Ti piacerebbe vedere diagrammi e studiare su materiali completamente di immage e grafico. verbale? Preferisci leggere le descrizioni scritte a parole.Non c'è una risposta giusta! L'obiettivo è assimilare le informazioni nel migliore dei modi."],
     ["sequenziale", "globale", "sequenziale? Ti piacerebbe avere una sequenza di argomenti all'interno di una lessione che puoi seguire setp per passo . globale? Preferisci avere una descrizione globale della partizione e dopo tutte le specifiche."],
 ];
-let text;
+let text = "Testo";
 let students = [];
 let students_id = [];
 let result = [];
@@ -75,7 +75,7 @@ function New_rule_file(){
     var data = new FormData();
     data.append("uploadfile", form);
       $.ajax({
-                    url: "/uploadFileRule",
+                    url: "/uploadFileRule/"+ $("#Add_node_time").val(),
                     type: "POST",
                     data: data,
                     DataType: 'json',
@@ -102,13 +102,21 @@ function wikipedianotfound(i,p){
 function New_rule() {
 
 if(text!= "Pagina Wikipedia"){
+	var url
+	if(!$("#new-rule-url").val().match(/^https?:\/\//i)){
+		 url = 'http://' + $("#new-rule-url").val();
+		
+		}else{
+			url = $("#new-rule-url").val()
+		}
+	
 	 var model = {
 
         model_name: $("#new-model-name").val(),
         rule_name: $("#new-model-name").val(),
         rule_type: text,
         rule_length:$("#Add_node_time").val(),
-        rule_url: $("#new-rule-url").val(),
+        rule_url: url,
         rule_text: $("#rule_Textarea").val(),
 
     }
@@ -123,15 +131,7 @@ if(text!= "Pagina Wikipedia"){
 
     }
 }
-    var model = {
-
-        model_name: $("#new-model-name").val(),
-        rule_name: $("#new-model-name").val(),
-        rule_type: text,
-        rule_url: $("#new-rule-url").val(),
-        rule_text: $("#rule_Textarea").val(),
-
-    }
+  
     
     if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
@@ -152,7 +152,9 @@ if(text!= "Pagina Wikipedia"){
 
         success: function(data) {
 		
-	
+	if(data.status2 == "Error Rule"){
+		 alert(data.status2)
+	}else{
 			if(data.exists){
 				active(data.model);
 			}else{
@@ -165,10 +167,11 @@ data.maybe.forEach(function(l) {
 	i++;
 })
 myModal.show()
-
+document.getElementById("deletemodal").setAttribute('onclick','deleteModal('+data.model+')');
 			}
             
             console.log("SUCCESS : ", data);
+            }
         },
         error: function(e) {
             alert("Error!")
@@ -312,7 +315,7 @@ function Create_new_precondition() {
           if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
            		
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+item.name+' (<small class="w-100" style="text-align: center;" >'+current_model+'</small>)</div><div id="'+item.name.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+item.name+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+item.name+' (<small class="w-100" style="text-align: center;" >'+current_model+'</small>)</div><div id="'+item.name.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
           
 	
             $.ajax({
@@ -368,8 +371,10 @@ function Postsuggetion(id) {
         success: function(data) {
             $("#suggested-preconditions-list").empty();
             console.log("SUCCESS : ", data);
+            
             precondition_setup(data ,id);
             document.getElementById("loading_modal").style.display = "none";
+            document.getElementById("firstDelete").setAttribute('onclick','deleteModal('+id+')');
             /*s.forEach(function(l){		
 							document.getElementById("suggested-preconditions-list").innerHTML+='<div class="form-check col-6">'+
  ' <input class="form-check-input" type="checkbox" name="'+l.suggestionsuggestion.page+'" id="flexRadioDefault1">'
@@ -636,8 +641,61 @@ function questions() {
 
 }
 
+function validate(a){
+	console.log(a)
+	var d = 1;
+	var error = true;
+	switch(a) {
+		case 0:
+		 if (document.getElementById("new-model-name").value.length == 0) {
+                    document.getElementById("new-model-name").setAttribute("class", "form-control is-invalid")
+                    d = 0
+
+                }else{
+		 			document.getElementById("new-model-name").setAttribute("class", "form-control valid")
+
+}
+		break;
+		case 1:
+		if(text != "Pagina Wikipedia"){
+		console.log(document.getElementById("new-rule-url").value.length)
+				if(document.getElementById("new-rule-url").value.length == 0 && text == "Pagina Web"){
+					console.log("SL D")
+		document.getElementById("error_type").innerText = "Url non inserito";
+		d = false
+		error = false
+	}
+	
+	if(document.getElementById("rule_Textarea").value.length == 0 && text == "Testo"){
+		document.getElementById("error_type").innerText = "Testo non inserito";
+		d = false
+		error = false
+	}
+	if(document.getElementById("formFile").files.length == 0 && text == "File"){
+		document.getElementById("error_type").innerText = "File non inserito";
+		d = false
+		error = false
+	}
+		if(error){
+		document.getElementById("error_type").innerText = '';
+			
+	}
+	if (document.getElementById("Add_node_time").value.length == 0){
+		document.getElementById("error_time").innerText = "Durata lezione non inserita";
+		d = false
+	}else{
+		document.getElementById("error_time").innerText = '';
+			
+	}}
+		break; 
+		}
+		console.log(d)
+		return d;
+}
+
 function prep_modal() {
     $(".new_model").each(function() {
+
         var element = this;
         var pages = $(this).find('.modal-split');
 console.log(pages.length);
@@ -659,13 +717,8 @@ console.log(pages.length);
 
 
             var page_track = 0;
-
             $(n_button).click(function() {
-                console.log();
-                if (document.getElementById("new-model-name").value.length == 0) {
-                    document.getElementById("new-model-name").setAttribute("class", "form-control is-invalid")
-
-                } else {
+			if(validate(page_track)){
                     document.getElementById("new-model-name").setAttribute("class", "form-control valid")
                     this.blur();
 
@@ -749,7 +802,7 @@ function ricerchetot(){
 			data[le].forEach(function(s){
 				if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+le+'</small>)</div><div id="'+remove_spaces(s)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+item.name+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+le+'</small>)</div><div id="'+remove_spaces(s)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
 			})
 		
 		})
