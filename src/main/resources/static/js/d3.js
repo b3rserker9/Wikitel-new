@@ -230,7 +230,7 @@ function redrawAll(a, c) {
   if (700 > a.length) {
     var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, size: 16,shapeProperties: {
     interpolation: false    // 'true' for intensive zooming
-  }}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:true
+  }}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:false,stabilization:false
      , solver:"repulsion", repulsion:{nodeDistance:500}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:false}, groups:{file:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf15b", size:50, color:"#000000",},}, text:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf031", size:50, color:"#000000",},},}};
   } else {
      d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, size: 16,}, edges:{smooth:!1}, physics: {

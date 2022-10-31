@@ -701,7 +701,6 @@ function openNav() {
   <div class="modal-dialog right">
     <div class="modal-content">
       <div class="modal-header">
-       	<button type="button" class="btn btn-danger" id="deleteRule" data-bs-toggle="modal" data-bs-target="#delete_conf" data-bs-dismiss="modal" >Cancella nodo  <span><i class="fas fa-trash-alt"></i></span> </button>
        	<p class="h5" style="padding: 0 10px;" id="right_title"></p>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -747,6 +746,9 @@ function openNav() {
 <button type="button" class="btn btn-primary" id="esploranodo" onclick="esplora()" style="margin-top: 1%;margin-bottom:24px ;">Esplora nodo</button>
        
          <button class="btn btn-success" id="button_link" data-bs-toggle="modal" data-bs-target="#iframe_page" onclick="wiki_link() ">visualizza la pagina Wikipedia <i class="fab fa-wikipedia-w"></i></button>
+         
+                	<button type="button" class="btn btn-danger" id="deleteRule" data-bs-toggle="modal" style="margin-top: 100px;" data-bs-target="#delete_conf" data-bs-dismiss="modal" >Cancella nodo  <span><i class="fas fa-trash-alt"></i></span> </button>
+
              <div class="form-group" id="textarea1" style="margin-top: 2%;display:none;">
     <textarea class="form-control none" id="Testo1" rows="3"></textarea>
   </div>
@@ -860,7 +862,7 @@ function openNav() {
 
 
 <div class="modal fade" id="iframe_page" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" style="height: 80%;">
+  <div class="modal-dialog modal-xl" style="height: 80%;">
     <div class="modal-content" style="height: 80%;">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel"><i class="fab fa-wikipedia-w"></i></h5>

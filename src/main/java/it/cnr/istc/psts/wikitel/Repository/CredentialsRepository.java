@@ -24,6 +24,9 @@ import it.cnr.istc.psts.wikitel.db.UserEntity;
 		
 		@Query(value ="SELECT * FROM credentials c WHERE c.user_id = ?", nativeQuery = true)
 		public Optional<Credentials> findByuser(Long id);
+		
+		@Query(value ="SELECT * FROM credentials c WHERE c.verification_code = ?", nativeQuery = true)
+	    public Credentials findByVerificationCode(String code);
 
 	}
 	

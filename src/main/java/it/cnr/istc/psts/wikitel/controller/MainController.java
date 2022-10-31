@@ -51,6 +51,7 @@ import io.netty.handler.codec.MessageAggregationException;
 
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.repository.query.Param;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,6 +66,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 
 import it.cnr.istc.psts.Websocket.Sending;
 import it.cnr.istc.psts.wikitel.MongoRepository.RuleMongoRepository;
@@ -86,6 +90,7 @@ import it.cnr.istc.psts.wikitel.Service.RuleSuggestionRelationService;
 import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
 import it.cnr.psts.wikitel.API.Message;
+import net.bytebuddy.utility.RandomString;
 import it.cnr.psts.wikitel.API.Lesson.LessonState;;
 
 @RestController
@@ -145,7 +150,7 @@ public class MainController {
   public static final Map < String, LessonManager > LESSONS = new HashMap < > ();
 
   @PostMapping("/register")
-  public Response register(@RequestBody ObjectNode node) throws JsonGenerationException, JsonMappingException, IOException {
+  public Response register(@RequestBody ObjectNode node,HttpServletRequest request) throws JsonGenerationException, JsonMappingException, IOException, MessagingException {
     Json_reader interests = new Json_reader();
     Response response = new Response("Done");
     UserEntity nuovo = new UserEntity();
@@ -153,6 +158,11 @@ public class MainController {
     newCred.setEmail(node.get("email").asText());
     newCred.setPassword(this.passwordEncoder.encode(node.get("password").asText()));
     newCred.setRole(node.get("role").asText());
+    String randomCode = RandomString.make(64);
+    newCred.setEnabled(false);
+    newCred.setVerificationCode(randomCode);
+    
+    
     nuovo.setFirst_name(node.get("first_name").asText());
     nuovo.setLast_name(node.get("last_name").asText());
 
@@ -162,9 +172,13 @@ public class MainController {
     nuovo.setQuestionario(node.get("one").asText());
     newCred.setUser(nuovo);
     credentialservice.save(newCred);
+    String url =  request.getRequestURL().toString().replace(request.getServletPath(), "") + "/verify?code=" + randomCode  ;
+    this.credentialservice.sendVerificationEmail(newCred, url);
     return response;
 
   }
+  
+ 
   @MessageMapping("/register")
   public void prova(@Payload Session session, SimpMessageHeaderAccessor headerAccessor) throws JsonProcessingException {
 
@@ -638,7 +652,7 @@ public class MainController {
   public Response NewModel(@RequestBody ObjectNode node, @RequestBody MultipartFile uploadfile) throws Exception {
 	  
     RestTemplate restTemplate = new RestTemplate();
-    boolean bool = true;
+    boolean bool = false;
     UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
     UserEntity nuovo = credentials.getUser();
@@ -646,7 +660,7 @@ public class MainController {
     ModelEntity model = this.m;
     final String name = node.get("rule_name").asText();
     JsonNode effect = node.get("rule_id");
-    try {
+
     if (effect != null)
       model = this.modelservice.getModel(node.get("model_id").asLong());
     RuleMongo rulemongo = new RuleMongo();
@@ -718,7 +732,7 @@ public class MainController {
           return response;
         }
       } else {
-        bool = false;
+        bool = true;
         System.out.println("non sono entrato");
         List < RuleSuggestionRelationEntity > relations = new ArrayList < > ();
         RuleMongo m = this.modelservice.getrulemongoname(name);
@@ -789,13 +803,9 @@ public class MainController {
   }
     Response response = new Response("Exist");
 	return response;
-	}
-	  catch (Exception e) {
-		  if(!ricerca.get(model.getId()).contains(name)) { 
-			  ricerca.get(model.getId()).remove(name);
-		  }
-		}
-	  return new Response("Error Rule");
+	
+	 
+	 
   }
 
   @RequestMapping(value = "/ricerca/{id}", method = RequestMethod.POST)

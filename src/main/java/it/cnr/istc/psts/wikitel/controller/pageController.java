@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -111,6 +112,18 @@ public class pageController {
 			return "index";
 	}
 	
+	 @GetMapping("/verify")
+	  public String verify(@Param("code") String code,Model model) {
+		 System.out.println(code);
+		  if (this.credentialservice.verify(code)) {
+			  model.addAttribute("complete", true);   
+		    } else {
+		    	model.addAttribute("complete", false);
+		    }
+		  return "registercode";
+		  
+	  }
+	
 	@RequestMapping(value = "/failure", method = RequestMethod.GET)
 	public String failure(Model model) {
 		//Json_reader interests = json("/json/user_model.json",true);
@@ -132,6 +145,8 @@ public class pageController {
     	model.addAttribute("user",userentity);
     	model.addAttribute("Teachers",userservice.getTeacher(userentity.TEACHER_ROLE));
     	
+    	
+    	if(credentials.isEnabled()) {
     	if (credentials.getRole().equals(UserEntity.STUDENT_ROLE)) {
     		HashMap<String,ArrayList<LessonEntity>> t = new HashMap<>();
     		for(LessonEntity l : userentity.getFollowing_lessons()) {
@@ -146,8 +161,12 @@ public class pageController {
     		model.addAttribute("lessons", t);
             return "admin/hello";
         }
+    	
     	//se non lo e'
         return "teachers/index";
+    	}
+    	model.addAttribute("complete",false);
+    	return "registercode";
     }
 	
 	@RequestMapping(value =  "/deletemodel/{id}" , method = RequestMethod.GET)

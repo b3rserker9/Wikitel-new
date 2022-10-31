@@ -151,11 +151,11 @@ if(text!= "Pagina Wikipedia"){
 
 
         success: function(data) {
-		
-	if(data.status2 == "Error Rule"){
+		console.log(data)
+	if(data.status == "Error Rule"){
 		 alert(data.status2)
 	}else{
-			if(data.exists){
+			if(data.exists || data.exits==null){
 				active(data.model);
 			}else{
 				var myModal = new bootstrap.Modal(document.getElementById('wikipediaNotfound'), {

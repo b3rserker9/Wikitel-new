@@ -3,15 +3,12 @@ var question = [["attivo", "riflessivo", "attivo? Preferisci sperimentare e anch
 ], src = "https://i.imgur.com/tq1CpHn.png", ruolo = !1;
 function ruolos(c) {
   var d = document.getElementById("stepper1"), b = document.getElementById("stepper2");
-  "STUDENT" === c ? (d.style.display = "block", b.style.display = "block",ruolo = 0, document.getElementById("next").innerText = "Next") : (d.style.display = "none", b.style.display = "none", ruolo = !0, document.getElementById("next").innerText = "Submit", $("#modal2").modal("hide"));
+  "STUDENT" === c ? (d.style.display = "block", b.style.display = "block",ruolo = 0, document.getElementById("next").innerText = "Next") : (d.style.display = "none", b.style.display = "none", ruolo = !0, document.getElementById("next").innerText = "Submit"),document.getElementById("next").setAttribute("data-bs-dismiss", "modal");
 }
 function image() {
   "plus" != document.querySelector('input[name="drone"]:checked').id && (document.getElementById("myImg").src = document.getElementById(document.querySelector('input[name="drone"]:checked').id.slice(-1)).src, src = document.getElementById(document.querySelector('input[name="drone"]:checked').id.slice(-1)).src);
 }
-function close() {
-  console.log("fatto");
-  $("#modal1").modal("hide");
-}
+
 function getData() {
   var c = document.getElementById("interests").querySelectorAll('input[type="checkbox"]'), d = [];
   d = [];
@@ -21,12 +18,14 @@ function getData() {
   return d;
 }
 function ajaxPost() {
-  console.log("PPPPP3");
+
   var c = {profile:JSON.stringify(getData()), first_name:$("#first_name").val(), last_name:$("#last_name").val(), email:$("#email_r").val(), password:$("#password_r").val(), src:src, role:$("input[name=roles]:checked").val(), one:JSON.stringify({one:$("input[name=options0]:checked").val(), two:$("input[name=options1]:checked").val(), three:$("input[name=options2]:checked").val(), four:$("input[name=options3]:checked").val()})};
-  console.log("PPPPP4");
+
   $.ajax({type:"POST", contentType:"application/json", url:"register", data:JSON.stringify(c), dataType:"json", success:function(d) {
     console.log("SUCCESS : ", d);
+    $("#modal3").modal("show");
     "plus" == document.querySelector('input[name="drone"]:checked').id && (event.preventDefault(), uploadFile());
+   	
   }, error:function(d) {
     alert("Error!");
     console.log("ERROR: ", d);
@@ -36,6 +35,9 @@ function ajaxPost() {
     $("#modal3").modal("hide");
   });
 }
+
+
+
 function uploadFile(c) {
   c = document.querySelector('input[name="drone"]:checked');
   if (null != c) {
@@ -137,6 +139,7 @@ function prep_modal() {
       var b = document.createElement("button");
       b.setAttribute("type", "button");
       b.setAttribute("class", "btn btn-primary");
+      b.setAttribute("style", "display: block;");
       b.setAttribute("id", "next");
       b.innerHTML = "Next";
       $(this).find(".modal-footer").append(d).append(b);
@@ -148,9 +151,8 @@ function prep_modal() {
           0 == a && $(d).show();
           a == c.length - 2 && $(b).text("Submit");
           if (a == c.length - 1 || a == c.length - 3 && ruolo) {
-            console.log("prova"), a = 4, b.setAttribute("type", "submit"), $("#register_form").submit(function() {
-              $("#modal2").modal("hide");
-              $("#modal3").modal("show");
+             a = 4, b.setAttribute("type", "submit"), $("#register_form").submit(function() {
+
               event.preventDefault();
               ajaxPost();
             });

@@ -35,4 +35,10 @@ public class Credentials {
 	   
 	   @OneToOne(cascade = CascadeType.ALL)
 		private UserEntity user;
+	   
+
+	    @Column(name = "verification_code", length = 64)
+	    private String verificationCode;
+	     
+	    private boolean enabled;
 }
