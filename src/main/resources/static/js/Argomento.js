@@ -144,7 +144,7 @@ function Create_new_lesson() {
            		document.getElementById("Search_container").innerHTML= ''
            		document.getElementById("ricerca_obiettivi").style.display="none"
            		}
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+item.name+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+s.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+s+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+s.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
 			 document.getElementById("ricerca_obiettivi").style.display="block"
 			})
         },

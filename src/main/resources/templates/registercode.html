@@ -45,7 +45,7 @@
         <h1>Success</h1> 
         <p>Il tuo account è stato creato con successo</p>
       </div>
-      <div class="card" th:if="${complete}">
+      <div class="card" th:unless="${complete}">
       <div style="border-radius:200px; height:200px; width:200px; background: #F8FAF5; margin:0 auto;">
         <i class="checkmark">✓</i>
       </div>
