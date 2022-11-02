@@ -167,7 +167,7 @@ function MultiSearch(){
            	if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
            		
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+elem.id+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+elem.id.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" ><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+elem.id+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+elem.id.replace(/\s/g, '').toLowerCase()+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
           
           var precondition = {
                 model_id: window.location.pathname.split("/")[2],
@@ -302,7 +302,7 @@ function esplora() {
 	 	if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
            		
-	             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+rule_selected+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+rule_selected.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+	             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="'+rule_selected.replace(/\s/g, '').toLowerCase()+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+rule_selected+' (<small class="w-100" style="text-align: center;" >'+window.location.pathname.split("/")[2]+'</small>)</div><div id="'+rule_selected.replace(/\s/g, '').toLowerCase()+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
 
   
   var a = {model_id:window.location.pathname.split("/")[2], rule_id: rule_effects.rule_id, rule_name: rule_selected, rule_type:"Pagina Wikipedia"};

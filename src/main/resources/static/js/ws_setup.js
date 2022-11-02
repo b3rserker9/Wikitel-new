@@ -36,7 +36,7 @@ function setup_ws(msg) {
 			case 'searching':
 			if(c_msg.status == 1){
 			toastr.success(c_msg.name + " è stato aggiunto");
-			var st = c_msg.name.replace(/\s/g, '');
+			var st = c_msg.name.replace(/\s/g, '').toLowerCase();
 			console.log(st)
 			document.getElementById(st).innerHTML = '<i class="fas fa-check fa-2x"></i>';
 			document.getElementById(st).classList.remove('spinner-border')

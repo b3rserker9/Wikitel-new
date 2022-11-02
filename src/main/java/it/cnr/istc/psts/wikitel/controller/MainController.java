@@ -786,7 +786,7 @@ public class MainController {
       }
       this.ruleservice.saverule(effect_entity);
     }
-    if (bool) {
+    if (!bool) {
       rule.setName(node.get("rule_name").asText());
       rulemongo.setTitle(name);;
       rulemongorep.save(rulemongo);

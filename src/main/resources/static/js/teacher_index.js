@@ -135,8 +135,8 @@ if(text!= "Pagina Wikipedia"){
     
     if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
-           		
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+$("#new-model-name").val()+' (<small class="w-100" style="text-align: center;" >'+$("#new-model-name").val()+'</small>)</div><div id="'+$("#new-model-name").val().replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+           		console.log($("#new-model-name").val().toLowerCase())
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" ><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+$("#new-model-name").val()+' (<small class="w-100" style="text-align: center;" >'+$("#new-model-name").val()+'</small>)</div><div id="'+$("#new-model-name").val().replace(/\s/g, '').toLowerCase()+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
           
 	
 
@@ -315,7 +315,7 @@ function Create_new_precondition() {
           if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
            		
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+item.name+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+item.name+' (<small class="w-100" style="text-align: center;" >'+current_model+'</small>)</div><div id="'+item.name.replace(/\s/g, '')+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" ><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+item.name+' (<small class="w-100" style="text-align: center;" >'+current_model+'</small>)</div><div id="'+item.name.replace(/\s/g, '').toLowerCase()+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
           
 	
             $.ajax({
@@ -802,7 +802,7 @@ function ricerchetot(){
 			data[le].forEach(function(s){
 				if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+s+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+le+'</small>)</div><div id="'+remove_spaces(s)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" ><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+le+'</small>)</div><div id="'+remove_spaces(s).toLowerCase()+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
 			})
 		
 		})
