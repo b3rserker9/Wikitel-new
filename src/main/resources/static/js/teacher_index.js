@@ -155,7 +155,7 @@ if(text!= "Pagina Wikipedia"){
 	if(data.status == "Error Rule"){
 		 alert(data.status2)
 	}else{
-			if(data.exists || data.exits==null){
+			if(data.exists || data.exists==null){
 				active(data.model);
 			}else{
 				var myModal = new bootstrap.Modal(document.getElementById('wikipediaNotfound'), {
@@ -802,7 +802,7 @@ function ricerchetot(){
 			data[le].forEach(function(s){
 				if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
-             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+item.name+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+le+'</small>)</div><div id="'+remove_spaces(s)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
+             document.getElementById("Search_container").innerHTML += '<li class="list-group-item flexing" id="r'+s+'"><div class="fw-bold text-wrap ricerca" style="width: 85%;overflow-wrap: break-word;word-wrap: break-word;hyphens: auto;">'+s+' (<small class="w-100" style="text-align: center;" >'+le+'</small>)</div><div id="'+remove_spaces(s)+'" class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div> </li>'
 			})
 		
 		})
