@@ -54,8 +54,7 @@
 		<script type="text/javascript" src="/js/Argomento.js"></script>
 		<script   type="text/javascript" src="/js/d3.js" defer></script>
 		
-		
-		
+		<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100" rel="stylesheet" />
 		<link th:href="@{/css/teacher_index.css}" rel="stylesheet">
 		<link th:href="@{/css/hello.css}" rel="stylesheet">
 		<link th:href="@{/css/argomento.css}" rel="stylesheet">
@@ -328,7 +327,6 @@ text {
   
   position: relative;
   display: inline-block;
-  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
 }
 
 /* Tooltip text */
@@ -345,10 +343,11 @@ text {
   /* Position the tooltip text - see examples below! */
   position: absolute;
   z-index: 1;
-  width: 120px;
+  width: 130px;
+  padding: 2px;
   top: 120%;
   left: 50%;
-  margin-left: -60px;
+  margin-left: -64px;
 }
 
 .tooltips .tooltiptext::after {
@@ -438,6 +437,8 @@ div.outerBorder {
   background: rgb(0, 173, 246); /* Old browsers */
   box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.4);
 }
+
+
 
 </style>
 <script>
@@ -551,7 +552,7 @@ function openNav() {
       <div class="modal-body">
       <div class="row justify-content-between">
        <div class="col-auto me-auto">
-         <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal"  data-bs-target="#table_modal">Table <span class="tooltiptext">Visualizza i dati in formato numerico</span></button>
+         <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal"   data-bs-target="#table_modal">Table </button>
        </div>
         <div class="col-auto">
           <label class="toggler-wrapper style-20">
@@ -563,7 +564,12 @@ function openNav() {
         </div>
       </div>
       <div class="row">
-   <label for="customRange1" class="form-label">Filtra nodi suggeriti in base al loro affinità con gli obbiettivi</label>
+      <div class="row">
+   <div class="col-md-11" >Questa è una versione grafica dei<strong> link più affini </strong>al tuo obiettivo. Trascinando la pallina blu a sinistra o a destra vedrai più o meno nodi. Se vuoi esplorarli in forma tabellare seleziona <strong>TABLE</strong> in alto a destra.</div>
+<a class="col-md-1 tooltips" align="center" data-bs-toggle="modal" href="#graph_legend"  role="button" >
+  <span class="tooltiptext">Legenda simboli del grafo</span>
+  <i class="fas fa-question-circle fa-2x"></i>
+</a>      </div>
    <div class="row">
    <div class="col-auto me-auto">TUTTI I NODI</div>
    <div class="col-auto">NODI PIU' RILEVANTI</div>
@@ -860,6 +866,48 @@ function openNav() {
   </div>
 </div>
 
+<div class="modal fade" id="graph_legend" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog right">
+    <div class="modal-content">
+      <div class="modal-header">
+       	<p class="h5" style="padding: 0 10px;" id="right_title"></p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+     
+ <ul class="list-group">
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <i class="fas fa-circle fa-3x" style="color: #d2e5ff;"></i>
+    <span class="">Suggeriti</span>
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+     <span class="material-symbols-outlined" style="font-size: 48px;">
+change_history
+</span>
+    Obiettivi
+   
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <i class="fab fa-internet-explorer fa-3x"></i>
+    Pagine Web
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <i class="fas fa-file fa-3x"></i>
+    File
+  </li>
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <i class="fas fa-font fa-3x"></i>
+    Testo
+  </li>
+</ul>
+      
+      </div>
+      
+      
+     
+    </div>
+  </div>
+</div>
 
 <div class="modal fade" id="iframe_page" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" style="height: 80%;">
