@@ -280,9 +280,9 @@ public class MainController {
       } else if (rule instanceof TextRuleEntity) {
         robgr.put("rule_type", "text");
         robgr.put("rule_text", this.ruleservice.getText(rule.getId()));
-        icon.put("code", "\uf031");
-        robgr.put("shape", "icon");
-        robgr.put("icon", icon);
+        robgr.put("image","..\\images\\LogoTesto.png");
+        robgr.put("size", "30");
+        robgr.put("shape", "image");
       } else if (rule instanceof WebRuleEntity) {
         robgr.put("rule_type", "web");
         robgr.put("rule_web", ((WebRuleEntity) rule).getUrl());
@@ -293,6 +293,7 @@ public class MainController {
       } else if (rule instanceof FileRuleEntity) {
         robgr.put("rule_type", "file");
         icon.put("code", "\uf15b");
+        icon.put("color", "#000000");
         robgr.put("shape", "icon");
         robgr.put("icon", icon);
 
