@@ -143,6 +143,8 @@ public class MainController {
   private Long Fileid;
   
   public Map<Long, ArrayList<String>> ricerca = new HashMap<>();
+  
+  public static final List<Long> newUsers = new ArrayList<>();
 
   @Autowired
   private ObjectMapper objectMapper;
@@ -172,6 +174,7 @@ public class MainController {
     nuovo.setQuestionario(node.get("one").asText());
     newCred.setUser(nuovo);
     credentialservice.save(newCred);
+    newUsers.add(newCred.getUser().getId());
     String url =  request.getRequestURL().toString().replace(request.getServletPath(), "") + "/verify?code=" + randomCode  ;
     this.credentialservice.sendVerificationEmail(newCred, url);
     return response;
@@ -283,9 +286,10 @@ public class MainController {
       } else if (rule instanceof WebRuleEntity) {
         robgr.put("rule_type", "web");
         robgr.put("rule_web", ((WebRuleEntity) rule).getUrl());
-        icon.put("code", "\uf26b");
-        robgr.put("shape", "icon");
-        robgr.put("icon", icon);
+        robgr.put("image","..\\images\\www_icon.svg");
+        robgr.put("size", "30");
+        robgr.put("shape", "image");
+        
       } else if (rule instanceof FileRuleEntity) {
         robgr.put("rule_type", "file");
         icon.put("code", "\uf15b");
@@ -650,9 +654,9 @@ public class MainController {
 
   @RequestMapping(value = "/Newrule", method = RequestMethod.POST)
   public Response NewModel(@RequestBody ObjectNode node, @RequestBody MultipartFile uploadfile) throws Exception {
-	  
+	 
     RestTemplate restTemplate = new RestTemplate();
-    boolean bool = false;
+    boolean bool = true;
     UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
     UserEntity nuovo = credentials.getUser();
@@ -732,7 +736,7 @@ public class MainController {
           return response;
         }
       } else {
-        bool = true;
+        bool = false;
         System.out.println("non sono entrato");
         List < RuleSuggestionRelationEntity > relations = new ArrayList < > ();
         RuleMongo m = this.modelservice.getrulemongoname(name);
@@ -786,7 +790,7 @@ public class MainController {
       }
       this.ruleservice.saverule(effect_entity);
     }
-    if (!bool) {
+    if (bool) {
       rule.setName(node.get("rule_name").asText());
       rulemongo.setTitle(name);;
       rulemongorep.save(rulemongo);
@@ -803,7 +807,7 @@ public class MainController {
   }
     Response response = new Response("Exist");
 	return response;
-	
+
 	 
 	 
   }

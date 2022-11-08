@@ -3,7 +3,14 @@ var question = [["attivo", "riflessivo", "attivo? Preferisci sperimentare e anch
 ], src = "https://i.imgur.com/tq1CpHn.png", ruolo = !1;
 function ruolos(c) {
   var d = document.getElementById("stepper1"), b = document.getElementById("stepper2");
-  "STUDENT" === c ? (d.style.display = "block", b.style.display = "block",ruolo = 0, document.getElementById("next").innerText = "Next") : (d.style.display = "none", b.style.display = "none", ruolo = !0, document.getElementById("next").innerText = "Submit");
+ if( "STUDENT" === c)  {d.style.display = "block"
+  b.style.display = "block",ruolo = 0
+   document.getElementById("next").innerText = "Next"
+    document.getElementById("next").setAttribute("data-bs-dismiss","modaldff"), console.log("!")} 
+    else{ d.style.display = "none"
+     b.style.display = "none", ruolo = !0
+      document.getElementById("next").innerText = "Submit"
+ document.getElementById("next").setAttribute("data-bs-dismiss","modal"),console.log("!d") ;}
 }
 function image() {
   "plus" != document.querySelector('input[name="drone"]:checked').id && (document.getElementById("myImg").src = document.getElementById(document.querySelector('input[name="drone"]:checked').id.slice(-1)).src, src = document.getElementById(document.querySelector('input[name="drone"]:checked').id.slice(-1)).src);
@@ -25,6 +32,7 @@ function ajaxPost() {
     console.log("SUCCESS : ", d);
     $("#modal3").modal("show");
     $("#modal2").modal("hide");
+    document.getElementById("modal2").style.display="none";
     "plus" == document.querySelector('input[name="drone"]:checked').id && (event.preventDefault(), uploadFile());
    	
   }, error:function(d) {
@@ -118,6 +126,7 @@ function validateForm(c) {
   return d;
 }
 $(document).ready(function() {
+
   document.getElementById("errorlog").getAttribute("value") && ($("#modal1").modal("show"), (new mdb.Collapse(document.getElementById("loginErrormes"))).show());
   prep_modal();
   questions();
@@ -152,11 +161,11 @@ function prep_modal() {
           0 == a && $(d).show();
           a == c.length - 2 && $(b).text("Submit");
           if (a == c.length - 1 || a == c.length - 3 && ruolo) {
-			
+				document.getElementById("next").setAttribute("data-bs-dismiss","modal")
              a = 4, b.setAttribute("type", "submit"), $("#register_form").submit(function() {
 
               event.preventDefault();
-              $("#modal2").modal("hide");
+         
               ajaxPost();
             });
           }

@@ -35,7 +35,9 @@
   href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.css"
   rel="stylesheet"
 />
-		
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/combine/npm/radioslider@1.0.0-beta.1/dist/jquery.radioslider.min.js,npm/radioslider@1.0.0-beta.1/dist/jquery.radioslider.min.js"></script>
 		<link th:href="@{/css/teacher_index.css}" rel="stylesheet">
@@ -56,7 +58,7 @@
 	left:49.98%;
 }
 body{
-	font-family: 'Nunito', sans-serif;
+	font-family: 'Ubuntu', sans-serif;
 }
 
 .form-check{
@@ -380,6 +382,28 @@ font-size: 20px;
   justify-content: center;
   align-items: center;
 }
+.first_time {
+    padding: 2.5rem 2.222rem;
+    border: 1px solid #5b6f82;
+    position: relative;
+    margin: 1.75rem 0 1rem;
+    border-radius: 8px;
+}
+.first_time .callout-title {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 1rem;
+    margin-right: 2.222rem;
+    letter-spacing: .06rem;
+    color: #5b6f82;
+}
+.first_time:not(.callout-highlight):not(.callout-more) .callout-title {
+    position: absolute;
+    font-size: 1rem;
+    padding: 0 1.389rem;
+    background: #fff;
+    top: -0.78em;
+}
 </style>
 <body>
 <div hidden="true" id="nameid" th:value="${user.id}"></div>
@@ -452,7 +476,19 @@ function openNav() {
 </div>
 
  <div id="main">
-
+ 
+ 
+ 
+ 
+	<div class="first_time" th:if="${first}">
+	<div class="callout-title"><i class="fas fa-exclamation"></i><span class="visually-hidden">Confermato</span> Note</div>
+	<span class="h4">WELCOME!</span><br>
+	<br>
+	<strong>WikiTEL ti permette di costruire un percorso didattico on-the-fly. Puoi partire da materiali che hai già, oppure puoi prendere spunto da WikiPedia per iniziare a creare il tuo percorso didattico. <br>
+	Per navigare su Wikipedia in forma grafica seleziona in alto a destra NUOVO ARGOMENTO e segui le istruzioni.</strong>  <br>
+	<br>
+	<strong>BUON LAVORO!</strong><br>
+	</div>
   
 
   		<button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal" data-bs-target="#new_lesson1" ><span class="tooltiptext">Crea un nuovo modello per la lezione</span>Nuovo Argomento</button>
@@ -508,10 +544,11 @@ function openNav() {
                </div>
                   <label for="new-rule-type">modalità di creazione</label>
                   <select class="form-select" id="new-rule-type" aria-label="Tipo di obiettivo" onChange="update()">
+                  	<option value="3">Pagina Wikipedia</option>
                      <option value="1">Testo</option>
                      <option value="4">File</option>
                      <option value="2">Pagina Web</option>
-                     <option value="3">Pagina Wikipedia</option>
+                     
                   </select>
                   <div id="url" style="display: none;margin-top: 2%;">
                      <label for="new-rule-url">URL</label>
@@ -519,7 +556,7 @@ function openNav() {
                    
                   </div>
                
-                   <div class="form-group" id="textarea" style="margin-top: 2%;">
+                   <div class="form-group" id="textarea" style="margin-top: 2%;display: none;">
     <textarea class="form-control" id="rule_Textarea" rows="3"></textarea>
   </div>
   <div class="mb-3" id="file" style="display: none;">
@@ -529,7 +566,7 @@ function openNav() {
 <span style="color: red;" id="error_text"></span>
 <span style="color: red;" id="error_web"></span>
 <span style="color: red;" id="error_type"></span>
-<div id="Add_node_times">
+<div id="Add_node_times" style="display: none;">
    <label for="Add_node_time" class="col-form-label">Durata lezione(in Secondi)</label>
   <input type="number" class="form-control none" id="Add_node_time" placeholder="Time" >
   <span style="color: red;" id="error_time"></span></div>
@@ -608,13 +645,13 @@ function openNav() {
                <hr>
                <div class="row align-items-center">
                   <h6>Argomenti correlati:</h6>
-                  <div class="form-floating">
+             <!-- Modal     <div class="form-floating">
                      <select class="form-select" id="new-precondition-type" aria-label="Floating label select example">
                         <option value="1">Suggeriti</option>
                         <option value="2">Esistenti</option>
                      </select>
                      <label for="floatingSelect">Tipo</label>
-                  </div>
+                  </div>--> 
                   <div class="precondition-list" id="suggested-preconditions-list-div">
                      <div class="row"  id="suggested-preconditions-list"
                         style="max-height:260px;overflow:auto;padding-left:13px;">
@@ -632,7 +669,7 @@ function openNav() {
                <!-- Button trigger modal -->
 <button type="button" class="btn btn-primary" data-bs-dismiss="modal" style="background: red" id="firstDelete"  > Delete</button>
 
-               <button type="submit" data-bs-dismiss="modal"  class="btn btn-primary">Save changes</button>
+               <button type="submit" data-bs-dismiss="modal"  class="btn btn-primary">Search</button>
             </div>
          </form>
       

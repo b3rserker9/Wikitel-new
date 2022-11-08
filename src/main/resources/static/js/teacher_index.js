@@ -8,7 +8,7 @@ var question = [
     ["visivo", "verbale", "visivo? Ti piacerebbe vedere diagrammi e studiare su materiali completamente di immage e grafico. verbale? Preferisci leggere le descrizioni scritte a parole.Non c'è una risposta giusta! L'obiettivo è assimilare le informazioni nel migliore dei modi."],
     ["sequenziale", "globale", "sequenziale? Ti piacerebbe avere una sequenza di argomenti all'interno di una lessione che puoi seguire setp per passo . globale? Preferisci avere una descrizione globale della partizione e dopo tutte le specifiche."],
 ];
-let text = "Testo";
+let text = "Pagina Wikipedia";
 let students = [];
 let students_id = [];
 let result = [];
@@ -152,8 +152,8 @@ if(text!= "Pagina Wikipedia"){
 
         success: function(data) {
 		console.log(data)
-	if(data.status == "Error Rule"){
-		 alert(data.status2)
+	if(data.status == "delete"){
+		 alert(data.e)
 	}else{
 			if(data.exists || data.exists==null){
 				active(data.model);
@@ -162,6 +162,7 @@ if(text!= "Pagina Wikipedia"){
   keyboard: false
 })
 var i =1;
+document.getElementById("wikinotradio").innerHTML="";
 data.maybe.forEach(function(l) {
 	wikipedianotfound(i,l)
 	i++;

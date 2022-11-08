@@ -26,10 +26,18 @@ public class Response {
 	private ModelEntity data7;
 	private List<ModelEntity> data8;
 	private Boolean exists; String suggest; List<String> maybe ; Set<String> topics;   
+	private Exception e;
+	
+	public Response(String status, Exception e) {
+		this.status=status;
+		this.e=e;
+	}
+	
 	public Response(String status, User user) {
 		this.status=status;
 		this.data=user;
 	}
+	
 	public Response(String status, UserEntity user) {
 		this.status=status;
 		this.data2=user;
@@ -70,6 +78,10 @@ public class Response {
 	
 	public Response(String status2) {
 		this.status=status2;
+	}
+	public Response(String status2,String rule_name) {
+		this.status=status2;
+		this.rule_name =rule_name;
 	}
 	
 	public Response(String id ,Set<String> maybe) {

@@ -57,7 +57,7 @@ import it.cnr.istc.psts.wikitel.db.Prova;
 import it.cnr.istc.psts.wikitel.db.User;
 import it.cnr.istc.psts.wikitel.db.UserEntity;
 import static it.cnr.istc.psts.wikitel.db.UserEntity.STUDENT_ROLE;
-
+import it.cnr.istc.psts.wikitel.controller.*;
 
 
 
@@ -90,6 +90,8 @@ public class pageController {
 	@Autowired
 	private ModelService modelservice;
 	 private final Solver s = new Solver();
+	 
+	 
 	 
 
 
@@ -144,8 +146,10 @@ public class pageController {
     	model.addAttribute("interests", interests.getInterests());
     	model.addAttribute("user",userentity);
     	model.addAttribute("Teachers",userservice.getTeacher(userentity.TEACHER_ROLE));
-    	
-    	
+    	if( MainController.newUsers.contains(userentity.getId()) ) {
+    		model.addAttribute("first",true);
+    	}
+    	MainController.newUsers.remove(userentity.getId());
     	if(credentials.isEnabled()) {
     	if (credentials.getRole().equals(UserEntity.STUDENT_ROLE)) {
     		HashMap<String,ArrayList<LessonEntity>> t = new HashMap<>();
@@ -261,10 +265,12 @@ public class pageController {
 		String formattedDate = df.format(Calendar.getInstance().getTime());
 		DateFormat df2 = new SimpleDateFormat("yy"); // Just the year, with 2 digits
 		System.out.println(formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
+		ModelEntity m = modelservice.getModel(id);
 		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("students",credentialservice.getTeacher("STUDENT"));
-		model.addAttribute("arg",modelservice.getModel(id));
-		model.addAttribute("goal",modelservice.getModel(id).getRules());
+		model.addAttribute("arg",m);
+		model.addAttribute("name", m.getName());
+		model.addAttribute("goal",m.getRules());
 		model.addAttribute("lesson",this.lessonservice.getlessonbymodel(this.modelservice.getModel(id)));
 		model.addAttribute("user",userentity);
 		

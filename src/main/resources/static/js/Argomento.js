@@ -116,7 +116,7 @@ function Create_new_lesson() {
     $.ajax({type:"POST", contentType:"application/json", url:"/NewLesson", data:JSON.stringify(c), dataType:"json", success:function(d) {
       $("#new-lesson-modal").modal("hide");
       console.log("SUCCESS : ", d);
-      document.getElementById("row").innerHTML += '<div class="container mt-5 mb-3"> <div class="row"> <div class="col-md-4"  id="'+ d.data4.id+'"> <div class="card cardv p-3 mb-2"> <div class="d-flex justify-content-between"> <div class="d-flex flex-row align-items-center"> <div class="icon"> <i class="bx bxl-mailchimp"></i> </div> <div class="ms-2 c-details"> <h6 class="mb-0" ">'+d.data4.model.name+'</h6> N° Studenti: <span > '+d.data4.followed_by.length +'</span> </div> </div> <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" th:attr="onclick=|lessionopt('+d.data4.id+')" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button> </div> <div class="mt-5"> <a style="font-size:19px" class="h2" href="/lezione/'+ d.data4.id+' " > '+d.data4.name+'</a> <div class="mt-5"> <div class="progress"> <div class="progress-bar" role="progressbar" style="width:50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div> </div> </div> </div> </div> </div> </div> </div>';
+      document.getElementById("row").innerHTML += '<div class="container mt-5 mb-3"> <div class="row"> <div class="col-md-4"  id="'+ d.data4.id+'"> <div class="card cardv p-3 mb-2"> <div class="d-flex justify-content-between"> <div class="d-flex flex-row align-items-center"> <div class="icon"> <i class="bx bxl-mailchimp"></i> </div> <div class="ms-2 c-details"> <h6 class="mb-0" ">'+d.data4.model.name+'</h6> N° Studenti: <span > '+d.data4.followed_by.length +'</span> </div> </div> <button type="button" id="but_conf" class="btn btn-link config" style="border:none;color:black;" th:attr="onclick=|lessionopt('+d.data4.id+')" data-bs-toggle="modal" data-bs-target="#lezioneopt"   ><i class="fas fa-cog"></i></button> </div> <div class="mt-5"> <a style="font-size:19px" class="h2" href="/lezione/'+ d.data4.id+' " > '+d.data4.name+'</a> <div class="mt-5"> <div class="progress"> <div class="progress-bar" role="progressbar"  aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div> </div> </div> </div> </div> </div> </div> </div>';
       students_id = [];
       document.getElementById("chips").innerHTML = "";
     }, error:function(d) {
@@ -162,6 +162,11 @@ var myModal = new bootstrap.Modal(document.getElementById('graph'), {
 })
 myModal.show()
 
+let $modal = $("#iframe_page");
+$modal.draggable({
+  handle: ".modal-header",
+});
+$modal.resizable();
 
   $("#students").autocomplete({source:students});
   var a = window.location.pathname.split("/");

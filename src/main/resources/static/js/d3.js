@@ -186,7 +186,7 @@ function MultiSearch(){
                 dataType: "json",
                 success: function(data) {
                     console.log("SUCCESS : ", data);
-                    table.clear();
+                    table.destroy()
        				 ajaxGet();
                    
 
