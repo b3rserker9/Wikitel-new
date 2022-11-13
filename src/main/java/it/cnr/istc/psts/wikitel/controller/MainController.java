@@ -378,7 +378,7 @@ public class MainController {
   }
 
   public boolean containsName(final Set < ObjectNode > list, final String name) {
-    return list.stream().filter(o -> o.get("id").asText().equals(name)).findFirst().isPresent();
+    return list.stream().filter(o -> o.get("id").asText().equalsIgnoreCase(name)).findFirst().isPresent();
   }
 
   @PostMapping("/edit")
@@ -706,7 +706,14 @@ public class MainController {
       if (this.modelservice.getrulemongoname(name) == null) {
     	  ricerca.get(model.getId()).add(name);
     	    send.notify(Starter.mapper.writeValueAsString(new Message.Searching(name, 0)), UserController.ONLINE.get(nuovo.getId()));
-        Prova prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name.replace(' ', '_'), Prova.class);
+    	    Prova prova;
+    	    try {
+         prova = restTemplate.getForObject("http://80.211.16.32:5015/wiki?page=" + name.replace(' ', '_'), Prova.class);
+    	    }
+    	    catch(Exception e){
+    	    	return new Response("Error","Python Server Error");
+    	    }
+    	    
         if (prova.getExists()) {
           ((WikiRuleEntity) rule).setUrl(prova.getUrl());
           List < RuleSuggestionRelationEntity > relations = new ArrayList < > ();
@@ -782,7 +789,7 @@ public class MainController {
         System.out.println("sono qui!!");
         SuggestionM sm = this.modelservice.getsuggestion(effect_entity.getSuggestions());
         Optional < SuggestionMongo > relation = sm.getSuggestion().stream()
-          .filter(s -> s.getPage().equals(name)).findAny();
+          .filter(s -> s.getPage().equalsIgnoreCase(name)).findAny();
         relation.ifPresent(rel -> {
           System.out.println(rel);
           sm.getSuggestion().remove(rel);

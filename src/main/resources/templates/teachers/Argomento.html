@@ -466,6 +466,109 @@ div.outerBorder {
 -webkit-transform: translateX(-50%);
 transform: translateX(-50%)
 }
+.tgl {
+  display: none;
+}
+.tgl, .tgl:after, .tgl:before, .tgl *, .tgl *:after, .tgl *:before, .tgl + .tgl-btn {
+  box-sizing: border-box;
+}
+.tgl::-moz-selection, .tgl:after::-moz-selection, .tgl:before::-moz-selection, .tgl *::-moz-selection, .tgl *:after::-moz-selection, .tgl *:before::-moz-selection, .tgl + .tgl-btn::-moz-selection {
+  background: none;
+}
+.tgl::selection, .tgl:after::selection, .tgl:before::selection, .tgl *::selection, .tgl *:after::selection, .tgl *:before::selection, .tgl + .tgl-btn::selection {
+  background: none;
+}
+.tgl + .tgl-btn {
+  outline: 0;
+  display: block;
+  width: 4em;
+  height: 2em;
+  position: relative;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+.tgl + .tgl-btn:after, .tgl + .tgl-btn:before {
+  position: relative;
+  display: block;
+  content: "";
+  width: 50%;
+  height: 100%;
+}
+.tgl + .tgl-btn:after {
+  left: 0;
+}
+.tgl + .tgl-btn:before {
+  display: none;
+}
+.tgl:checked + .tgl-btn:after {
+  left: 50%;
+}
+
+.tgl-light + .tgl-btn {
+  background: #f0f0f0;
+  border-radius: 2em;
+  padding: 2px;
+  transition: all 0.4s ease;
+}
+.tgl-light + .tgl-btn:after {
+  border-radius: 50%;
+  background: #fff;
+  transition: all 0.2s ease;
+}
+.tgl-light:checked + .tgl-btn {
+  background: #9FD6AE;
+}
+.tgl-skewed + .tgl-btn {
+	width: 195px;
+  overflow: hidden;
+  transform: skew(-10deg);
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+  transition: all 0.2s ease;
+  font-family: sans-serif;
+  background: #3b71ca;
+}
+.tgl-skewed + .tgl-btn:after, .tgl-skewed + .tgl-btn:before {
+  transform: skew(10deg);
+  display: inline-block;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  line-height: 2em;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.4);
+}
+.tgl-skewed + .tgl-btn:after {
+  left: 100%;
+  content: attr(data-tg-on);
+}
+.tgl-skewed + .tgl-btn:before {
+  left: 0;
+  content: attr(data-tg-off);
+}
+.tgl-skewed + .tgl-btn:active {
+  background: #888;
+}
+.tgl-skewed + .tgl-btn:active:before {
+  left: -10%;
+}
+.tgl-skewed:checked + .tgl-btn {
+  background: #0e5a1a;
+}
+.tgl-skewed:checked + .tgl-btn:before {
+  left: -100%;
+}
+.tgl-skewed:checked + .tgl-btn:after {
+  left: 0;
+}
+.tgl-skewed:checked + .tgl-btn:active:after {
+  left: 10%;
+}
 
 </style>
 <script>
@@ -537,7 +640,7 @@ function openNav() {
  
 
 <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal" data-bs-target="#graph"><span class="tooltiptext">Visualizzazione del modello in formato grafico</span>
-  Grafico<span><i class="fas fa-project-diagram"></i></span>
+  Edit Path  <span><i class="fas fa-project-diagram"></i></span>
 </button>
 
 
@@ -576,10 +679,11 @@ function openNav() {
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header row justify-content-end">
-      <strong class="col-4 text-center h4" th:text="${arg.getName()}"></strong>
-      <div class="spinner-grow text-primary" role="status" style="display: none;" id="graph_search">
+       <div class="spinner-grow text-primary" role="status" style="display: none;" id="graph_search">
   <span class="visually-hidden">Loading...</span>
 </div>
+      <strong class="col-4 text-center h4" th:text="${arg.getName()}"></strong>
+     
       <div class="col-4" style="    text-align: end;
 ">
         <button type="button" class="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
@@ -591,12 +695,8 @@ function openNav() {
          <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal"   data-bs-target="#table_modal">Table </button>
        </div>
         <div class="col-auto">
-          <label class="toggler-wrapper style-20">
-          <input type="checkbox" id=only_rule onchange="filter_rule()" >
-          <div class="toggler-slider">
-            <div class="toggler-knob"></div>
-          </div>
-        </label>
+         <input class="tgl tgl-skewed" id="only_rule" onchange="filter_rule()" type="checkbox"/>
+    <label class="tgl-btn" data-tg-off="Tutti i link" data-tg-on="Percorso selezionato" for="only_rule"></label>
         </div>
       </div>
       <div class="row">
@@ -668,7 +768,7 @@ function openNav() {
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         <button type="button" class="btn btn-sm btn-primary"  onclick="MultiSearch()">Esplora</button>
-         <button type="button" class="btn btn-sm btn-primary" id="try" onclick="aggiorna()">Vissualizza</button>
+         <button type="button" class="btn btn-sm btn-primary" id="try" onclick="aggiorna()">Visualizza</button>
       </div>
     </div>
   </div>
@@ -699,7 +799,7 @@ function openNav() {
                <hr />
                <div class="rubrica">
                <button type="button" class="btn btn-primary pos" data-bs-toggle="modal" data-bs-target="#exampleModal">
- <i class="fas fa-address-book"></i>
+ Users List <i class="fas fa-address-book"></i>
 </button>
                <h6>Studenti</h6></div>
                <div class="col" >
@@ -709,7 +809,7 @@ function openNav() {
                         <div class="input-group mb-3">
                            <input type="text" class="form-controls" id="students" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
                            <div class="input-group-append">
-                              <button type="button" class="btn btn-info" id="add">add</button>
+                              <button type="button" class="btn btn-info" id="add" >Add</button>
                            </div>
                         </div>
                         <span style="color: red;" id="error_student"></span>
@@ -931,7 +1031,7 @@ change_history
     File
   </li>
   <li class="list-group-item d-flex justify-content-between align-items-center">
-    <i class="fas fa-font fa-3x"></i>
+    <img src="/images/LogoTesto.png" alt="My Happy SVG" style="width: 50px;"/>
     Testo
   </li>
 </ul>

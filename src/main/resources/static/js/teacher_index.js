@@ -152,6 +152,9 @@ if(text!= "Pagina Wikipedia"){
 
         success: function(data) {
 		console.log(data)
+		  if(data.status2 == "Error"){
+	 alert(data.rule_name);
+}
 	if(data.status == "delete"){
 		 alert(data.e)
 	}else{
@@ -205,6 +208,9 @@ function newSearch(){
 
 
         success: function(data) {
+	  if(data.status2 == "Error"){
+	 alert(data.rule_name);
+}
 			if(data.exists){
 				active(data.model);
 			}else{
@@ -299,10 +305,6 @@ function Create_new_precondition() {
     console.log(current_rule);
     var itemForm = document.getElementById('suggested-preconditions-list');
     var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]');
-    
-    
-    
-    // this function will get called when the save button is clicked
     result = [];
     checkBoxes.forEach(item => { // loop all the checkbox item
         if (item.checked) { //if the check box is checked
@@ -332,7 +334,9 @@ function Create_new_precondition() {
                    
                     time(item.name);
         
-                   
+                     if(data.status2 == "Error"){
+	 alert(data.rule_name);
+}
 
                 },
                 error: function(e) {
@@ -376,6 +380,10 @@ function Postsuggetion(id) {
             precondition_setup(data ,id);
             document.getElementById("loading_modal").style.display = "none";
             document.getElementById("firstDelete").setAttribute('onclick','deleteModal('+id+')');
+            var itemForm = document.getElementById('suggested-preconditions-list');
+    var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]:checked');
+    console.log(checkBoxes)
+   
             /*s.forEach(function(l){		
 							document.getElementById("suggested-preconditions-list").innerHTML+='<div class="form-check col-6">'+
  ' <input class="form-check-input" type="checkbox" name="'+l.suggestionsuggestion.page+'" id="flexRadioDefault1">'
@@ -510,6 +518,7 @@ function resetformat() {
 
 $(document).ready(
     function() {
+	
           clone = document.getElementById("clone").cloneNode(true);
         questions();
         prep_modal();

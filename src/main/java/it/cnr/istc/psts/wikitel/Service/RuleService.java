@@ -2,6 +2,7 @@ package it.cnr.istc.psts.wikitel.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,17 +66,29 @@ public class RuleService {
 			List<Long> list_start = new ArrayList<>();
 			List<Long> list = rulesprecondition(rule_first ,list_start);
 			list.add( rule_first.getId());
-			
+			Collections.sort(list,Collections.reverseOrder());
 			for(Long num : list) {
-				
+				System.out.println(num);
 				RuleEntity rule = this.getRule(num);
 				System.out.println(list);
 				System.out.println(rule.getName());
-				rule.getPreconditions().clear();
-				for(RuleEntity effect: rule.getEffects()) {
-					effect.removePrecondition(rule);
+				
+				List<Long> effect = new ArrayList<>();
+				
+				for(RuleEntity e: rule.getEffects()) {
+					System.out.println(e);
+					RuleEntity ef = this.getRule(e.getId());
+					System.out.println(ef);
+					effect.add(e.getId());
+				}
+				System.out.println(effect);
+				for(Long e: effect) {
+					System.out.println(e);
+					RuleEntity ef = this.getRule(e);
+					System.out.println(ef);
+					ef.removePrecondition(rule);
 					
-					SuggestionM sm =  this.modelservice.getsuggestion(effect.getSuggestions());
+					SuggestionM sm =  this.modelservice.getsuggestion(ef.getSuggestions());
 					   SuggestionMongo sugmongo = new SuggestionMongo();
 
 			            sugmongo.setPage(rule.getName());
@@ -84,8 +97,9 @@ public class RuleService {
 			            sugmongo.setScore2((double) 0.5);
 			            sm.getSuggestion().add(sugmongo);
 			            this.modelservice.savesm(sm);
-					this.saverule(effect);
+					this.saverule(ef);
 				}
+				rule.getPreconditions().clear();
 				rule.getEffects().clear();
 				model.getRules().remove(rule);
 			

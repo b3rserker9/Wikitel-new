@@ -73,9 +73,13 @@ function sendnode(a){
 
 
 	console.log(document.getElementById("formFile").files.length)
-
+document.getElementById("graph_search").style.display="block";
 	 $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", dataType:"json", data:JSON.stringify(a), success:function(a) {
+		document.getElementById("graph_search").style.display="none";
     console.log("SUCCESS : ", a);
+      if(a.status2 == "Error"){
+	 alert(a.rule_name);
+}
     if(a.status == 'NO'){
 	document.getElementById("error_name_rule").innerText = "Errore nome dupplicato";
 }else{
@@ -149,8 +153,12 @@ function ajaxGet() {
     table = $("#example").DataTable({autoWidth:!1, data:nodestable, columns:[{data:"id"}, {data:"parent"}, {data:"type"}, {data:"score2"}]});
 
     nodesDataset = new vis.DataSet(halfnodes);
-    
     redrawAll(nodesDataset, edgesDataset);
+    if(nodes.length == 0){   
+	document.getElementById("loadingBar").style.display = "none";
+	document.getElementById("customRange1").disabled = true;
+	document.getElementById("only_rule").disabled = true;
+}
   }, error:function(a) {
     alert("Error!");
     console.log("ERROR: ", a);
@@ -161,6 +169,7 @@ function filter_rule() {
   redrawAll(nodesDataset, edgesDataset);
 }
 function MultiSearch(){
+	document.getElementById("graph_search").style.display="block";
 	 for (var a = 0; a < table.rows(".selected").data().length; a++) {
 		elem = table.rows(".selected").data()[a]
 
@@ -185,7 +194,11 @@ function MultiSearch(){
                 data: JSON.stringify(precondition),
                 dataType: "json",
                 success: function(data) {
+	document.getElementById("graph_search").style.display="none";
                     console.log("SUCCESS : ", data);
+                      if(data.status2 == "Error"){
+	 alert(data.rule_name);
+}
                     table.destroy()
        				 ajaxGet();
                    
@@ -228,9 +241,9 @@ function redrawAll(a, c) {
   var e = document.getElementById("mynetwork"), b = {nodes:a, edges:c};
   console.log(a.length);
   if (700 > a.length) {
-    var d = {nodes:{shape:"dot", scaling:{min:10, max:30}, size: 16,shapeProperties: {
+    var d = {autoResize: true, nodes:{shape:"dot", scaling:{min:10, max:30}, size: 16,shapeProperties: {
     interpolation: false    // 'true' for intensive zooming
-  }}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:false,stabilization:false
+  }}, edges:{width:0.15 , selectionWidth: function (width) {return width*2;}, color:{inherit:"from"}, smooth:{type:"continuous",},}, physics:{enabled:false,stabilization: true
      , solver:"repulsion", repulsion:{nodeDistance:500}}, interaction:{tooltipDelay:200, hideEdgesOnDrag:!0, hideEdgesOnZoom:!0,}, layout:{improvedLayout:false}, groups:{file:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf15b", size:50, color:"#000000",},}, text:{shape:"icon", icon:{face:"'FontAwesome'", code:"\uf031", size:50, color:"#000000",},},}};
   } else {
      d = {nodes:{shape:"dot", scaling:{min:10, max:30,}, size: 16,}, edges:{smooth:!1}, physics: {
@@ -310,7 +323,9 @@ function esplora() {
   $.ajax({type:"POST", contentType:"application/json", url:"/Newrule", data:JSON.stringify(a), dataType:"json", success:function(b) {
     console.log("SUCCESS : ", b);
  
-    
+    if(b.status2 == "Error"){
+	 alert(b.rule_name);
+}
    table.destroy()
     ajaxGet();
   	document.getElementById("graph_search").style.display="none";
@@ -357,8 +372,12 @@ function neighbourhoodHighlight(a) {
 	
   if (0 < a.nodes.length) {
 	rule_effects = nodesDataset.get(a.nodes)[0], console.log(rule_effects), rule_selected = nodesDataset.get(a.nodes)[0].label, a.event = "[original event]", select = a.nodes[0], selected = a.nodes[0].replaceAll(" ", "_"), b.show(),document.getElementById("right_title").textContent = a.nodes[0];
-  
-    
+  console.log("CIAOS")
+  document.getElementById("formFile").value = '';
+    document.getElementById("Testo").value = '';
+    document.getElementById("Pagina Web").value = '';
+    document.getElementById("Add_node_time").value = '';
+    document.getElementById("Add_node_name").value = '';
 	 if(nodesDataset.get(a.nodes)[0].type === "rule"){
 	  document.getElementById("Add").style.display= "block";
 	  document.getElementById("esploranodo").style.display= "none";
