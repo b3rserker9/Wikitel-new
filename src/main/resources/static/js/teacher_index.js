@@ -301,7 +301,6 @@ function remove_spaces(s){
 }
 
 function Create_new_precondition() {
-	
     console.log(current_rule);
     var itemForm = document.getElementById('suggested-preconditions-list');
     var checkBoxes = itemForm.querySelectorAll('input[type="checkbox"]');
