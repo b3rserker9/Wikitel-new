@@ -803,7 +803,8 @@ public class MainController {
       rulemongo.setTitle(name);;
       rulemongorep.save(rulemongo);
     }
-  //  this.ruleservice.saverule(rule);
+    this.ruleservice.saverule(rule);
+    System.out.println(model.getRules());
     model.getRules().add(rule);
     System.out.println("SONOQUIII");
     System.out.println(model.getRules());

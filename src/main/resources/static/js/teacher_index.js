@@ -327,7 +327,6 @@ function Create_new_precondition() {
                 url: "/Newrule",
                 data: JSON.stringify(precondition),
                 dataType: "json",
-                async: true,
                 success: function(data) {
                     console.log("SUCCESS : ", data);
                    
