@@ -522,7 +522,7 @@ transform: translateX(-50%)
   background: #9FD6AE;
 }
 .tgl-skewed + .tgl-btn {
-	width: 195px;
+	width: 300px;
   overflow: hidden;
   transform: skew(-10deg);
   -webkit-backface-visibility: hidden;
@@ -624,7 +624,7 @@ function openNav() {
   <a href="#">Calendar</a>
   
    <a  data-bs-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
-    My course
+    I miei corsi
   </a>
   <div class="collapse" id="collapse">
   <div class="card card-body" id="side-bar" th:each="m : ${lesson}"><a style="font-size: 19px;" th:text="${m.name}"th:href="'/lezione/' + ${m.id} "></a></div>
@@ -632,7 +632,7 @@ function openNav() {
 </div>
  <div id="main">
  	<div class="first_time">
-	<div class="callout-title"> Model</div>
+	<div class="callout-title"> Argomento del corso</div>
 	
 	<strong class="h2" th:text="${name}"></strong>
 	</div>
@@ -692,16 +692,16 @@ function openNav() {
       <div class="modal-body">
       <div class="row justify-content-between">
        <div class="col-auto me-auto">
-         <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal"   data-bs-target="#table_modal">Table </button>
+         <button type="button" class="btn btn-primary tooltips" data-bs-toggle="modal"   data-bs-target="#table_modal">TABELLA</button>
        </div>
         <div class="col-auto">
          <input class="tgl tgl-skewed" id="only_rule" onchange="filter_rule()" type="checkbox"/>
-    <label class="tgl-btn" data-tg-off="Tutti i link" data-tg-on="Percorso selezionato" for="only_rule"></label>
+    <label class="tgl-btn" data-tg-off="VAI AL PERCORSO SELEZIONATO" data-tg-on="GUARDA TUTTI I LINK" for="only_rule"></label>
         </div>
       </div>
       <div class="row">
       <div class="row" style="margin-top: 11px;">
-   <div class="col-md-11" >Questa è una versione grafica dei<strong> link più affini </strong>al tuo obiettivo. Trascinando la pallina blu a sinistra o a destra vedrai più o meno nodi. Se vuoi esplorarli in forma tabellare seleziona <strong>TABLE</strong> in alto a destra.</div>
+   <div class="col-md-11" >Questa è una versione grafica dei<strong> link più affini </strong>al tuo obiettivo. Trascinando la pallina blu a sinistra o a destra vedrai più o meno nodi. Se vuoi esplorarli in forma tabellare seleziona <strong>TABELLA </strong> in alto a destra.</div>
 <a class="col-md-1 tooltips" align="center" data-bs-toggle="modal" href="#graph_legend"  role="button" >
   <span class="tooltiptext">Legenda simboli del grafo</span>
   <i class="fas fa-question-circle fa-2x"></i>
@@ -766,9 +766,9 @@ function openNav() {
     </table>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-sm btn-primary"  onclick="MultiSearch()">Esplora</button>
-         <button type="button" class="btn btn-sm btn-primary" id="try" onclick="aggiorna()">Visualizza</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+        <button type="button" class="btn btn-sm btn-primary"  onclick="MultiSearch()">Aggiungi nodo selezionato</button>
+         <button type="button" class="btn btn-sm btn-primary" style="display: none;" id="try" onclick="aggiorna()">Visualizza</button>
       </div>
     </div>
   </div>
@@ -799,7 +799,7 @@ function openNav() {
                <hr />
                <div class="rubrica">
                <button type="button" class="btn btn-primary pos" data-bs-toggle="modal" data-bs-target="#exampleModal">
- Users List <i class="fas fa-address-book"></i>
+ Cerca studenti <i class="fas fa-address-book"></i>
 </button>
                <h6>Studenti</h6></div>
                <div class="col" >
@@ -807,9 +807,9 @@ function openNav() {
                      <div class="form-group">
                      
                         <div class="input-group mb-3">
-                           <input type="text" class="form-controls" id="students" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                           <input type="text" class="form-controls" id="students" placeholder="Inserisci nome studente" aria-label="Recipient's username" aria-describedby="basic-addon2">
                            <div class="input-group-append">
-                              <button type="button" class="btn btn-info" id="add" >Add</button>
+                              <button type="button" class="btn btn-info" id="add" >Aggiungi</button>
                            </div>
                         </div>
                         <span style="color: red;" id="error_student"></span>
@@ -858,7 +858,7 @@ function openNav() {
   <label for="Add_node_name" class="col-form-label">Nome</label>
   <input type="text" class="form-control none" id="Add_node_name" placeholder="Nome" required>
   <span style="color: red;" id="error_name_rule"></span>
-  <label for="Add_node_time" class="col-form-label">Durata lezione(in Secondi)</label>
+  <label for="Add_node_time" class="col-form-label">Durata lezione(in minuti)</label>
   <input type="number" class="form-control none" id="Add_node_time" placeholder="Time" required>
   <span style="color: red;" id="error_time"></span>
              <label for="new-rule-type" class="col-form-label">Tipo</label>     

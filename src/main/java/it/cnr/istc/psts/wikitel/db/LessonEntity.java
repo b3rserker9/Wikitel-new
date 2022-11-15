@@ -38,7 +38,7 @@ public class LessonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private ModelEntity model;
     @ManyToOne
     @JsonBackReference

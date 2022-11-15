@@ -34,6 +34,7 @@ public class LessonService {
 		lesson.getTeacher().getTeaching_lessons().remove(lesson);
 		lesson.setTeacher(null);
 		lesson.getGoals().clear();
+		lesson.setModel(null);
         this.lessonsrepository.deleteById(lesson.getId());
     }
 	

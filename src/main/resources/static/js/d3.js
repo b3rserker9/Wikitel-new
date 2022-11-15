@@ -114,7 +114,7 @@ function New_rule_file(){
                     cache: false,
                     success: function(res) {
                         console.log("SUCCESS : ", res);
-                        var a = {model_id: document.getElementById("model_name").getAttribute("value") , rule_name:$("#Add_node_name").val(), rule_type :"File",  rule_id: rule_effects.rule_id,rule_length:$("#Add_node_time").val()};
+                        var a = {model_id: document.getElementById("model_name").getAttribute("value") , rule_name:$("#Add_node_name").val(), rule_type :"File",  rule_id: rule_effects.rule_id,rule_length:$("#Add_node_time").val()*60};
                         sendnode(a)
                     },
                     error: function(err) {
@@ -125,7 +125,7 @@ function New_rule_file(){
 }
 
 function addNode() {
-  var a = {model_id: document.getElementById("model_name").getAttribute("value") ,rule_length:$("#Add_node_time").val(), rule_name:$("#Add_node_name").val(), rule_text: document.getElementById(type).value, rule_type :type,  rule_id: rule_effects.rule_id};
+  var a = {model_id: document.getElementById("model_name").getAttribute("value") ,rule_length:$("#Add_node_time").val()*60, rule_name:$("#Add_node_name").val(), rule_text: document.getElementById(type).value, rule_type :type,  rule_id: rule_effects.rule_id};
 
  if(checkAddNode()){
  if(type!="file"){
@@ -150,7 +150,7 @@ function ajaxGet() {
     halfnodes = a[4];
     
    
-    table = $("#example").DataTable({autoWidth:!1, data:nodestable, columns:[{data:"id"}, {data:"parent"}, {data:"type"}, {data:"score2"}]});
+    table = $("#example").DataTable({  order: [[3, 'desc']],autoWidth:!1, data:nodestable, columns:[{data:"id"}, {data:"parent"}, {data:"type"}, {data:"score2"}]});
 
     nodesDataset = new vis.DataSet(halfnodes);
     redrawAll(nodesDataset, edgesDataset);
@@ -169,10 +169,11 @@ function filter_rule() {
   redrawAll(nodesDataset, edgesDataset);
 }
 function MultiSearch(){
+	i = 0;
 	document.getElementById("graph_search").style.display="block";
 	 for (var a = 0; a < table.rows(".selected").data().length; a++) {
 		elem = table.rows(".selected").data()[a]
-
+			i++;
            	if(document.getElementsByClassName("flexing").length == 0)
            		document.getElementById("Search_container").innerHTML= ''
            		
@@ -194,6 +195,7 @@ function MultiSearch(){
                 data: JSON.stringify(precondition),
                 dataType: "json",
                 success: function(data) {
+	if(i>= table.rows(".selected").data().length)
 	document.getElementById("graph_search").style.display="none";
                     console.log("SUCCESS : ", data);
                       if(data.status2 == "Error"){

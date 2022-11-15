@@ -423,8 +423,8 @@ function precondition_setup(data,id) {
 
    
     let rule = rules[0];
-    console.log(rule.length);
-    $("#rule-length").val(rule.length);
+     console.log(rule.length/60);
+    $("#rule-length").val(Math.round((rule.length/60) * 100) / 100);
     let suggestions = rule.suggestionm;
     console.log(suggestions);
     suggestions.forEach(function(l) {
@@ -442,8 +442,8 @@ function precondition_setup(data,id) {
         console.log(i);
         
        let rule = rules[i];
-        console.log(rule);
-        $("#rule-length").val(rule.length);
+        console.log(rule.length/60);
+        $("#rule-length").val(Math.round((rule.length/60) * 100) / 100);
         let suggestions = rule.suggestionm;
         console.log(suggestions);
         current_rule = rule.id;

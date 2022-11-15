@@ -466,12 +466,12 @@ function openNav() {
 
 <div id="mySidebar" class="sidebar">
   <a href="#">Dashboard</a>
-  <a href="#">Calendar</a>
+  <a href="#">Calendario</a>
   <a  data-bs-toggle="collapse" href="#collapse" role="button" aria-expanded="false" aria-controls="collapseExample">
-    My course
+    I miei corsi
   </a>
   <div class="collapse" id="collapse">
-  <div class="card card-body" id="side-bar" th:each="m : ${lesson}"><a style="font-size: 19px;" th:text="${m.name}"th:href="'/lezione/' + ${m.id} "></a></div>
+  <div class="card card-body" id="side-bar" th:each="m : ${model}"><a style="font-size: 19px;" th:text="${m.name}"th:href="'/Argomento/' + ${m.getID()} "></a></div>
 </div>
 </div>
 
@@ -485,7 +485,7 @@ function openNav() {
 	<span class="h4">WELCOME!</span><br>
 	<br>
 	<strong>WikiTEL ti permette di costruire un percorso didattico on-the-fly. Puoi partire da materiali che hai già, oppure puoi prendere spunto da WikiPedia per iniziare a creare il tuo percorso didattico. <br>
-	Per navigare su Wikipedia in forma grafica seleziona in alto a destra NUOVO ARGOMENTO e segui le istruzioni.</strong>  <br>
+	Per navigare su Wikipedia in forma grafica seleziona qui in basso il pulsante NUOVO ARGOMENTO e segui le istruzioni per la creazione di un nuovo corso.</strong>  <br>
 	<br>
 	<strong>BUON LAVORO!</strong><br>
 	</div>
@@ -567,7 +567,7 @@ function openNav() {
 <span style="color: red;" id="error_web"></span>
 <span style="color: red;" id="error_type"></span>
 <div id="Add_node_times" style="display: none;">
-   <label for="Add_node_time" class="col-form-label">Durata lezione(in Secondi)</label>
+   <label for="Add_node_time" class="col-form-label">Durata lezione(in minuti)</label>
   <input type="number" class="form-control none" id="Add_node_time" placeholder="Time" >
   <span style="color: red;" id="error_time"></span></div>
 <div class="questions" id="question" style="display: none;">
@@ -634,7 +634,7 @@ function openNav() {
                   <hr>
                <div class="form-floating">
                   <input type="number" class="form-control" id="rule-length" placeholder="Nome">
-                  <label for="rule-length">Durata (secondi)</label>
+                  <label for="rule-length">Durata (in minuti)</label>
                </div>
                <hr>
                <select class="col d-flex justify-content-start form-select" id="approach"
