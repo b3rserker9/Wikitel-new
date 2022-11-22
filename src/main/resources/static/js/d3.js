@@ -153,6 +153,7 @@ function ajaxGet() {
     table = $("#example").DataTable({  order: [[3, 'desc']],autoWidth:!1, data:nodestable, columns:[{data:"id"}, {data:"parent"}, {data:"type"}, {data:"score2"}]});
 
     nodesDataset = new vis.DataSet(halfnodes);
+    document.getElementById("only_rule").checked = false
     redrawAll(nodesDataset, edgesDataset);
     if(nodes.length == 0){   
 	document.getElementById("loadingBar").style.display = "none";
@@ -238,6 +239,7 @@ $(document).ready(function() {
     });
 });
 function redrawAll(a, c) {
+	
 	 document.getElementById("loadingBar").style.display = "block";
 	 document.getElementById("loadingBar").style.opacity = 1;
   var e = document.getElementById("mynetwork"), b = {nodes:a, edges:c};

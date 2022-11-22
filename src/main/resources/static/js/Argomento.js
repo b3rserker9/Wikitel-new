@@ -166,7 +166,11 @@ let $modal = $("#iframe_page");
 $modal.draggable({
   handle: ".modal-header",
 });
-$modal.resizable();
+$("#resizable").resizable();
+
+$("#table_modal").draggable({
+  handle: ".modal-header",
+});
 
   $("#students").autocomplete({source:students});
   var a = window.location.pathname.split("/");

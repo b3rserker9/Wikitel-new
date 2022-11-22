@@ -142,14 +142,11 @@ if(text!= "Pagina Wikipedia"){
 
     // DO POST
     $.ajax({
-
         type: "POST",
         contentType: "application/json",
         url: "/Newrule",
         data: JSON.stringify(model),
         dataType: "json",
-
-
         success: function(data) {
 		console.log(data)
 		  if(data.status2 == "Error"){
@@ -528,8 +525,6 @@ var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
             event.preventDefault();
 
             Create_new_precondition();
-
-
         });
 
 

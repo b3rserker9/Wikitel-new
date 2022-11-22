@@ -737,7 +737,7 @@ function openNav() {
 <!-- Modal Table -->
 <div class="modal fade" id="table_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog table_modal">
-    <div class="modal-content">
+    <div class="modal-content" id="table_content">
       <div class="modal-header">
   
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -1046,12 +1046,12 @@ change_history
 
 <div class="modal fade" id="iframe_page" style="overflow-y: hidden!important;" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl" style="height: 80%;">
-    <div class="modal-content" style="height: 80%;">
+    <div class="modal-content" id="resizable" style="height: 80%;">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLabel"><i class="fab fa-wikipedia-w"></i></h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body" style="max-height: calc(100% - 80px);">
+      <div class="modal-body"  style="max-height: calc(100% - 80px);">
          <iframe id="iframe" src="https://it.wikipedia.org/wiki/Pagina_principale" title="description" style="width: 100%;height: 100%;"></iframe>
       </div>
      
