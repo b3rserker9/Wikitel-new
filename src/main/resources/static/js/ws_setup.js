@@ -81,6 +81,7 @@ function setup_ws(msg) {
             case 'url-stimulus':
 				
 				lesson.new_stimuli(c_msg.url)
+                setTimeout(lesson.new_stimuli_icon, 800, c_msg.id);
 				messages(c_msg);
                 break;
             case 'Graph':

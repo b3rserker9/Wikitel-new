@@ -569,6 +569,15 @@ transform: translateX(-50%)
 .tgl-skewed:checked + .tgl-btn:active:after {
   left: 10%;
 }
+.asinc,.sinc{
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    font-size: 15px;
+    font-weight: bold;
+}
 
 </style>
 <script>
@@ -789,8 +798,29 @@ function openNav() {
                      <div class="name"  >
                         <p id="model_name" th:text="${arg.name}" th:value="${arg.id}" style="font-size: 1.5em;color: black;"></p>
                      </div>
+
                   </div>
                </div>
+                <h6>Tipo erogazione lezione</h6>
+                <div style="display: flex;justify-content: center">
+                <div class="lesson_type">
+
+                        <input type="radio" name="selectype" id="option-1" value="0" checked>
+                        <input type="radio" name="selectype" id="option-2" value="1">
+                        <label for="option-1" class="option option-1">
+                            <div class="dot"></div>
+                            <span>Sincrono</span>
+                        </label>
+                        <label for="option-2" class="option option-2">
+                            <div class="dot"></div>
+                            <span>Asincrono</span>
+                        </label>
+
+
+                </div>
+                </div>
+                <hr />
+
                <div class="form-floating my-1">
                   <input type="text" class="form-controls" id="new-lesson-name" placeholder="Nome" required>
                    

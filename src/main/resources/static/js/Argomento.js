@@ -101,6 +101,7 @@ function Create_new_lesson() {
     console.log(result)
     return result;
   }
+  console.log(document.querySelector('input[name="selectype"]:checked').value)
   var b = document.getElementById("lesson_goal").querySelectorAll('input[type="checkbox"]');
   console.log(a());
   if (0 == students_id.length) {
@@ -110,7 +111,7 @@ function Create_new_lesson() {
 }else if(a().length == 0){
 	document.getElementById("error_goal").innerText = "Inserisci almeno un obiettivo";
 } else {
-    var c = {name:$("#new-lesson-name").val(), models:document.getElementById("model_name").getAttribute("value"), students:JSON.stringify(students_id), goals:JSON.stringify(a()), activeor:$("input[name=roles]:checked").val()};
+    var c = {name:$("#new-lesson-name").val(), models:document.getElementById("model_name").getAttribute("value"), students:JSON.stringify(students_id), goals:JSON.stringify(a()), activeor:$("input[name=roles]:checked").val(), type: document.querySelector('input[name="selectype"]:checked').value};
     console.log(document.getElementById("model_name").getAttribute("value"));
     console.log(students_id);
     $.ajax({type:"POST", contentType:"application/json", url:"/NewLesson", data:JSON.stringify(c), dataType:"json", success:function(d) {

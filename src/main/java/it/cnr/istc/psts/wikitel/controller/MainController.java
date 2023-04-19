@@ -443,7 +443,7 @@ public class MainController {
 
     String file1 = uploadfile.getOriginalFilename();
     System.out.println(file1);
-    String baseDir = System.getProperty("user.dir") + "\\FileRule\\";
+    String baseDir = System.getProperty("user.dir") + "//FileRule//";
     System.out.println(baseDir);
     uploadfile.transferTo(new File(baseDir + file1));
     RuleEntity rule = new FileRuleEntity();
@@ -464,7 +464,7 @@ public class MainController {
 
     String file1 = uploadfile.getOriginalFilename();
     System.out.println(file1);
-    String baseDir = System.getProperty("user.dir") + "\\FileRule\\";
+    String baseDir = System.getProperty("user.dir") + "//FileRule//";
     System.out.println(baseDir);
     uploadfile.transferTo(new File(baseDir + file1));
     RuleEntity rule = new FileRuleEntity();
@@ -481,7 +481,7 @@ public class MainController {
     Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
     UserEntity nuovo = credentials.getUser();
     String file1 = uploadfile.getOriginalFilename();
-    String baseDir = System.getProperty("user.dir") + "\\MaterialeDidattico\\";
+    String baseDir = System.getProperty("user.dir") + "//MaterialeDidattico//";
     Files f = new Files(file1);
     this.fileservice.save(f);
     uploadfile.transferTo(new File(baseDir + file1));
@@ -554,7 +554,7 @@ public class MainController {
     UserEntity nuovo = credentials.getUser();
     String file1 = uploadfile.getOriginalFilename();
     System.out.println(file1);
-    String baseDir = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\images\\";
+    String baseDir = System.getProperty("user.dir") + "//src//main//resources//static//images//";
     uploadfile.transferTo(new File(baseDir + nuovo.getId() + ".jpg"));
     nuovo.setSrc("\\images\\" + nuovo.getId() + ".jpg");
     this.userservice.saveUser(nuovo);
@@ -565,13 +565,26 @@ public class MainController {
 
   @PostMapping("/play")
   public Response PlayLesson(@RequestBody ObjectNode node) throws IllegalStateException, IOException {
-
-    for (UserEntity u: this.lessonservice.lezionePerId(node.get("id").asLong()).getFollowed_by()) {
-      String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+    LessonEntity lesson = this.lessonservice.lezionePerId(node.get("id").asLong());
+    if( lesson.getAsync()){
+      UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+      UserEntity user = credentials.getUser();
+      String n = String.valueOf(node.get("id").asLong()) + String.valueOf(user.getId());
       System.out.println(n);
       System.out.println(LESSONS);
       if (LESSONS.get(n).getState() != LessonState.Running) {
         LESSONS.get(n).play();
+      }
+    }
+    else {
+      for (UserEntity u : lesson.getFollowed_by()) {
+        String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+        System.out.println(n);
+        System.out.println(LESSONS);
+        if (LESSONS.get(n).getState() != LessonState.Running) {
+          LESSONS.get(n).play();
+        }
       }
     }
     Response response = new Response("Done");
@@ -580,15 +593,28 @@ public class MainController {
   }
   @PostMapping("/pause")
   public Response pauseLesson(@RequestBody ObjectNode node) throws IllegalStateException, IOException {
-    for (UserEntity u: this.lessonservice.lezionePerId(node.get("id").asLong()).getFollowed_by()) {
-      String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+    LessonEntity lesson = this.lessonservice.lezionePerId(node.get("id").asLong());
+    if( lesson.getAsync()){
+      UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+      UserEntity user = credentials.getUser();
+      String n = String.valueOf(node.get("id").asLong()) + String.valueOf(user.getId());
       System.out.println(n);
       System.out.println(LESSONS);
       if (LESSONS.get(n).getState() != LessonState.Paused) {
         LESSONS.get(n).pause();
       }
     }
-
+    else {
+      for (UserEntity u : lesson.getFollowed_by()) {
+        String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+        System.out.println(n);
+        System.out.println(LESSONS);
+        if (LESSONS.get(n).getState() != LessonState.Paused) {
+          LESSONS.get(n).pause();
+        }
+      }
+    }
     Response response = new Response("Done");
     return response;
 
@@ -596,12 +622,26 @@ public class MainController {
 
   @PostMapping("/stop")
   public Response stopLesson(@RequestBody ObjectNode node) throws IllegalStateException, IOException {
-    for (UserEntity u: this.lessonservice.lezionePerId(node.get("id").asLong()).getFollowed_by()) {
-      String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+    LessonEntity lesson = this.lessonservice.lezionePerId(node.get("id").asLong());
+    if( lesson.getAsync()){
+      UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+      UserEntity user = credentials.getUser();
+      String n = String.valueOf(node.get("id").asLong()) + String.valueOf(user.getId());
       System.out.println(n);
       System.out.println(LESSONS);
       if (LESSONS.get(n).getState() != LessonState.Stopped) {
         LESSONS.get(n).stop();
+      }
+    }
+    else {
+      for (UserEntity u : lesson.getFollowed_by()) {
+        String n = String.valueOf(node.get("id").asLong()) + String.valueOf(u.getId());
+        System.out.println(n);
+        System.out.println(LESSONS);
+        if (LESSONS.get(n).getState() != LessonState.Stopped) {
+          LESSONS.get(n).stop();
+        }
       }
     }
 
@@ -908,6 +948,11 @@ public class MainController {
       lesson.getGoals().add(this.ruleservice.getRule(Long.valueOf(g)));
     }
 
+    Boolean b = false;
+    if(node.get("type").asInt() == 1)
+      b=true;
+    System.out.println("User subscribe :  " + b);
+    lesson.setAsync(b);
     lessonservice.save(lesson);
     nuovo.getTeaching_lessons().add(lesson);
     userservice.saveUser(nuovo);

@@ -94,6 +94,8 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	    private final Map<Long, Resolver> resolvers = new HashMap<>();
 	    	    private Resolver current_resolver = null;
 	    	    private Long user;
+
+
 	    	    Stimulus st = null;
 	    	    
 	    	    
@@ -152,6 +154,7 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    	    }
 	    	    
 	    	    public void play() {
+					System.out.println("User lesson MANAGER:"+ user);
 	    	    	scheduled_feature = Starter.EXECUTOR.scheduleAtFixedRate(() -> {
 	    	            try {
 	    	                executor.tick();
@@ -290,16 +293,22 @@ import it.cnr.istc.psts.wikitel.Service.*;
 	    		    public void tick(final Rational time) {
 	    			   
 	    		        current_time = time;
-	    		 
-	    				
-	    		        final String wsc = UserController.ONLINE.get(lesson.getTeacher().getId());
+					   final String wsc;
+					   if(!lesson.getAsync()) {
+						    wsc = UserController.ONLINE.get(lesson.getTeacher().getId());
+					   }else {
+						    wsc = UserController.ONLINE.get(user);
+					   }
 	    		        if (wsc != null)
 	    		            try {
 	    		            	send.notify(Starter.mapper.writeValueAsString(new Tick(lesson.getId(), current_time)), wsc);
-	    		            	for(UserEntity u : lesson.getFollowed_by()) {
-	    		            		if(UserController.ONLINE.containsKey(u.getId()))
-	    		            		send.notify(Starter.mapper.writeValueAsString(new Tick(lesson.getId(), current_time)), UserController.ONLINE.get(u.getId()));
-	    		            	}
+								if(!lesson.getAsync()) {
+									for (UserEntity u : lesson.getFollowed_by()) {
+										if (UserController.ONLINE.containsKey(u.getId()))
+											send.notify(Starter.mapper.writeValueAsString(new Tick(lesson.getId(), current_time)), UserController.ONLINE.get(u.getId()));
+									}
+								}
+
 	    		            } catch (final JsonProcessingException e) {
 	    		                LOG.error("Cannot write tick message..", e);
 	    		            }

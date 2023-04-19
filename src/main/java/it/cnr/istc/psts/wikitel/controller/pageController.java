@@ -6,11 +6,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
+import it.cnr.istc.psts.wikitel.db.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,13 +46,7 @@ import it.cnr.istc.psts.wikitel.Service.LessonService;
 import it.cnr.istc.psts.wikitel.Service.ModelService;
 import it.cnr.istc.psts.wikitel.Service.Starter;
 import it.cnr.istc.psts.wikitel.Service.UserService;
-import it.cnr.istc.psts.wikitel.db.Credentials;
-import it.cnr.istc.psts.wikitel.db.LessonEntity;
-import it.cnr.istc.psts.wikitel.db.ModelEntity;
-import it.cnr.istc.psts.wikitel.db.Prova;
 
-import it.cnr.istc.psts.wikitel.db.User;
-import it.cnr.istc.psts.wikitel.db.UserEntity;
 import static it.cnr.istc.psts.wikitel.db.UserEntity.STUDENT_ROLE;
 import it.cnr.istc.psts.wikitel.controller.*;
 
@@ -231,11 +223,22 @@ public class pageController {
 	public String det_ordine(@PathVariable("id")Long id , Model model) throws JsonProcessingException {
 		UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     	Credentials credentials = credentialservice.getCredentials(userDetails.getUsername());
+		LessonEntity lezione = lessonservice.lezionePerId(id);
 		UserEntity userentity = credentials.getUser();
 		System.out.println("USER: " + userentity.getId());
+		System.out.println(credentials.getRole());
+		System.out.println(lezione.getAsync());
+		System.out.println(credentials.getRole().equals("STUDENT"));
     	model.addAttribute("user",userentity);
-    	model.addAttribute("role",credentials.getRole());
-		LessonEntity lezione = lessonservice.lezionePerId(id);
+		if(lezione.getAsync() && credentials.getRole().equals("STUDENT")) {
+			model.addAttribute("role", "controller");
+			System.out.println("USER:");
+		}
+		if (!lezione.getAsync() && credentials.getRole().equals("TEACHER")){
+			model.addAttribute("role", "controller");
+			System.out.println("Teacher:");
+		}
+		model.addAttribute("roles", credentials.getRole());
 		model.addAttribute("files",lezione.getFiles());
 		model.addAttribute("lezione",lezione);
 		DateFormat df = new SimpleDateFormat("yy"); // Just the year, with 2 digits
@@ -244,10 +247,21 @@ public class pageController {
 		System.out.println(formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("anno",formattedDate + "/" + (((Calendar.getInstance().get(Calendar.YEAR)+1))%100));
 		model.addAttribute("students",lezione.getFollowed_by());
+		String n = String.valueOf(id) + String.valueOf(userentity.getId());
+
+		Set<RuleEntity> goals = new HashSet<>();
+		for( RuleEntity r : lezione.getGoals()){
+			goals.add(r);
+			for (RuleEntity pre :r.getPreconditions()){
+				goals.add(pre);
+			}
+		}
+		model.addAttribute("goalsl",goals);
 		if(credentials.getRole().equals(STUDENT_ROLE)) { 
-			String n = String.valueOf(id) + String.valueOf(userentity.getId());
+
 			System.out.println("PROVA : " + MainController.LESSONS);
 		model.addAttribute("messages",MainController.LESSONS.get(n).getStimuli(userentity.getId()));
+
 		//send.notify(Starter.mapper.writeValueAsString(MainController.LESSONS.get(id).st), UserController.ONLINE.get(userentity.getId()));	
 		}
 	

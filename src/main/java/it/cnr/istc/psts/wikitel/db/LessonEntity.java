@@ -38,6 +38,8 @@ public class LessonEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+
+    private Boolean Async;
     @ManyToOne
     private ModelEntity model;
     @ManyToOne
